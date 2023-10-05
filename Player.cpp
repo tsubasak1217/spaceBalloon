@@ -20,8 +20,11 @@ void Player::Update(char* keys,int* cameraPos) {
 
 	//風船の体積を求める
 	volume_ = (4.0f/3.0f) * float(M_PI) * powf(size_.x * 0.5f,3.0f);
+
 	//密度を計算
 	weight_ = 0.5f + (volume_ * 0.001f);
+	
+	//上下方向の蚊測量
 	velocity_.y += -CalcSinkSpeed(weight_, volume_ * 0.0012f, 0.8f);
 
 	pos_.y += velocity_.y - (airResistance_ * velocity_.y);

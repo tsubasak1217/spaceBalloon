@@ -114,6 +114,7 @@
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="MyFunc.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Title.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="C:\KamataEngine\DirectXGame\math\Matrix4x4.h" />
@@ -147,6 +148,7 @@
     <ClInclude Include="Matrix2x2.h" />
     <ClInclude Include="MyFunc.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="Title.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
