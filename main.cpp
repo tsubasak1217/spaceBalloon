@@ -48,7 +48,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓更新処理ここから
 		///
 
-		player.Update(keys,&globalV.cameraPos_);
+		player.Update(keys,&globalV.cameraPosX_, &globalV.cameraPosY_);
 
 		///
 		/// ↑更新処理ここまで
@@ -61,7 +61,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		player.Draw(globalV);
 		map.Draw(globalV);
 
-		Novice::ScreenPrintf(20, 20, "%d", globalV.GetCameraPos());
+		Novice::ScreenPrintf(20, 20, "%d", globalV.GetCameraPosX());
 		Novice::ScreenPrintf(20, 40, "%f", player.GetPos().y);
 
 		///

@@ -1,7 +1,7 @@
 #include "Player.h"
 
 // アップデート
-void Player::Update(char* keys,int* cameraPos) {
+void Player::Update(char* keys,int* cameraPosX, int* cameraPosY) {
 
 	// 風船が膨らんだりしぼんだりする処理
 	if (keys[DIK_SPACE]) {
@@ -28,7 +28,37 @@ void Player::Update(char* keys,int* cameraPos) {
 	velocity_.y += -CalcSinkSpeed(weight_, volume_ * 0.0012f, 0.8f);
 
 	//============================左右方向の移動量の決定====================================
-	velocity_.x = float(Novice::CheckHitKey(keys[DIK_RIGHT]) - Novice::CheckHitKey(keys[DIK_LEFT]) * speed_);
+	if (keys[DIK_LEFT]) {
+
+		if (easeT_ < 1.0f) {
+			easeT_ += 0.03125f;
+		}
+
+		velocity_.x = -EaseInSine(easeT_) * speed_;
+
+	} else {
+
+		if (!keys[DIK_RIGHT]) {
+			easeT_ = 0.0f;
+		}
+	}
+
+	if (keys[DIK_RIGHT]) {
+
+		if (easeT_ < 1.0f) {
+			easeT_ += 0.03125f;
+		}
+		velocity_.x = EaseInSine(easeT_) * speed_;
+
+	} else {
+
+		if (!keys[DIK_LEFT]) {
+			easeT_ = 0.0f;
+		}
+	}
+
+	//スピードの減衰
+	velocity_.x *= 0.98f;
 
 	pos_.y += velocity_.y - (airResistance_ * velocity_.y);
 	pos_.x += velocity_.x;
@@ -43,9 +73,14 @@ void Player::Update(char* keys,int* cameraPos) {
 	}
 
 	//カメラ座標の計算
-	*cameraPos = int(pos_.y) - 360;
-	if (*cameraPos < 0) {
-		*cameraPos = 0;
+	*cameraPosX = int(pos_.x) - 640;
+	if (*cameraPosX < 0) {
+		*cameraPosX = 0;
+	}
+
+	*cameraPosY = int(pos_.y) - 360;
+	if (*cameraPosY < 0) {
+		*cameraPosY = 0;
 	}
 }
 
@@ -55,8 +90,8 @@ void Player::Update(char* keys,int* cameraPos) {
 void Player::Draw(GlobalVariable globalV) {
 
 	Novice::DrawEllipse(
-		int(pos_.x),
-		int(pos_.y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPos(),
+		int(pos_.x) - globalV.GetCameraPosX(),
+		int(pos_.y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
 		int(size_.x),
 		int(size_.y),
 		0.0f,

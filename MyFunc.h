@@ -11,6 +11,7 @@
 #include <sstream>
 #include <vector>
 //================================================================
+#include "Easing.h"
 
 std::vector<std::vector<int>>LoadFile(const std::string& csvFilePath);
 

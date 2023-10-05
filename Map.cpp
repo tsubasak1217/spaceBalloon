@@ -29,8 +29,8 @@ void Map::Draw(GlobalVariable globalV) {
 
 			if (blockType_[row][col] == 1) {
 				Novice::DrawBox(
-					int(pos_[row][col].x),
-					int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPos(),
+					int(pos_[row][col].x) - globalV.GetCameraPosX(),
+					int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
 					int(size_.x),
 					int(size_.y),
 					0.0f,

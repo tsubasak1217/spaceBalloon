@@ -25,6 +25,9 @@ private:
 	//色
 	int color_;
 
+	//イージング用変数
+	float easeT_;
+
 public:
 
 	//イニシャライズ(初期化関数)
@@ -44,6 +47,8 @@ public:
 		acceleration_ = { 0.0f,0.0f };
 
 		color_ = 0xff69b4ff;
+
+		easeT_ = 0.0f;
 	}
 
 	//アクセッサ
@@ -58,7 +63,7 @@ public:
 
 
 	// アップデート
-	void Update(char* keys, int* cameraPos);
+	void Update(char* keys, int* cameraPosX,int* cameraPosY);
 
 	//ドロー
 	void Draw(GlobalVariable globalV);
