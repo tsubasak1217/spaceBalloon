@@ -16,6 +16,7 @@
 std::vector<std::vector<int>>LoadFile(const std::string& csvFilePath);
 
 float CheckLength(Vector2 pos1, Vector2 pos2);
+float CheckLength(float pos1x, float pos1y, float pos2x, float pos2y);
 
 float Cross(
 	float line1StartX, float line1StartY,
@@ -40,8 +41,7 @@ Vector2 Multiply(Vector2 vector, Matrix2x2 matrix);
 void MatrixScreenPrintf(int posX, int posY, Matrix2x2 matrix);
 void Vector2ScreenPrintf(int posX, int posY, Vector2 vector);
 
-float CalculateBuoyantForce(float densityObject, float densityLiquid, float volumeObject, float gravity);
-
-float calculateSinkingSpeed(float densityObject, float densityLiquid, float gravity);
-
 float CalcSinkSpeed(float objectWeight, float spaceWeight, float gravity);
+
+bool IsHitBox_Ball(Vector2 boxCenter, Vector2 ballPos, Vector2 boxSize, float ballRasius);
+int IsHitBox_BallDirection(Vector2 boxCenter, Vector2 ballPos, Vector2 boxSize, float ballRasius);

@@ -29,6 +29,10 @@ public:
 	int GetBlockType(int row, int col) { return blockType_[row][col]; }
 	void SetBlockType(int row, int col,int blockType) { blockType_[row][col] = blockType; }
 
+	Vector2 GetPos(int row, int col){ return pos_[row][col]; }
+
+	Vector2 GetSize() { return size_; }
+
 	//ドロー
 	void Draw(GlobalVariable globalV);
 };

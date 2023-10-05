@@ -1,4 +1,4 @@
-#include "MyFunc.h"
+﻿#include "MyFunc.h"
 
 //csvを読み込む関数
 std::vector<std::vector<int>>LoadFile(const std::string& csvFilePath) {
@@ -34,6 +34,12 @@ std::vector<std::vector<int>>LoadFile(const std::string& csvFilePath) {
 float CheckLength(Vector2 pos1, Vector2 pos2) {
 	float xLength = (pos1.x - pos2.x);
 	float yLength = (pos1.y - pos2.y);
+	return sqrtf(xLength * xLength + yLength * yLength);
+}
+
+float CheckLength(float pos1x, float pos1y, float pos2x, float pos2y) {
+	float xLength = pos2x - pos1x;
+	float yLength = pos2y - pos1y;
 	return sqrtf(xLength * xLength + yLength * yLength);
 }
 
@@ -178,3 +184,151 @@ float CalcSinkSpeed(float objectWeight, float spaceWeight, float gravity) {
 	return gravity - (spaceWeight / objectWeight) * gravity;
 }
 
+bool IsHitBox_Ball(Vector2 boxCenter, Vector2 ballPos, Vector2 boxSize, float ballRasius) {
+
+	float distX = ballPos.x - boxCenter.x;
+	float distY = ballPos.y - boxCenter.y;
+
+	if (distX >= -boxSize.x / 2.0f && distX <= boxSize.x / 2.0f) {
+
+		if (distY >= (-boxSize.y / 2.0f) - ballRasius && distY <= (boxSize.y / 2.0f) + ballRasius) {
+
+			return true;
+
+		} else {
+			return false;
+		}
+
+	} else if (distY >= -boxSize.y / 2.0f && distY <= boxSize.y / 2.0f) {
+
+		if (distX >= (-boxSize.x / 2.0f) - ballRasius && distX <= (boxSize.x / 2.0f) + ballRasius) {
+			return true;
+
+		} else {
+			return false;
+		}
+
+	} else {
+
+		if (distX < 0 && distY < 0) {
+			if (
+				CheckLength(boxCenter.x - boxSize.x / 2.0f, boxCenter.y - boxSize.y / 2.0f, ballPos.x, ballPos.y) <= ballRasius) {
+				return true;
+			} else {
+				return false;
+			}
+		} else if (distX >= 0 && distY < 0) {
+			if (
+				CheckLength(boxCenter.x + boxSize.x / 2.0f, boxCenter.y - boxSize.y / 2.0f, ballPos.x, ballPos.y) <= ballRasius) {
+				return true;
+			} else {
+				return false;
+			}
+
+		} else if (distX < 0 && distY >= 0) {
+			if (
+				CheckLength(boxCenter.x - boxSize.x / 2.0f, boxCenter.y + boxSize.y / 2.0f, ballPos.x, ballPos.y) <= ballRasius) {
+				return true;
+			} else {
+				return false;
+			}
+
+		} else {
+			if (
+				CheckLength(boxCenter.x + boxSize.x / 2.0f, boxCenter.y + boxSize.y / 2.0f, ballPos.x, ballPos.y) <= ballRasius) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+	}
+}
+
+int IsHitBox_BallDirection(Vector2 boxCenter, Vector2 ballPos, Vector2 boxSize, float ballRasius) {
+
+	float distX = ballPos.x - boxCenter.x;
+	float distY = ballPos.y - boxCenter.y;
+
+	if (distX >= -boxSize.x / 2.0f && distX <= boxSize.x / 2.0f) {
+
+		if (distY >= (-boxSize.y / 2.0f) - ballRasius && distY <= (boxSize.y / 2.0f) + ballRasius) {
+
+			if (distY >= 0) {
+				return 1;//上面に当たった
+			} else {
+				return 3;//下面に当たった
+			}
+
+		} else {
+			return false;
+		}
+
+	} else if (distY >= -boxSize.y / 2.0f && distY <= boxSize.y / 2.0f) {
+
+		if (distX >= (-boxSize.x / 2.0f) - ballRasius && distX <= (boxSize.x / 2.0f) + ballRasius) {
+			
+			if (distX >= 0) {
+				return 2;//右面に当たった
+			} else {
+				return 4;//左面に当たった
+			}
+
+		} else {
+			return false;
+		}
+
+	} else {
+
+		if (distX < 0 && distY >= 0) {//左上
+			if (CheckLength(boxCenter.x - boxSize.x / 2.0f, boxCenter.y + boxSize.y / 2.0f, ballPos.x, ballPos.y) <= ballRasius) {
+
+				if (sqrtf(powf(distX, 2.0f)) < sqrtf(powf(distY, 2.0f))) {
+					return 1;//上面に当たった
+				} else {
+					return 4;//左面に当たった
+				}
+
+			} else {
+				return false;
+			}
+		} else if (distX >= 0 && distY >= 0) {//右上
+			if (CheckLength(boxCenter.x + boxSize.x / 2.0f, boxCenter.y + boxSize.y / 2.0f, ballPos.x, ballPos.y) <= ballRasius) {
+				
+				if (sqrtf(powf(distX,2.0f)) < sqrtf(powf(distY, 2.0f))) {
+					return 1;//上面に当たった
+				} else {
+					return 2;//右面に当たった
+				}
+
+			} else {
+				return false;
+			}
+
+		} else if (distX < 0 && distY < 0) {//左下
+			if (CheckLength(boxCenter.x - boxSize.x / 2.0f, boxCenter.y - boxSize.y / 2.0f, ballPos.x, ballPos.y) <= ballRasius) {
+				
+				if (sqrtf(powf(distX, 2.0f)) < sqrtf(powf(distY, 2.0f))) {
+					return 3;//上面に当たった
+				} else {
+					return 4;//左面に当たった
+				}
+
+			} else {
+				return false;
+			}
+
+		} else {//右下
+			if (CheckLength(boxCenter.x + boxSize.x / 2.0f, boxCenter.y - boxSize.y / 2.0f, ballPos.x, ballPos.y) <= ballRasius) {
+				
+				if (sqrtf(powf(distX, 2.0f)) < sqrtf(powf(distY, 2.0f))) {
+					return 3;//上面に当たった
+				} else {
+					return 2;//左面に当たった
+				}
+
+			} else {
+				return false;
+			}
+		}
+	}
+}

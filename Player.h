@@ -22,6 +22,9 @@ private:
 	Vector2 velocity_;
 	Vector2 acceleration_;
 
+	//プレイヤーの番地
+	Vector2Int address_;
+
 	//色
 	int color_;
 
@@ -49,6 +52,8 @@ public:
 		color_ = 0xff69b4ff;
 
 		easeT_ = 0.0f;
+
+		address_ = { int(pos_.x) / 64,int(pos_.y) / 64 };
 	}
 
 	//アクセッサ
@@ -63,7 +68,7 @@ public:
 
 
 	// アップデート
-	void Update(char* keys, int* cameraPosX,int* cameraPosY);
+	void Update(char* keys, char* preKeys, int* cameraPosX,int* cameraPosY, Map map);
 
 	//ドロー
 	void Draw(GlobalVariable globalV);
