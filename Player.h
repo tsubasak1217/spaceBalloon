@@ -30,6 +30,9 @@ private:
 
 	//イージング用変数
 	float easeT_;
+	//ノックバックの時間変数
+	int knockBackCount_;
+
 
 public:
 
@@ -52,6 +55,7 @@ public:
 		color_ = 0xff69b4ff;
 
 		easeT_ = 0.0f;
+		knockBackCount_ = 0;
 
 		address_ = { int(pos_.x) / 64,int(pos_.y) / 64 };
 	}

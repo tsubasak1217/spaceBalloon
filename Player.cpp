@@ -30,11 +30,18 @@ void Player::Update(char* keys, char* preKeys, int* cameraPosX, int* cameraPosY,
 	//============================左右方向の移動量の決定====================================
 	if (keys[DIK_LEFT]) {
 
-		if (easeT_ < 1.0f) {
-			easeT_ += 0.03125f;
-		}
+		if (knockBackCount_ <= 0) {
 
-		velocity_.x = -EaseInSine(easeT_) * speed_;
+			if (easeT_ < 1.0f) {
+				easeT_ += 0.03125f;
+			}
+
+			velocity_.x = -EaseInSine(easeT_) * speed_;
+		} else {
+			if (velocity_.x < 0) {
+				velocity_.x = -EaseInSine(easeT_) * speed_;
+			}
+		}
 
 		if (keys[DIK_RIGHT] && !preKeys[DIK_RIGHT]) {
 			easeT_ = 0.0f;
@@ -49,10 +56,17 @@ void Player::Update(char* keys, char* preKeys, int* cameraPosX, int* cameraPosY,
 
 	if (keys[DIK_RIGHT]) {
 
-		if (easeT_ < 1.0f) {
-			easeT_ += 0.03125f;
+		if (knockBackCount_ <= 0) {
+			if (easeT_ < 1.0f) {
+				easeT_ += 0.03125f;
+			}
+			velocity_.x = EaseInSine(easeT_) * speed_;
+		} else {
+			if (velocity_.x >= 0) {
+				velocity_.x = EaseInSine(easeT_) * speed_;
+			}
 		}
-		velocity_.x = EaseInSine(easeT_) * speed_;
+
 
 		if (keys[DIK_LEFT] && !preKeys[DIK_LEFT]) {
 			easeT_ = 0.0f;
@@ -61,6 +75,15 @@ void Player::Update(char* keys, char* preKeys, int* cameraPosX, int* cameraPosY,
 	} else {
 
 		if (!keys[DIK_LEFT]) {
+			easeT_ = 0.0f;
+		}
+	}
+
+	//ノックバックカウントのディクリメント
+	if (knockBackCount_ > 0) {
+		knockBackCount_--;
+
+		if (knockBackCount_ == 1) {
 			easeT_ = 0.0f;
 		}
 	}
@@ -116,7 +139,7 @@ void Player::Update(char* keys, char* preKeys, int* cameraPosX, int* cameraPosY,
 				if (address_.y + i >= 0 && address_.y + i <= 239) {
 					if (map.GetBlockType(address_.y + i, address_.x + j) == 1) {
 						switch (
-						
+
 							IsHitBox_BallDirection(
 								{ map.GetPos(address_.y + i, address_.x + j).x + 32, map.GetPos(address_.y + i, address_.x + j).y - 32 },
 								pos_,
@@ -124,7 +147,7 @@ void Player::Update(char* keys, char* preKeys, int* cameraPosX, int* cameraPosY,
 								size_.x
 							)) {
 
-					
+
 
 						case 1://風船がブロックの上面に当たった時
 
@@ -132,7 +155,7 @@ void Player::Update(char* keys, char* preKeys, int* cameraPosX, int* cameraPosY,
 							pos_.y = map.GetPos(address_.y + i, address_.x + j).y + size_.x;
 							//ベロシティを反転、反射係数分を減衰
 							velocity_.y *= -1.0f * 0.6f;
-							
+
 							break;
 
 						case 2://風船がブロックの右面に当たった時
@@ -141,7 +164,7 @@ void Player::Update(char* keys, char* preKeys, int* cameraPosX, int* cameraPosY,
 							pos_.x = map.GetPos(address_.y + i, address_.x + j).x + map.GetSize().x + size_.x;
 							//ベロシティを反転、反射係数分を減衰
 							velocity_.x *= -1.0f * 0.6f;
-
+							knockBackCount_ = int(sqrtf(powf(velocity_.x, 2.0f))) * 8;
 							break;
 
 						case 3://風船がブロックの下面に当たった時
@@ -159,7 +182,7 @@ void Player::Update(char* keys, char* preKeys, int* cameraPosX, int* cameraPosY,
 							pos_.x = map.GetPos(address_.y + i, address_.x + j).x - size_.x;
 							//ベロシティを反転、反射係数分を減衰
 							velocity_.x *= -1.0f * 0.6f;
-
+							knockBackCount_ = int(sqrtf(powf(velocity_.x, 2.0f))) * 8;
 							break;
 
 						default://風船がブロックに当たっていない時
