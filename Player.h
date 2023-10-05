@@ -17,6 +17,8 @@ private:
 	float airResistance_;
 	float weight_;
 	float volume_;
+
+	float speed_;
 	Vector2 velocity_;
 	Vector2 acceleration_;
 
@@ -36,6 +38,8 @@ public:
 		weight_ = 0.0f;
 		volume_ = 1;
 		airResistance_ = 0.6f;
+
+		speed_ = 4.0f;
 		velocity_ = { 0.0f,0.0f };
 		acceleration_ = { 0.0f,0.0f };
 
