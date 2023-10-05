@@ -172,22 +172,9 @@ void Vector2ScreenPrintf(int posX, int posY, Vector2 vector) {
 	Novice::ScreenPrintf(posX + 64, posY, "%.02f", vector.y);
 };
 
-
-float CalculateBuoyantForce(float densityObject, float densityLiquid, float volumeObject, float gravity) {
-	// 浮力を計算する関数
-	return (densityLiquid / densityObject) * volumeObject * gravity;
-}
-
-float calculateSinkingSpeed(float densityObject, float densityLiquid, float gravity) {
-
-	// 物体が水中で沈む速さを計算
-	float speed = ((densityObject / densityLiquid) -1.0f) * gravity;
-
-	return speed;
-}
-
 //浮力を考慮した加速度を計算
 float CalcSinkSpeed(float objectWeight, float spaceWeight, float gravity) {
 
 	return gravity - (spaceWeight / objectWeight) * gravity;
 }
+
