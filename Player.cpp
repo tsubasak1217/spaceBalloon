@@ -24,11 +24,16 @@ void Player::Update(char* keys,int* cameraPos) {
 	//密度を計算
 	weight_ = 0.5f + (volume_ * 0.001f);
 	
-	//上下方向の蚊測量
+	//============================上下方向の移動量の決定====================================
 	velocity_.y += -CalcSinkSpeed(weight_, volume_ * 0.0012f, 0.8f);
 
-	pos_.y += velocity_.y - (airResistance_ * velocity_.y);
+	//============================左右方向の移動量の決定====================================
+	velocity_.x = float(Novice::CheckHitKey(keys[DIK_RIGHT]) - Novice::CheckHitKey(keys[DIK_LEFT]) * speed_);
 
+	pos_.y += velocity_.y - (airResistance_ * velocity_.y);
+	pos_.x += velocity_.x;
+
+	Novice::ScreenPrintf(100, 100, "%d",Novice::CheckHitKey(keys[DIK_RIGHT]));
 
 	//移動制限の壁
 	if (pos_.y < 0.0f + size_.y) {
