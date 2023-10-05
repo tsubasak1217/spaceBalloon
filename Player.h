@@ -33,6 +33,10 @@ private:
 	//ノックバックの時間変数
 	int knockBackCount_;
 
+	//ブロックと当たったかのフラグ
+	int hitDirection_;
+	int preHitDirection_;
+
 
 public:
 
@@ -58,6 +62,9 @@ public:
 		knockBackCount_ = 0;
 
 		address_ = { int(pos_.x) / 64,int(pos_.y) / 64 };
+
+		hitDirection_ = 0;
+		preHitDirection_ = 0;
 	}
 
 	//アクセッサ

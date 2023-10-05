@@ -45,3 +45,5 @@ float CalcSinkSpeed(float objectWeight, float spaceWeight, float gravity);
 
 bool IsHitBox_Ball(Vector2 boxCenter, Vector2 ballPos, Vector2 boxSize, float ballRasius);
 int IsHitBox_BallDirection(Vector2 boxCenter, Vector2 ballPos, Vector2 boxSize, float ballRasius);
+
+bool CheckBalloonLimit(int hitDirection, int preHitDirection);

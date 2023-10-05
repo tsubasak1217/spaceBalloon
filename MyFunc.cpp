@@ -332,3 +332,12 @@ int IsHitBox_BallDirection(Vector2 boxCenter, Vector2 ballPos, Vector2 boxSize, 
 		}
 	}
 }
+
+bool CheckBalloonLimit(int hitDirection, int preHitDirection) {
+	if (!((preHitDirection == 1 && hitDirection == 3) or (preHitDirection == 3 && hitDirection == 1)) &&
+		!((preHitDirection == 2 && hitDirection == 4) or (preHitDirection == 4 && hitDirection == 2))) {
+		return false;
+	} else {
+		return true;
+	}
+};
