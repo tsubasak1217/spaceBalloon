@@ -50,13 +50,13 @@ public:
 		gravity_ = -0.8f;
 		weight_ = 0.0f;
 		volume_ = 1;
-		airResistance_ = 0.6f;
+		airResistance_ = 0.5f;
 
 		speed_ = 4.0f;
 		velocity_ = { 0.0f,0.0f };
 		acceleration_ = { 0.0f,0.0f };
 
-		color_ = 0xff69b4ff;
+		color_ = 0xff5181ff;
 
 		easeT_ = 0.0f;
 		knockBackCount_ = 0;

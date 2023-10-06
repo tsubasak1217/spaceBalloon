@@ -58,8 +58,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓描画処理ここから
 		///
 
-		player.Draw(globalV);
+		Novice::DrawBox(
+			0, 0,
+			1280,
+			720,
+			0.0f,
+			0x2e4c80ff,
+			kFillModeSolid
+		);
+
 		map.Draw(globalV);
+		player.Draw(globalV);
 
 		Novice::ScreenPrintf(20, 20, "%d", globalV.GetCameraPosX());
 		Novice::ScreenPrintf(20, 40, "%f", player.GetPos().y);

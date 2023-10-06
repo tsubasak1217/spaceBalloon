@@ -110,6 +110,7 @@ void Player::Update(char* keys, char* preKeys, int* cameraPosX, int* cameraPosY,
 	//スピードの減衰
 	velocity_.x *= 0.98f;
 
+	//移動
 	pos_.y += velocity_.y - (airResistance_ * velocity_.y);
 	pos_.x += velocity_.x;
 
@@ -119,7 +120,7 @@ void Player::Update(char* keys, char* preKeys, int* cameraPosX, int* cameraPosY,
 	if (pos_.y < 0.0f + size_.y) {
 		pos_.y = 0.0f + size_.y;
 		//
-		velocity_.y *= (-(balloonLevel_ / 32.0f) * 0.6f);
+		velocity_.y *= -1.0f * 0.6f;
 		hitDirection_ = 1;
 		if (CheckBalloonLimit(hitDirection_, preHitDirection_)) {
 			balloonLevel_ -= 0.4f;
@@ -130,7 +131,7 @@ void Player::Update(char* keys, char* preKeys, int* cameraPosX, int* cameraPosY,
 	if (pos_.y > (64.0f * 240.0f) - size_.y) {
 		pos_.y = (64.0f * 240.0f) - size_.y;
 
-		velocity_.y *= (-(balloonLevel_ / 32.0f) * 0.6f);
+		velocity_.y *= -1.0f * 0.6f;
 		hitDirection_ = 3;
 		if (CheckBalloonLimit(hitDirection_, preHitDirection_)) {
 			balloonLevel_ -= 0.4f;
@@ -141,7 +142,8 @@ void Player::Update(char* keys, char* preKeys, int* cameraPosX, int* cameraPosY,
 	if (pos_.x < 0.0f + size_.y) {
 		pos_.x = 0.0f + size_.y;
 		//
-		velocity_.x *= (-(balloonLevel_ / 32.0f) * 0.6f);
+		velocity_.x *= -1.0f * 0.6f;
+		knockBackCount_ = int(sqrtf(powf(velocity_.x, 2.0f))) * 8;
 		hitDirection_ = 4;
 		if (CheckBalloonLimit(hitDirection_, preHitDirection_)) {
 			balloonLevel_ -= 0.4f;
@@ -152,7 +154,8 @@ void Player::Update(char* keys, char* preKeys, int* cameraPosX, int* cameraPosY,
 	if (pos_.x > (64.0f * 40.0f) - size_.x) {
 		pos_.x = (64.0f * 40.0f) - size_.x;
 
-		velocity_.x *= (-(balloonLevel_ / 32.0f) * 0.6f);
+		velocity_.x *= -1.0f * 0.6f;
+		knockBackCount_ = int(sqrtf(powf(velocity_.x, 2.0f))) * 8;
 		hitDirection_ = 2;
 		if (CheckBalloonLimit(hitDirection_, preHitDirection_)) {
 			balloonLevel_ -= 0.4f;
