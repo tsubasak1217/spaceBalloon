@@ -19,6 +19,7 @@ private:
 	float volume_;
 
 	float speed_;
+	Vector2 windSpeed_;
 	Vector2 velocity_;
 	Vector2 acceleration_;
 
@@ -30,6 +31,8 @@ private:
 
 	//イージング用変数
 	float easeT_;
+	float windT_;
+
 	//ノックバックの時間変数
 	int knockBackCount_;
 
@@ -53,12 +56,14 @@ public:
 		airResistance_ = 0.5f;
 
 		speed_ = 4.0f;
+		windSpeed_ = { 0.0f,0.0f };
 		velocity_ = { 0.0f,0.0f };
 		acceleration_ = { 0.0f,0.0f };
 
 		color_ = 0xff5181ff;
 
 		easeT_ = 0.0f;
+		windT_ = 0.0f;
 		knockBackCount_ = 0;
 
 		address_ = { int(pos_.x) / 64,int(pos_.y) / 64 };

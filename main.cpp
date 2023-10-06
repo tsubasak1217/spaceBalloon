@@ -70,9 +70,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		map.Draw(globalV);
 		player.Draw(globalV);
 
-		Novice::ScreenPrintf(20, 20, "%d", globalV.GetCameraPosX());
-		Novice::ScreenPrintf(20, 40, "%f", player.GetPos().y);
-
 		///
 		/// ↑描画処理ここまで
 		///

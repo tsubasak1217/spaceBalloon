@@ -21,17 +21,6 @@ private:
 	int blockType_[mapRow][mapCol];
 	std::vector<std::vector<int>>blockCsv;
 
-	enum BlockType {
-		normal = 1,
-		wind_up = 2,
-		wind_right = 3,
-		wind_down = 4,
-		wind_left = 5,
-		bird = 6,
-		birdArea = 66,
-		thunder = 7
-	};
-	 
 public:
 	//イニシャライズ
 	void Init();

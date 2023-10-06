@@ -98,6 +98,12 @@ void Player::Update(char* keys, char* preKeys, int* cameraPosX, int* cameraPosY,
 		}
 	}
 
+	velocity_.x += windSpeed_.x;
+	velocity_.y += windSpeed_.y;
+
+	Novice::ScreenPrintf(20, 20, "%f", windSpeed_.x);
+	Novice::ScreenPrintf(20, 40, "%f", windSpeed_.y);
+
 	//ノックバックカウントのディクリメント
 	if (knockBackCount_ > 0) {
 		knockBackCount_--;
@@ -109,6 +115,8 @@ void Player::Update(char* keys, char* preKeys, int* cameraPosX, int* cameraPosY,
 
 	//スピードの減衰
 	velocity_.x *= 0.98f;
+	windSpeed_.x *= 0.95f;
+	windSpeed_.y *= 0.95f;
 
 	//移動
 	pos_.y += velocity_.y - (airResistance_ * velocity_.y);
@@ -246,6 +254,37 @@ void Player::Update(char* keys, char* preKeys, int* cameraPosX, int* cameraPosY,
 							break;
 						}
 
+					} 
+					
+					if (
+						map.GetBlockType(address_.y + i, address_.x + j) >= 2 &&
+						map.GetBlockType(address_.y + i, address_.x + j) <= 5) {//プレイヤーが風域にいるとき
+
+						if (windT_ < 1.0f) {
+							windT_ += 0.03125f;
+						}
+
+						switch (map.GetBlockType(address_.y + i, address_.x + j)) {
+
+						case wind_up:
+							windSpeed_.y = EaseInSine(windT_) * speed_;
+							break;
+
+						case wind_right:
+							windSpeed_.x = EaseInSine(windT_) * speed_;
+							break;
+
+						case wind_down:
+							windSpeed_.y = -EaseInSine(windT_) * speed_;
+							break;
+
+						case wind_left:
+							windSpeed_.x = -EaseInSine(windT_) * speed_;
+							break;
+						}
+
+					} else {
+						windT_ = 0.0f;
 					}
 				}
 			}
