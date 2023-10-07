@@ -1,7 +1,7 @@
 #include "Player.h"
 
 // アップデート
-void Player::Update(char* keys, char* preKeys, int* cameraPosX, int* cameraPosY, Map map) {
+void Player::Update(char* keys, char* preKeys, int* cameraPosX, int* cameraPosY,int* miniCameraPos, Map map) {
 
 
 	// 風船が膨らんだりしぼんだりする処理
@@ -98,11 +98,9 @@ void Player::Update(char* keys, char* preKeys, int* cameraPosX, int* cameraPosY,
 		}
 	}
 
-	velocity_.x += windSpeed_.x;
-	velocity_.y += windSpeed_.y;
 
 	Novice::ScreenPrintf(20, 20, "%f", windSpeed_.x);
-	Novice::ScreenPrintf(20, 40, "%f", windSpeed_.y);
+	Novice::ScreenPrintf(20, 40, "%f", velocity_.x);
 
 	//ノックバックカウントのディクリメント
 	if (knockBackCount_ > 0) {
@@ -119,8 +117,8 @@ void Player::Update(char* keys, char* preKeys, int* cameraPosX, int* cameraPosY,
 	windSpeed_.y *= 0.95f;
 
 	//移動
-	pos_.y += velocity_.y - (airResistance_ * velocity_.y);
-	pos_.x += velocity_.x;
+	pos_.y += (velocity_.y + windSpeed_.y) - (airResistance_ * velocity_.y);
+	pos_.x += (velocity_.x + windSpeed_.x);
 
 	//==================================移動制限の壁====================================
 
@@ -253,42 +251,42 @@ void Player::Update(char* keys, char* preKeys, int* cameraPosX, int* cameraPosY,
 						default://風船がブロックに当たっていない時
 							break;
 						}
-
 					} 
-					
-					if (
-						map.GetBlockType(address_.y + i, address_.x + j) >= 2 &&
-						map.GetBlockType(address_.y + i, address_.x + j) <= 5) {//プレイヤーが風域にいるとき
-
-						if (windT_ < 1.0f) {
-							windT_ += 0.03125f;
-						}
-
-						switch (map.GetBlockType(address_.y + i, address_.x + j)) {
-
-						case wind_up:
-							windSpeed_.y = EaseInSine(windT_) * speed_;
-							break;
-
-						case wind_right:
-							windSpeed_.x = EaseInSine(windT_) * speed_;
-							break;
-
-						case wind_down:
-							windSpeed_.y = -EaseInSine(windT_) * speed_;
-							break;
-
-						case wind_left:
-							windSpeed_.x = -EaseInSine(windT_) * speed_;
-							break;
-						}
-
-					} else {
-						windT_ = 0.0f;
-					}
 				}
 			}
 		}
+	}
+
+	//風を受ける処理
+	if (
+		map.GetBlockType(address_.y, address_.x) >= 2 &&
+		map.GetBlockType(address_.y, address_.x) <= 5) {//プレイヤーが風域にいるとき
+
+		if (windT_ < 1.0f) {
+			windT_ += 0.03125f;
+		}
+
+		switch (map.GetBlockType(address_.y, address_.x)) {
+
+		case wind_up:
+			windSpeed_.y = EaseInSine(windT_) * (speed_ * 8.0f);
+			break;
+
+		case wind_right:
+			windSpeed_.x = EaseInSine(windT_) * (speed_ + 4.0f);
+			break;
+
+		case wind_down:
+			windSpeed_.y = -EaseInSine(windT_) * (speed_ * 8.0f);
+			break;
+
+		case wind_left:
+			windSpeed_.x = -EaseInSine(windT_) * (speed_ + 4.0f);
+			break;
+		}
+
+	} else {
+		windT_ = 0.0f;
 	}
 
 
@@ -305,6 +303,13 @@ void Player::Update(char* keys, char* preKeys, int* cameraPosX, int* cameraPosY,
 		*cameraPosY = 0;
 	} else if (*cameraPosY > (64 * 240) - 640) {
 		*cameraPosY = (64 * 240) - 640;
+	}
+
+	*miniCameraPos = int(pos_.y) - 2720;
+	if (*miniCameraPos < 0) {
+		*miniCameraPos = 0;
+	} else if (*miniCameraPos > (64 * 240) - 5440) {
+		*miniCameraPos = (64 * 240) - 5440;
 	}
 }
 
@@ -323,6 +328,48 @@ void Player::Draw(GlobalVariable globalV) {
 		kFillModeSolid
 	);
 
+	//ミニマップ用
+	Novice::DrawEllipse(
+		int(pos_.x/17) + 1120,
+		int((pos_.y/17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17),
+		4,
+		4,
+		0.0f,
+		color_,
+		kFillModeSolid
+	);
+
+	Novice::DrawLine(//左上→右上
+		int(pos_.x / 17) + 1120 - 38,
+		int((pos_.y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17) - 21,
+		int(pos_.x / 17) + 1120 + 38,
+		int((pos_.y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17) - 21,
+		RED
+	);
+
+	Novice::DrawLine(//左上→右上
+		int(pos_.x / 17) + 1120 - 38,
+		int((pos_.y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17) + 21,
+		int(pos_.x / 17) + 1120 + 38,
+		int((pos_.y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17) + 21,
+		RED
+	);
+
+	Novice::DrawLine(//左上→右上
+		int(pos_.x / 17) + 1120 - 38,
+		int((pos_.y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17) + 21,
+		int(pos_.x / 17) + 1120 - 38,
+		int((pos_.y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17) - 21,
+		RED
+	);
+
+	Novice::DrawLine(//左上→右上
+		int(pos_.x / 17) + 1120 + 38,
+		int((pos_.y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17) + 21,
+		int(pos_.x / 17) + 1120 + 38,
+		int((pos_.y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17) - 21,
+		RED
+	);
 
 	Novice::ScreenPrintf(20, 80, "%f", volume_);
 }

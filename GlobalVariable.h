@@ -5,11 +5,13 @@ public:
 	int groundPos_;
 	int cameraPosY_;
 	int cameraPosX_;
+	int miniCameraPos_;
 
 	void Init() {
 		groundPos_ = 720;
 		cameraPosX_ = 0;
 		cameraPosY_ = 0;
+		miniCameraPos_ = 0;
 	}
 
 	int GetGroundPos() { return groundPos_; }
@@ -20,6 +22,8 @@ public:
 
 	int GetCameraPosY() { return cameraPosY_; }
 	void SetCameraPosY(int cameraPosY) { cameraPosY_ = cameraPosY; }
+
+	int GetMiniCameraPos() { return miniCameraPos_; }
 };
 
 enum BlockType {

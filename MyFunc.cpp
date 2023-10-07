@@ -13,11 +13,14 @@ std::vector<std::vector<int>>LoadFile(const std::string& csvFilePath) {
 	while (std::getline(file, line)) {
 		std::vector<int> row;
 		//1行ごとの文字を入れる
-		std::istringstream iss(line);
+		std::istringstream issLine(line);
+		std::istringstream issValue(value);
+
 		//issからカンマ区切りでデータを読み込みvalueに格納
-		while (std::getline(iss, value, ',')) {
+		while (std::getline(issLine, value, ',')) {
 			// int型に変換
-			int intValue = std::stoi(value);
+			int intValue = atoi(value.c_str());
+			issValue >> value;
 			//行に値を入れる
 			row.push_back(intValue);
 		}

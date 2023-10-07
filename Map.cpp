@@ -11,6 +11,7 @@ void Map::Init() {
 	}
 
 	size_ = { 64.0f,64.0f };
+	miniMapSize = 4.0f;
 
 	//ブロックの配置
 	for (int row = 0; row < mapRow; row++) {
@@ -20,6 +21,7 @@ void Map::Init() {
 			pos_[row][col].x = size_.x * col;
 		}
 	}
+
 }
 
 void Map::Draw(GlobalVariable globalV) {
@@ -35,7 +37,7 @@ void Map::Draw(GlobalVariable globalV) {
 				if (int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY() >= 0 - size_.y &&
 					int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY() <= 720) {
 
-					
+
 					switch (blockType_[row][col]) {
 
 					case normal:
@@ -121,7 +123,7 @@ void Map::Draw(GlobalVariable globalV) {
 							int(size_.x),
 							int(size_.y),
 							0.0f,
-							0xf7efdfff,
+							RED,
 							kFillModeSolid
 						);
 
@@ -136,12 +138,81 @@ void Map::Draw(GlobalVariable globalV) {
 							int(size_.x),
 							int(size_.y),
 							0.0f,
-							0xf7efdfff,
+							0x666666ff,
 							kFillModeSolid
 						);
 
 						break;
 					}
+				}
+			}
+		}
+	}
+
+	Novice::DrawBox(
+		1120,
+		24,
+		150,
+		320,
+		0.0f,
+		0x00000088,
+		kFillModeSolid
+	);
+
+	//ミニマップの表示
+	for (int row = 0; row < mapRow; row++) {
+		for (int col = 0; col < mapCol; col++) {
+
+			if (((pos_[row][col].y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17) >= 24 &&
+				((pos_[row][col].y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17) <= 340) {
+				switch (blockType_[row][col]) {
+
+				case normal:
+					//描画
+					Novice::DrawBox(
+						int((pos_[row][col].x / 17) + 1120),
+						int((pos_[row][col].y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17),
+						int(miniMapSize),
+						int(miniMapSize),
+						0.0f,
+						0xf7efdfff,
+						kFillModeSolid
+					);
+
+					break;
+
+				case bird:
+
+					//描画
+					Novice::DrawBox(
+						int((pos_[row][col].x / 17) + 1120),
+						int((pos_[row][col].y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17),
+						int(miniMapSize),
+						int(miniMapSize),
+						0.0f,
+						RED,
+						kFillModeSolid
+					);
+
+					break;
+
+				case thunder:
+
+					//描画
+					Novice::DrawBox(
+						int((pos_[row][col].x / 17) + 1120),
+						int((pos_[row][col].y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17),
+						int(miniMapSize),
+						int(miniMapSize),
+						0.0f,
+						0x666666ff,
+						kFillModeSolid
+					);
+
+					break;
+
+				default:
+					break;
 				}
 			}
 		}

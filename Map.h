@@ -16,7 +16,8 @@ private:
 
 	//縦横の幅
 	Vector2 size_;
-	
+	float miniMapSize;
+
 	//ブロックの種類を番号で示す(マップチップ)
 	int blockType_[mapRow][mapCol];
 	std::vector<std::vector<int>>blockCsv;

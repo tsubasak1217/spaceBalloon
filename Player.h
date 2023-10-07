@@ -84,7 +84,7 @@ public:
 
 
 	// アップデート
-	void Update(char* keys, char* preKeys, int* cameraPosX,int* cameraPosY, Map map);
+	void Update(char* keys, char* preKeys, int* cameraPosX,int* cameraPosY, int* miniCameraPos, Map map);
 
 	//ドロー
 	void Draw(GlobalVariable globalV);
