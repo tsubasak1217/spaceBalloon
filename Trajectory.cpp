@@ -6,13 +6,14 @@ void Trajectory::Update()
 	lifespan--;
 	color->subAlpha(4);
 
-	location += vector;
+	location.x += vector.x;
+	location.y += vector.y;
 }
 
 void Trajectory::Draw(GlobalVariable globalV)
 {
 	Novice::DrawEllipse(
-		int(location.x), int(location.y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPos(),
+		int(location.x), int(location.y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosX(),
 		10,
 		10,
 		0.0f,

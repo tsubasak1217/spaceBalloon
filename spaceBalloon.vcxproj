@@ -108,7 +108,6 @@
     <ClCompile Include="C:\KamataEngine\DirectXGame\2d\ImGuiManager.cpp" />
     <ClCompile Include="C:\KamataEngine\Adapter\Novice.cpp" />
     <ClCompile Include="Easing.cpp" />
-    <ClCompile Include="Effect.cpp" />
     <ClCompile Include="Color.cpp" />
     <ClCompile Include="Emitter.cpp" />
     <ClCompile Include="main.cpp">
@@ -150,7 +149,6 @@
     <ClInclude Include="Color.hpp" />
     <ClInclude Include="Emitter.h" />
     <ClInclude Include="Easing.h" />
-    <ClInclude Include="Effect.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="Matrix2x2.h" />
     <ClInclude Include="MyFunc.h" />
