@@ -66,7 +66,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓描画処理ここから
 		///
 
-		effect->Draw(globalV);
+		
 		Novice::DrawBox(
 			0, 0,
 			1280,
@@ -77,6 +77,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		);
 
 		map.Draw(globalV);
+		effect->Draw(globalV);
 		player.Draw(globalV);
 
 		///

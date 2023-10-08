@@ -13,7 +13,8 @@ void Trajectory::Update()
 void Trajectory::Draw(GlobalVariable globalV)
 {
 	Novice::DrawEllipse(
-		int(location.x), int(location.y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosX(),
+		int(location.x) - globalV.GetCameraPosX(),
+		int(location.y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
 		10,
 		10,
 		0.0f,

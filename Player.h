@@ -1,16 +1,16 @@
 #pragma once
 #include "Map.h"
 
-class Player{
+class Player {
 
 private:
 
 	//座標、大きさ
 	Vector2 pos_;
 	Vector2 size_;
-	
+
 	//風船の膨張レベル
-	float balloonLevel_ ;
+	float balloonLevel_;
 
 	//移動系
 	float gravity_;
@@ -36,7 +36,7 @@ private:
 	//ノックバックの時間変数
 	int knockBackCount_;
 
-	//ブロックと当たったかのフラグ
+	//ブロックと当たった方向を格納する変数
 	int hitDirection_;
 	int preHitDirection_;
 
@@ -45,7 +45,7 @@ public:
 
 	//イニシャライズ(初期化関数)
 	void Init() {
-		
+
 		balloonLevel_ = 0.0f;
 		size_ = { 5.0f + (balloonLevel_ * 2.0f),5.0f + (balloonLevel_ * 2.0f) };
 		pos_ = { 640.0f,size_.y };
@@ -82,6 +82,7 @@ public:
 	float GetBalloonLevel() { return balloonLevel_; }
 	void SetBalloonLevel(float ballonLevel) { balloonLevel_ = ballonLevel; }
 
+	Vector2 GetVelocity() { return velocity_; }
 
 	// アップデート
 	void Update(char* keys, char* preKeys, int* cameraPosX,int* cameraPosY, int* miniCameraPos, Map map);

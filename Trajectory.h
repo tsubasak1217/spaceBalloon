@@ -1,5 +1,6 @@
 #pragma once
 #include "Particle.h"
+#include "Player.h"
 
 class Trajectory :
     public Particle
