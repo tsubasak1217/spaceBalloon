@@ -19,11 +19,27 @@ private:
 	float volume_;
 
 	float speed_;
+	Vector2 windSpeed_;
 	Vector2 velocity_;
 	Vector2 acceleration_;
 
+	//プレイヤーの番地
+	Vector2Int address_;
+
 	//色
 	int color_;
+
+	//イージング用変数
+	float easeT_;
+	float windT_;
+
+	//ノックバックの時間変数
+	int knockBackCount_;
+
+	//ブロックと当たったかのフラグ
+	int hitDirection_;
+	int preHitDirection_;
+
 
 public:
 
@@ -37,13 +53,23 @@ public:
 		gravity_ = -0.8f;
 		weight_ = 0.0f;
 		volume_ = 1;
-		airResistance_ = 0.6f;
+		airResistance_ = 0.5f;
 
 		speed_ = 4.0f;
+		windSpeed_ = { 0.0f,0.0f };
 		velocity_ = { 0.0f,0.0f };
 		acceleration_ = { 0.0f,0.0f };
 
-		color_ = 0xff69b4ff;
+		color_ = 0xff5181ff;
+
+		easeT_ = 0.0f;
+		windT_ = 0.0f;
+		knockBackCount_ = 0;
+
+		address_ = { int(pos_.x) / 64,int(pos_.y) / 64 };
+
+		hitDirection_ = 0;
+		preHitDirection_ = 0;
 	}
 
 	//アクセッサ
@@ -58,7 +84,7 @@ public:
 
 
 	// アップデート
-	void Update(char* keys, int* cameraPos);
+	void Update(char* keys, char* preKeys, int* cameraPosX,int* cameraPosY, int* miniCameraPos, Map map);
 
 	//ドロー
 	void Draw(GlobalVariable globalV);

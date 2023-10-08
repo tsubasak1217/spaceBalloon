@@ -54,6 +54,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓更新処理ここから
 		///
 
+		player.Update(keys,preKeys,&globalV.cameraPosX_, &globalV.cameraPosY_, &globalV.miniCameraPos_, map);
 		player.Update(keys,&globalV.cameraPos_);
 		effect->Update(player);
 
@@ -66,11 +67,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 
 		effect->Draw(globalV);
-		player.Draw(globalV);
-		map.Draw(globalV);
+		Novice::DrawBox(
+			0, 0,
+			1280,
+			720,
+			0.0f,
+			0x2e4c80ff,
+			kFillModeSolid
+		);
 
-		Novice::ScreenPrintf(20, 20, "%d", globalV.GetCameraPos());
-		Novice::ScreenPrintf(20, 40, "%f", player.GetPos().y);
+		map.Draw(globalV);
+		player.Draw(globalV);
 
 		///
 		/// ↑描画処理ここまで
