@@ -41,10 +41,10 @@ void Player::Update(char* keys, char* preKeys, int* cameraPosX, int* cameraPosY,
 	volume_ = (4.0f / 3.0f) * float(M_PI) * powf(size_.x * 0.5f, 3.0f);
 
 	//密度を計算
-	weight_ = 0.5f + (volume_ * 0.00095f);
+	weight_ = 0.5f + (volume_ * 0.001f);
 
 	//============================上下方向の移動量の決定====================================
-	velocity_.y += -CalcSinkSpeed(weight_, volume_ * 0.0012f, 0.8f);
+	velocity_.y += -CalcSinkSpeed(weight_, volume_ * 0.0012f, 0.6f);
 
 	//============================左右方向の移動量の決定====================================
 	if (keys[DIK_LEFT] or keys[DIK_A]) {
@@ -269,19 +269,19 @@ void Player::Update(char* keys, char* preKeys, int* cameraPosX, int* cameraPosY,
 		switch (map.GetBlockType(address_.y, address_.x)) {
 
 		case wind_up:
-			windSpeed_.y = EaseInSine(windT_) * (speed_ * 8.0f);
+			windSpeed_.y = EaseInSine(windT_) * (speed_ * 2.0f);
 			break;
 
 		case wind_right:
-			windSpeed_.x = EaseInSine(windT_) * (speed_ + 4.0f);
+			windSpeed_.x = EaseInSine(windT_) * (speed_ + 2.0f);
 			break;
 
 		case wind_down:
-			windSpeed_.y = -EaseInSine(windT_) * (speed_ * 8.0f);
+			windSpeed_.y = -EaseInSine(windT_) * (speed_ * 2.0f);
 			break;
 
 		case wind_left:
-			windSpeed_.x = -EaseInSine(windT_) * (speed_ + 4.0f);
+			windSpeed_.x = -EaseInSine(windT_) * (speed_ + 2.0f);
 			break;
 		}
 

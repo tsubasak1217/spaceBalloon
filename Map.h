@@ -13,14 +13,16 @@ private:
 	
 	//座標
 	Vector2 pos_[mapRow][mapCol];
+	std::vector<Vector2>birdPos_;
+	std::vector<Vector2Int>birdAddress_;
+	std::vector<int>birdDirection_;
 
 	//縦横の幅
 	Vector2 size_;
 	float miniMapSize;
 
 	//ブロックの種類を番号で示す(マップチップ)
-	int blockType_[mapRow][mapCol];
-	std::vector<std::vector<int>>blockCsv;
+	std::vector<std::vector<int>>blockType_;
 
 public:
 	//イニシャライズ
@@ -34,7 +36,17 @@ public:
 
 	Vector2 GetSize() { return size_; }
 
+	//アップデート
+	void Update();
+
 	//ドロー
 	void Draw(GlobalVariable globalV);
+
+	enum Direction {
+		Up,
+		Right,
+		Down,
+		Left
+	};
 };
 
