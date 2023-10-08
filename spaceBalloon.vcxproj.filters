@@ -44,10 +44,16 @@
     <ClCompile Include="Map.cpp">
       <Filter>KamataEngine</Filter>
     </ClCompile>
-    <ClCompile Include="Effect.cpp">
+    <ClCompile Include="Emitter.cpp">
       <Filter>KamataEngine</Filter>
     </ClCompile>
     <ClCompile Include="Title.cpp">
+      <Filter>KamataEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="Trajectory.cpp">
+      <Filter>KamataEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="Color.cpp">
       <Filter>KamataEngine</Filter>
     </ClCompile>
     <ClCompile Include="Easing.cpp">
@@ -127,8 +133,11 @@
     <ClInclude Include="Matrix2x2.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Map.h" />
-    <ClInclude Include="Effect.h" />
+    <ClInclude Include="Emitter.h" />
     <ClInclude Include="Title.h" />
+    <ClInclude Include="Particle.h" />
+    <ClInclude Include="Trajectory.h" />
+    <ClInclude Include="Color.hpp" />
     <ClInclude Include="Easing.h" />
   </ItemGroup>
 </Project>

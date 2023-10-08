@@ -1,4 +1,5 @@
 #include "Player.h"
+#include "Emitter.h"
 
 //======================================================
 //					グローバル変数/定数
@@ -22,12 +23,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	// ライブラリの初期化
 	Novice::Initialize(kWindowTitle, 1280, 720);
 
+	//乱数の初期化
+	srand((unsigned)time(NULL));
+
 	// キー入力結果を受け取る箱
 	char keys[256] = {0};
 	char preKeys[256] = {0};
 
 	Player player;
 	player.Init();
+
+	Emitter* effect = new Emitter();
 
 	Map map;
 	map.Init();
@@ -50,6 +56,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		map.Update();
 		player.Update(keys,preKeys,&globalV.cameraPosX_, &globalV.cameraPosY_, &globalV.miniCameraPos_, map);
+		player.Update(keys,&globalV.cameraPos_);
+		effect->Update(player);
 
 		///
 		/// ↑更新処理ここまで
@@ -59,6 +67,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓描画処理ここから
 		///
 
+		effect->Draw(globalV);
 		Novice::DrawBox(
 			0, 0,
 			1280,
