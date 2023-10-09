@@ -71,7 +71,7 @@ void Map::Update() {
 		//方向と座標の更新===============================================================
 		switch(birdDirection_[i]){
 		case Right:
-			if (birdAddress_[i].x + 1 < 40 && birdAddress_[i].x - 1 >= 0) {
+			if (birdAddress_[i].x + 1 < 40) {
 				if (blockType_[birdAddress_[i].y][birdAddress_[i].x + 1] != 66 &&
 					blockType_[birdAddress_[i].y][birdAddress_[i].x + 1] != 6) {
 					if (blockType_[birdAddress_[i].y][birdAddress_[i].x - 1] == 66 or
@@ -89,7 +89,7 @@ void Map::Update() {
 			break;
 
 		case Left:
-			if (birdAddress_[i].x + 1 < 40 && birdAddress_[i].x - 1 >= 0) {
+			if (birdAddress_[i].x - 1 >= 0) {
 				if (blockType_[birdAddress_[i].y][birdAddress_[i].x - 1] != 66 &&
 					blockType_[birdAddress_[i].y][birdAddress_[i].x - 1] != 6) {
 					if (blockType_[birdAddress_[i].y][birdAddress_[i].x + 1] == 66 or
@@ -107,7 +107,7 @@ void Map::Update() {
 			break;
 
 		case Up:
-			if (birdAddress_[i].y + 1 < 240 && birdAddress_[i].y - 1 >= 0) {
+			if (birdAddress_[i].y + 1 < 240) {
 				if (blockType_[birdAddress_[i].y + 1][birdAddress_[i].x] != 66 &&
 					blockType_[birdAddress_[i].y + 1][birdAddress_[i].x] != 6) {
 					if (blockType_[birdAddress_[i].y - 1][birdAddress_[i].x] == 66 or
@@ -125,7 +125,7 @@ void Map::Update() {
 			break;
 
 		case Down:
-			if (birdAddress_[i].y + 1 < 240 && birdAddress_[i].y - 1 >= 0) {
+			if (birdAddress_[i].y - 1 >= 0) {
 				if (blockType_[birdAddress_[i].y - 1][birdAddress_[i].x] != 66 &&
 					blockType_[birdAddress_[i].y - 1][birdAddress_[i].x] != 6) {
 					if (blockType_[birdAddress_[i].y + 1][birdAddress_[i].x] == 66 or

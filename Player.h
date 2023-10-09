@@ -26,6 +26,12 @@ private:
 	//プレイヤーの番地
 	Vector2Int address_;
 
+	//プレイヤーの残機など
+	int life_;
+	bool isAlive_;
+	bool isUnrivaled_;//無敵状態かどうか
+	int unrivaledLimit_;
+
 	//色
 	int color_;
 
@@ -60,6 +66,11 @@ public:
 		velocity_ = { 0.0f,0.0f };
 		acceleration_ = { 0.0f,0.0f };
 
+		life_ = 3;
+		isAlive_ = true;
+		isUnrivaled_ = false;
+		unrivaledLimit_ = 0;
+
 		color_ = 0xff5181ff;
 
 		easeT_ = 0.0f;
@@ -83,6 +94,18 @@ public:
 	void SetBalloonLevel(float ballonLevel) { balloonLevel_ = ballonLevel; }
 
 	Vector2 GetVelocity() { return velocity_; }
+
+	int GetLife() { return life_; }
+	void SetLife(int life) { life_ = life; }
+
+	int GetAlive() { return isAlive_; }
+	void SetAlive(bool flag) { isAlive_ = flag; }
+
+	bool GetIsUnrivaled() { return isUnrivaled_; }
+	void SetIsUnrivaled(bool flag) { isUnrivaled_ = flag; }
+
+	int GetUnrivaledLimit() { return unrivaledLimit_; }
+	void SetUnrivaledLimit(int value) { unrivaledLimit_ = value; }
 
 	// アップデート
 	void Update(char* keys, char* preKeys, int* cameraPosX,int* cameraPosY, int* miniCameraPos, Map map);

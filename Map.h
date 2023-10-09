@@ -33,6 +33,8 @@ public:
 	void SetBlockType(int row, int col,int blockType) { blockType_[row][col] = blockType; }
 
 	Vector2 GetPos(int row, int col){ return pos_[row][col]; }
+	std::vector<Vector2>GetBirdPos() { return birdPos_; }
+	std::vector<Vector2Int>GetBirdAddress() { return birdAddress_; }
 
 	Vector2 GetSize() { return size_; }
 

@@ -1,13 +1,23 @@
 #include "Player.h"
 
 // アップデート
-void Player::Update(char* keys, char* preKeys, int* cameraPosX, int* cameraPosY,int* miniCameraPos, Map map) {
+void Player::Update(char* keys, char* preKeys, int* cameraPosX, int* cameraPosY, int* miniCameraPos, Map map) {
 
+	//無敵時間、フラグの更新
+	if (unrivaledLimit_ > 0) {
+		unrivaledLimit_--;
+
+		if (unrivaledLimit_ == 0) {
+			isUnrivaled_ = false;
+		}
+	}
 
 	// 風船が膨らんだりしぼんだりする処理
-	
+
+	if (unrivaledLimit_ < 100) {
 
 		if (keys[DIK_SPACE]) {
+
 			if (!((preHitDirection_ == 1 && hitDirection_ == 3) or (preHitDirection_ == 3 && hitDirection_ == 1)) &&
 				!((preHitDirection_ == 2 && hitDirection_ == 4) or (preHitDirection_ == 4 && hitDirection_ == 2))) {
 
@@ -16,20 +26,27 @@ void Player::Update(char* keys, char* preKeys, int* cameraPosX, int* cameraPosY,
 				}
 			}
 
+
 		} else {
 			if (balloonLevel_ > 0.0f) {
 				balloonLevel_ -= 0.8f;
 			}
 		}
-	
-		//下限、上限
-		if (balloonLevel_ < 0.0f) {
-			balloonLevel_ = 0.0f;
-		}
+	} else {
 
-		if (balloonLevel_ > 32.0f) {
-			balloonLevel_ = 32.0f;
+		if (balloonLevel_ > 0.0f) {
+			balloonLevel_ -= 0.8f;
 		}
+	}
+
+	//下限、上限
+	if (balloonLevel_ < 0.0f) {
+		balloonLevel_ = 0.0f;
+	}
+
+	if (balloonLevel_ > 32.0f) {
+		balloonLevel_ = 32.0f;
+	}
 	//
 	preHitDirection_ = hitDirection_;
 	hitDirection_ = 0;
@@ -47,60 +64,60 @@ void Player::Update(char* keys, char* preKeys, int* cameraPosX, int* cameraPosY,
 	velocity_.y += -CalcSinkSpeed(weight_, volume_ * 0.0012f, 0.6f);
 
 	//============================左右方向の移動量の決定====================================
-	if (keys[DIK_LEFT] or keys[DIK_A]) {
 
-		if (knockBackCount_ <= 0) {
+	if (unrivaledLimit_ < 100) {
 
-			if (easeT_ < 1.0f) {
-				easeT_ += 0.03125f;
-			}
+		if (keys[DIK_LEFT] or keys[DIK_A]) {
 
-			velocity_.x = -EaseInSine(easeT_) * speed_;
-		} else {
-			if (velocity_.x < 0) {
+			if (knockBackCount_ <= 0) {
+
+				if (easeT_ < 1.0f) {
+					easeT_ += 0.03125f;
+				}
+
 				velocity_.x = -EaseInSine(easeT_) * speed_;
+			} else {
+				if (velocity_.x < 0) {
+					velocity_.x = -EaseInSine(easeT_) * speed_;
+				}
 			}
-		}
 
-		if ((keys[DIK_RIGHT] && !preKeys[DIK_RIGHT]) or (keys[DIK_D] && !preKeys[DIK_D])) {
-			easeT_ = 0.0f;
-		}
-
-	} else {
-
-		if (!keys[DIK_RIGHT] && !keys[DIK_D]) {
-			easeT_ = 0.0f;
-		}
-	}
-
-	if (keys[DIK_RIGHT] or keys[DIK_D]) {
-
-		if (knockBackCount_ <= 0) {
-			if (easeT_ < 1.0f) {
-				easeT_ += 0.03125f;
+			if ((keys[DIK_RIGHT] && !preKeys[DIK_RIGHT]) or (keys[DIK_D] && !preKeys[DIK_D])) {
+				easeT_ = 0.0f;
 			}
-			velocity_.x = EaseInSine(easeT_) * speed_;
+
 		} else {
-			if (velocity_.x >= 0) {
-				velocity_.x = EaseInSine(easeT_) * speed_;
+
+			if (!keys[DIK_RIGHT] && !keys[DIK_D]) {
+				easeT_ = 0.0f;
 			}
 		}
 
+		if (keys[DIK_RIGHT] or keys[DIK_D]) {
 
-		if ((keys[DIK_LEFT] && !preKeys[DIK_LEFT]) or (keys[DIK_A] && !preKeys[DIK_A])) {
-			easeT_ = 0.0f;
-		}
+			if (knockBackCount_ <= 0) {
+				if (easeT_ < 1.0f) {
+					easeT_ += 0.03125f;
+				}
+				velocity_.x = EaseInSine(easeT_) * speed_;
+			} else {
+				if (velocity_.x >= 0) {
+					velocity_.x = EaseInSine(easeT_) * speed_;
+				}
+			}
 
-	} else {
 
-		if (!keys[DIK_LEFT] && !keys[DIK_A]) {
-			easeT_ = 0.0f;
+			if ((keys[DIK_LEFT] && !preKeys[DIK_LEFT]) or (keys[DIK_A] && !preKeys[DIK_A])) {
+				easeT_ = 0.0f;
+			}
+
+		} else {
+
+			if (!keys[DIK_LEFT] && !keys[DIK_A]) {
+				easeT_ = 0.0f;
+			}
 		}
 	}
-
-
-	Novice::ScreenPrintf(20, 20, "%f", windSpeed_.x);
-	Novice::ScreenPrintf(20, 40, "%f", velocity_.x);
 
 	//ノックバックカウントのディクリメント
 	if (knockBackCount_ > 0) {
@@ -174,14 +191,13 @@ void Player::Update(char* keys, char* preKeys, int* cameraPosX, int* cameraPosY,
 	//====================================================================
 	address_ = { int(pos_.x) / 64,int(pos_.y) / 64 };
 
-	Novice::ScreenPrintf(100, 100, "%f,%f", size_.x,size_.y);
-	Novice::ScreenPrintf(100, 120, "%f", balloonLevel_);
-
 	for (int i = -2; i < 3; i++) {
 		for (int j = -2; j < 3; j++) {
 
 			if (address_.x + j >= 0 && address_.x + j <= 39) {
 				if (address_.y + i >= 0 && address_.y + i <= 239) {
+
+					//通常ブロックとの当たり判定
 					if (map.GetBlockType(address_.y + i, address_.x + j) == 1) {
 						switch (
 
@@ -251,11 +267,151 @@ void Player::Update(char* keys, char* preKeys, int* cameraPosX, int* cameraPosY,
 						default://風船がブロックに当たっていない時
 							break;
 						}
-					} 
+
+						//雷雲との当たり判定
+					} else if (map.GetBlockType(address_.y + i, address_.x + j) == 7) {
+					
+						if (IsHitBox_BallDirection(
+							{ map.GetPos(address_.y + i, address_.x + j).x + 32, map.GetPos(address_.y + i, address_.x + j).y - 32 },
+							pos_,
+							{ map.GetSize().x * 2, map.GetSize().y * 2 },
+							size_.x
+						)) {
+
+							
+							if (unrivaledLimit_ <= 0) {
+								
+								velocity_.x = 0.0f;
+								if (velocity_.y >= 0.0f) {
+									velocity_.y = 0.0f;
+								} else {
+									velocity_.y = 5.0f;
+								}
+								isUnrivaled_ = true;
+								unrivaledLimit_ = 160;
+								life_--;
+
+								if (life_ <= 0) {
+									isAlive_ = false;
+								}
+							}
+
+
+						}
+					}
 				}
 			}
 		}
 	}
+
+	//====================================================================
+	//						    鳥との当たり判定
+	//====================================================================
+
+	//鳥の数だけループ
+	for (int i = 0; i < map.GetBirdAddress().size(); i++) {
+
+		//プレーヤーから半径2マス圏内にいるとき
+		if (map.GetBirdAddress()[i].x >= address_.x - 2 &&
+			map.GetBirdAddress()[i].x <= address_.x + 2) {
+			if (map.GetBirdAddress()[i].y >= address_.y - 2 &&
+				map.GetBirdAddress()[i].y <= address_.y + 2) {
+
+				//当たり判定を行う
+				if (IsHitBox_BallDirection(
+					{ map.GetBirdPos()[i].x + 32, map.GetBirdPos()[i].y - 32 },
+					pos_,
+					map.GetSize(),
+					size_.x
+				)) {
+
+					if (unrivaledLimit_ <= 0) {
+						isUnrivaled_ = true;
+						unrivaledLimit_ = 160;
+						life_--;
+
+						if (life_ <= 0) {
+							isAlive_ = false;
+						}
+					}
+				}
+
+				switch (
+
+					IsHitBox_BallDirection(
+						{ map.GetBirdPos()[i].x + 32, map.GetBirdPos()[i].y - 32 },
+						pos_,
+						map.GetSize(),
+						size_.x
+					)) {
+
+
+
+				case 1://風船がブロックの上面に当たった時
+
+					//座標を押し戻して
+					pos_.y = map.GetBirdPos()[i].y + size_.y;
+					//ベロシティを反転、反射係数分を減衰
+					velocity_.y = 15.0f;
+					hitDirection_ = 1;
+					if (CheckBalloonLimit(hitDirection_, preHitDirection_)) {
+						balloonLevel_ -= 0.4f;
+					}
+
+					break;
+
+				case 2://風船がブロックの右面に当たった時
+
+					//座標を押し戻して
+					pos_.x = map.GetBirdPos()[i].x + map.GetSize().x + size_.x;
+					//ベロシティを反転、反射係数分を減衰
+					velocity_.x = 10.0f;
+					knockBackCount_ = int(sqrtf(powf(velocity_.x, 2.0f))) * 8;
+					hitDirection_ = 2;
+					if (CheckBalloonLimit(hitDirection_, preHitDirection_)) {
+						balloonLevel_ -= 0.4f;
+					}
+
+					break;
+
+				case 3://風船がブロックの下面に当たった時
+
+					//座標を押し戻して
+					pos_.y = map.GetBirdPos()[i].y - map.GetSize().y - size_.y;
+					//ベロシティを反転、反射係数分を減衰
+					velocity_.y = -10.0f;
+					hitDirection_ = 3;
+					if (CheckBalloonLimit(hitDirection_, preHitDirection_)) {
+						balloonLevel_ -= 0.4f;
+					}
+
+					break;
+
+				case 4://風船がブロックの左面に当たった時
+
+					//座標を押し戻して
+					pos_.x = map.GetBirdPos()[i].x - size_.x;
+					//ベロシティを反転、反射係数分を減衰
+					velocity_.x = -10.0f;
+					knockBackCount_ = int(sqrtf(powf(velocity_.x, 2.0f))) * 8;
+					hitDirection_ = 4;
+					if (CheckBalloonLimit(hitDirection_, preHitDirection_)) {
+						balloonLevel_ -= 0.4f;
+					}
+
+					break;
+
+				default://風船がブロックに当たっていない時
+					break;
+				}
+
+
+			}
+
+		}
+
+	}
+
 
 	//風を受ける処理
 	if (
@@ -318,20 +474,37 @@ void Player::Update(char* keys, char* preKeys, int* cameraPosX, int* cameraPosY,
 //ドロー
 void Player::Draw(GlobalVariable globalV) {
 
-	Novice::DrawEllipse(
-		int(pos_.x) - globalV.GetCameraPosX(),
-		int(pos_.y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
-		int(size_.x),
-		int(size_.y),
-		0.0f,
-		color_,
-		kFillModeSolid
-	);
+	if (!isUnrivaled_) {
+
+		Novice::DrawEllipse(
+			int(pos_.x) - globalV.GetCameraPosX(),
+			int(pos_.y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
+			int(size_.x),
+			int(size_.y),
+			0.0f,
+			color_,
+			kFillModeSolid
+		);
+
+	} else {
+
+		if (unrivaledLimit_ / 5 % 2 == 0) {
+			Novice::DrawEllipse(
+				int(pos_.x) - globalV.GetCameraPosX(),
+				int(pos_.y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
+				int(size_.x),
+				int(size_.y),
+				0.0f,
+				color_,
+				kFillModeSolid
+			);
+		}
+	}
 
 	//ミニマップ用
 	Novice::DrawEllipse(
-		int(pos_.x/17) + 1120,
-		int((pos_.y/17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17),
+		int(pos_.x / 17) + 1120,
+		int((pos_.y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17),
 		4,
 		4,
 		0.0f,
@@ -371,5 +544,24 @@ void Player::Draw(GlobalVariable globalV) {
 		RED
 	);
 
-	Novice::ScreenPrintf(20, 80, "%f", volume_);
+
+
+	//残機
+	for (int i = 0; i < GetLife(); i++) {
+		Novice::DrawEllipse(
+			20 + i * 20,
+			20,
+			10,
+			10,
+			0.0f,
+			color_,
+			kFillModeSolid
+		);
+	}
+
+	if (isAlive_) {
+		Novice::ScreenPrintf(20, 40, "Alive");
+	} else {
+		Novice::ScreenPrintf(20, 40, "Dead");
+	}
 }
