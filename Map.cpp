@@ -10,10 +10,12 @@ void Map::Init() {
 	size_ = { 64.0f,64.0f };
 	miniMapSize = 4.0f;
 
-	//ブロックの配置
+
 	for (int row = 0; row < mapRow; row++) {
 		for (int col = 0; col < mapCol; col++) {
 
+
+			//ブロックの配置
 			pos_[row][col].y = size_.y * (row + 1);
 			pos_[row][col].x = size_.x * col;
 
@@ -55,115 +57,147 @@ void Map::Init() {
 		}
 	}
 
+
+	isTimeStop_ = false;
+	stopLimit_ = 0;
 }
 
 //==================================================================================
 void Map::Update() {
 
+	//時間停止カウントの更新
+	if (stopLimit_ > 0) {
+		stopLimit_--;
+
+	} else {
+		isTimeStop_ = false;
+	}
+
 	for (int i = 0; i < birdPos_.size(); i++) {
 
-		//鳥の番地更新==================================================================
-		birdAddress_[i] = {
-			int((birdPos_[i].x + (size_.x / 2)) / size_.x),
-			int((birdPos_[i].y - (size_.y / 2)) / size_.y)
-		};
+		if (!isTimeStop_) {
+			//鳥の番地更新==================================================================
+			birdAddress_[i] = {
+				int((birdPos_[i].x + (size_.x / 2)) / size_.x),
+				int((birdPos_[i].y - (size_.y / 2)) / size_.y)
+			};
 
-		//方向と座標の更新===============================================================
-		switch(birdDirection_[i]){
-		case Right:
-			if (birdAddress_[i].x + 1 < 40) {
-				if (blockType_[birdAddress_[i].y][birdAddress_[i].x + 1] != 66 &&
-					blockType_[birdAddress_[i].y][birdAddress_[i].x + 1] != 6) {
-					if (blockType_[birdAddress_[i].y][birdAddress_[i].x - 1] == 66 or
-						blockType_[birdAddress_[i].y][birdAddress_[i].x - 1] == 6) {
+			//方向と座標の更新===============================================================
+			switch (birdDirection_[i]) {
+			case Right:
+				if (birdAddress_[i].x + 1 < 40) {
+					if (blockType_[birdAddress_[i].y][birdAddress_[i].x + 1] != 66 &&
+						blockType_[birdAddress_[i].y][birdAddress_[i].x + 1] != 6) {
+						if (blockType_[birdAddress_[i].y][birdAddress_[i].x - 1] == 66 or
+							blockType_[birdAddress_[i].y][birdAddress_[i].x - 1] == 6) {
 
-						birdDirection_[i] = Left;
+							birdDirection_[i] = Left;
+						}
 					}
+				} else {
+					birdDirection_[i] = Left;
 				}
-			} else {
-				birdDirection_[i] = Left;
-			}
 
-			birdPos_[i].x += 2.0f;
+				birdPos_[i].x += 2.0f;
 
-			break;
+				break;
 
-		case Left:
-			if (birdAddress_[i].x - 1 >= 0) {
-				if (blockType_[birdAddress_[i].y][birdAddress_[i].x - 1] != 66 &&
-					blockType_[birdAddress_[i].y][birdAddress_[i].x - 1] != 6) {
-					if (blockType_[birdAddress_[i].y][birdAddress_[i].x + 1] == 66 or
-						blockType_[birdAddress_[i].y][birdAddress_[i].x + 1] == 6) {
+			case Left:
+				if (birdAddress_[i].x - 1 >= 0) {
+					if (blockType_[birdAddress_[i].y][birdAddress_[i].x - 1] != 66 &&
+						blockType_[birdAddress_[i].y][birdAddress_[i].x - 1] != 6) {
+						if (blockType_[birdAddress_[i].y][birdAddress_[i].x + 1] == 66 or
+							blockType_[birdAddress_[i].y][birdAddress_[i].x + 1] == 6) {
 
-						birdDirection_[i] = Right;
+							birdDirection_[i] = Right;
+						}
 					}
+				} else {
+					birdDirection_[i] = Right;
 				}
-			} else {
-				birdDirection_[i] = Right;
-			}
 
-			birdPos_[i].x -= 2.0f;
+				birdPos_[i].x -= 2.0f;
 
-			break;
+				break;
 
-		case Up:
-			if (birdAddress_[i].y + 1 < 240) {
-				if (blockType_[birdAddress_[i].y + 1][birdAddress_[i].x] != 66 &&
-					blockType_[birdAddress_[i].y + 1][birdAddress_[i].x] != 6) {
-					if (blockType_[birdAddress_[i].y - 1][birdAddress_[i].x] == 66 or
-						blockType_[birdAddress_[i].y - 1][birdAddress_[i].x] == 6) {
+			case Up:
+				if (birdAddress_[i].y + 1 < 240) {
+					if (blockType_[birdAddress_[i].y + 1][birdAddress_[i].x] != 66 &&
+						blockType_[birdAddress_[i].y + 1][birdAddress_[i].x] != 6) {
+						if (blockType_[birdAddress_[i].y - 1][birdAddress_[i].x] == 66 or
+							blockType_[birdAddress_[i].y - 1][birdAddress_[i].x] == 6) {
 
-						birdDirection_[i] = Down;
+							birdDirection_[i] = Down;
+						}
 					}
+				} else {
+					birdDirection_[i] = Down;
 				}
-			} else {
-				birdDirection_[i] = Down;
-			}
 
-			birdPos_[i].y += 2.0f;
+				birdPos_[i].y += 2.0f;
 
-			break;
+				break;
 
-		case Down:
-			if (birdAddress_[i].y - 1 >= 0) {
-				if (blockType_[birdAddress_[i].y - 1][birdAddress_[i].x] != 66 &&
-					blockType_[birdAddress_[i].y - 1][birdAddress_[i].x] != 6) {
-					if (blockType_[birdAddress_[i].y + 1][birdAddress_[i].x] == 66 or
-						blockType_[birdAddress_[i].y + 1][birdAddress_[i].x] == 6) {
+			case Down:
+				if (birdAddress_[i].y - 1 >= 0) {
+					if (blockType_[birdAddress_[i].y - 1][birdAddress_[i].x] != 66 &&
+						blockType_[birdAddress_[i].y - 1][birdAddress_[i].x] != 6) {
+						if (blockType_[birdAddress_[i].y + 1][birdAddress_[i].x] == 66 or
+							blockType_[birdAddress_[i].y + 1][birdAddress_[i].x] == 6) {
 
-						birdDirection_[i] = Up;
+							birdDirection_[i] = Up;
+						}
 					}
+				} else {
+					birdDirection_[i] = Up;
 				}
-			} else {
-				birdDirection_[i] = Up;
+
+				birdPos_[i].y -= 2.0f;
+
+				break;
+
+			default:
+				break;
 			}
-
-			birdPos_[i].y -= 2.0f;
-
-			break;
-
-		default:
-			break;
 		}
 	}
 }
 
 
-	//==================================================================================
-	void Map::Draw(GlobalVariable globalV) {
+//==================================================================================
+void Map::Draw(GlobalVariable globalV) {
 
-		for (int row = 0; row < mapRow; row++) {
-			for (int col = 0; col < mapCol; col++) {
+	//背景
+	if (!isTimeStop_) {
+		Novice::DrawBox(
+			0, 0,
+			1280,
+			720,
+			0.0f,
+			0x2e4c80ff,
+			kFillModeSolid
+		);
+	} else {
+		Novice::DrawBox(
+			0, 0,
+			1280,
+			720,
+			0.0f,
+			0x2e2e2eff,
+			kFillModeSolid
+		);
+	}
 
+	for (int row = 0; row < mapRow; row++) {
+		for (int col = 0; col < mapCol; col++) {
 
+			//ブロックの座標がスクリーン内のとき
+			if (int(pos_[row][col].x) - globalV.GetCameraPosX() >= 0 - size_.x &&
+				int(pos_[row][col].x) - globalV.GetCameraPosX() <= 1280) {
+				if (int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY() >= 0 - size_.y &&
+					int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY() <= 720) {
 
-				//ブロックの座標がスクリーン内のとき
-				if (int(pos_[row][col].x) - globalV.GetCameraPosX() >= 0 - size_.x &&
-					int(pos_[row][col].x) - globalV.GetCameraPosX() <= 1280) {
-					if (int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY() >= 0 - size_.y &&
-						int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY() <= 720) {
-
-
+					if (!isTimeStop_) {
 						switch (blockType_[row][col]) {
 
 						case normal:
@@ -254,20 +288,212 @@ void Map::Update() {
 							);
 
 							break;
+
+						case score:
+
+							//描画
+							Novice::DrawBox(
+								int(pos_[row][col].x) - globalV.GetCameraPosX(),
+								int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
+								int(size_.x),
+								int(size_.y),
+								0.0f,
+								0xffd500ff,
+								kFillModeSolid
+							);
+
+							break;
+
+						case life:
+
+							//描画
+							Novice::DrawBox(
+								int(pos_[row][col].x) - globalV.GetCameraPosX(),
+								int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
+								int(size_.x),
+								int(size_.y),
+								0.0f,
+								0xff5181ff,
+								kFillModeSolid
+							);
+
+							break;
+
+						case clockItem:
+
+							//描画
+							Novice::DrawBox(
+								int(pos_[row][col].x) - globalV.GetCameraPosX(),
+								int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
+								int(size_.x),
+								int(size_.y),
+								0.0f,
+								0x000000ff,
+								kFillModeSolid
+							);
+
+							break;
+
+						default:
+							break;
 						}
+
+					} else {
+
+						switch (blockType_[row][col]) {
+						case normal:
+							//描画
+							Novice::DrawBox(
+								int(pos_[row][col].x) - globalV.GetCameraPosX(),
+								int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
+								int(size_.x),
+								int(size_.y),
+								0.0f,
+								0xf7f7f7ff,
+								kFillModeSolid
+							);
+
+							break;
+
+						case wind_up:
+
+							//描画
+							Novice::DrawBox(
+								int(pos_[row][col].x) - globalV.GetCameraPosX(),
+								int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
+								int(size_.x),
+								int(size_.y),
+								0.0f,
+								0xffffff64,
+								kFillModeSolid
+							);
+
+							break;
+
+						case wind_right:
+
+							//描画
+							Novice::DrawBox(
+								int(pos_[row][col].x) - globalV.GetCameraPosX(),
+								int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
+								int(size_.x),
+								int(size_.y),
+								0.0f,
+								0xffffff64,
+								kFillModeSolid
+							);
+
+							break;
+
+						case wind_down:
+
+							//描画
+							Novice::DrawBox(
+								int(pos_[row][col].x) - globalV.GetCameraPosX(),
+								int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
+								int(size_.x),
+								int(size_.y),
+								0.0f,
+								0xa7a7a764,
+								kFillModeSolid
+							);
+
+							break;
+
+						case wind_left:
+
+							//描画
+							Novice::DrawBox(
+								int(pos_[row][col].x) - globalV.GetCameraPosX(),
+								int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
+								int(size_.x),
+								int(size_.y),
+								0.0f,
+								0x50505064,
+								kFillModeSolid
+							);
+
+							break;
+
+						case thunder:
+
+							//描画
+							Novice::DrawBox(
+								int(pos_[row][col].x) - globalV.GetCameraPosX(),
+								int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
+								int(size_.x),
+								int(size_.y),
+								0.0f,
+								0x666666ff,
+								kFillModeSolid
+							);
+
+							break;
+
+						case score:
+
+							//描画
+							Novice::DrawBox(
+								int(pos_[row][col].x) - globalV.GetCameraPosX(),
+								int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
+								int(size_.x),
+								int(size_.y),
+								0.0f,
+								0xffffffff,
+								kFillModeSolid
+							);
+
+							break;
+
+						case life:
+
+							//描画
+							Novice::DrawBox(
+								int(pos_[row][col].x) - globalV.GetCameraPosX(),
+								int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
+								int(size_.x),
+								int(size_.y),
+								0.0f,
+								0xffffffff,
+								kFillModeSolid
+							);
+
+							break;
+
+						case clockItem:
+
+							//描画
+							Novice::DrawBox(
+								int(pos_[row][col].x) - globalV.GetCameraPosX(),
+								int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
+								int(size_.x),
+								int(size_.y),
+								0.0f,
+								0x000000ff,
+								kFillModeSolid
+							);
+
+							break;
+
+						default:
+							break;
+						}
+
 					}
 				}
 			}
 		}
+	}
 
 
-		//鳥の描画
-		for (int i = 0; i < birdPos_.size(); i++) {
-			if (int(birdPos_[i].x) - globalV.GetCameraPosX() >= 0 - size_.x &&
-				int(birdPos_[i].x) - globalV.GetCameraPosX() <= 1280) {
-				if (int(birdPos_[i].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY() >= 0 - size_.y &&
-					int(birdPos_[i].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY() <= 720) {
+	//鳥の描画
+	for (int i = 0; i < birdPos_.size(); i++) {
+		if (int(birdPos_[i].x) - globalV.GetCameraPosX() >= 0 - size_.x &&
+			int(birdPos_[i].x) - globalV.GetCameraPosX() <= 1280) {
+			if (int(birdPos_[i].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY() >= 0 - size_.y &&
+				int(birdPos_[i].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY() <= 720) {
 
+				if (!isTimeStop_) {
 					Novice::DrawBox(
 						int(birdPos_[i].x) - globalV.GetCameraPosX(),
 						int(birdPos_[i].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
@@ -277,78 +503,89 @@ void Map::Update() {
 						RED,
 						kFillModeSolid
 					);
-
+				} else {
+					Novice::DrawBox(
+						int(birdPos_[i].x) - globalV.GetCameraPosX(),
+						int(birdPos_[i].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
+						int(size_.x),
+						int(size_.y),
+						0.0f,
+						0xffffffff,
+						kFillModeSolid
+					);
 				}
+
 			}
 		}
+	}
 
 
-		Novice::DrawBox(
-			1120,
-			24,
-			150,
-			320,
-			0.0f,
-			0x00000088,
-			kFillModeSolid
-		);
+	Novice::DrawBox(
+		1120,
+		24,
+		150,
+		320,
+		0.0f,
+		0x00000088,
+		kFillModeSolid
+	);
 
-		//ミニマップの表示
-		for (int row = 0; row < mapRow; row++) {
-			for (int col = 0; col < mapCol; col++) {
+	//ミニマップの表示
+	for (int row = 0; row < mapRow; row++) {
+		for (int col = 0; col < mapCol; col++) {
 
-				if (((pos_[row][col].y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17) >= 24 &&
-					((pos_[row][col].y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17) <= 340) {
-					switch (blockType_[row][col]) {
+			if (((pos_[row][col].y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17) >= 24 &&
+				((pos_[row][col].y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17) <= 340) {
+				switch (blockType_[row][col]) {
 
-					case normal:
-						//描画
-						Novice::DrawBox(
-							int((pos_[row][col].x / 17) + 1120),
-							int((pos_[row][col].y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17),
-							int(miniMapSize),
-							int(miniMapSize),
-							0.0f,
-							0xf7efdfff,
-							kFillModeSolid
-						);
+				case normal:
+					//描画
+					Novice::DrawBox(
+						int((pos_[row][col].x / 17) + 1120),
+						int((pos_[row][col].y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17),
+						int(miniMapSize),
+						int(miniMapSize),
+						0.0f,
+						0xf7efdfff,
+						kFillModeSolid
+					);
 
-						break;
+					break;
 
-					case bird:
+				case bird:
 
-						//描画
-						Novice::DrawBox(
-							int((pos_[row][col].x / 17) + 1120),
-							int((pos_[row][col].y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17),
-							int(miniMapSize),
-							int(miniMapSize),
-							0.0f,
-							RED,
-							kFillModeSolid
-						);
+					//描画
+					Novice::DrawBox(
+						int((pos_[row][col].x / 17) + 1120),
+						int((pos_[row][col].y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17),
+						int(miniMapSize),
+						int(miniMapSize),
+						0.0f,
+						RED,
+						kFillModeSolid
+					);
 
-						break;
+					break;
 
-					case thunder:
+				case thunder:
 
-						//描画
-						Novice::DrawBox(
-							int((pos_[row][col].x / 17) + 1120),
-							int((pos_[row][col].y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17),
-							int(miniMapSize),
-							int(miniMapSize),
-							0.0f,
-							0x666666ff,
-							kFillModeSolid
-						);
+					//描画
+					Novice::DrawBox(
+						int((pos_[row][col].x / 17) + 1120),
+						int((pos_[row][col].y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17),
+						int(miniMapSize),
+						int(miniMapSize),
+						0.0f,
+						0x666666ff,
+						kFillModeSolid
+					);
 
-						break;
+					break;
 
-					default:
-						break;
-					}
+				default:
+					break;
 				}
 			}
 		}
 	}
+}

@@ -34,5 +34,8 @@ enum BlockType {
 	wind_left = 5,
 	bird = 6,
 	birdArea = 66,
-	thunder = 7
+	thunder = 7,
+	score = 8,
+	life = 9,
+	clockItem = 10
 };

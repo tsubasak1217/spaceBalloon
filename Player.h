@@ -46,6 +46,9 @@ private:
 	int hitDirection_;
 	int preHitDirection_;
 
+	//スコア変数
+	int scoreCount_;
+
 
 public:
 
@@ -81,6 +84,8 @@ public:
 
 		hitDirection_ = 0;
 		preHitDirection_ = 0;
+
+		scoreCount_ = 0;
 	}
 
 	//アクセッサ
@@ -107,8 +112,10 @@ public:
 	int GetUnrivaledLimit() { return unrivaledLimit_; }
 	void SetUnrivaledLimit(int value) { unrivaledLimit_ = value; }
 
+	
+
 	// アップデート
-	void Update(char* keys, char* preKeys, int* cameraPosX,int* cameraPosY, int* miniCameraPos, Map map);
+	void Update(char* keys, char* preKeys, int* cameraPosX,int* cameraPosY, int* miniCameraPos, Map& map);
 
 	//ドロー
 	void Draw(GlobalVariable globalV);

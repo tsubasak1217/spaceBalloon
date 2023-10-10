@@ -24,6 +24,9 @@ private:
 	//ブロックの種類を番号で示す(マップチップ)
 	std::vector<std::vector<int>>blockType_;
 
+	bool isTimeStop_;
+	int stopLimit_;
+
 public:
 	//イニシャライズ
 	void Init();
@@ -37,6 +40,12 @@ public:
 	std::vector<Vector2Int>GetBirdAddress() { return birdAddress_; }
 
 	Vector2 GetSize() { return size_; }
+
+	bool GetIsTimeStop() { return isTimeStop_; }
+	void SetIsTimeStop(bool flag) { isTimeStop_ = flag; }
+
+	int GetStopLimit() { return stopLimit_; }
+	void SetStopLimit(int value) { stopLimit_ = value; }
 
 	//アップデート
 	void Update();
