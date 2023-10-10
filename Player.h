@@ -25,7 +25,7 @@ private:
 	Vector2 acceleration_;
 
 	//プレイヤーの番地
-	Vector2 address_;
+	Vector2Int address_;
 
 	//プレイヤーの残機など
 	int life_;
