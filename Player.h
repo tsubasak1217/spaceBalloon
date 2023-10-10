@@ -1,5 +1,6 @@
 #pragma once
 #include "Map.h"
+#include "Color.hpp"
 
 class Player {
 
@@ -24,7 +25,7 @@ private:
 	Vector2 acceleration_;
 
 	//プレイヤーの番地
-	Vector2Int address_;
+	Vector2 address_;
 
 	//プレイヤーの残機など
 	int life_;

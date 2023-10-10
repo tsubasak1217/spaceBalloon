@@ -5,6 +5,7 @@
 #include <math.h>
 #include <stdlib.h>
 #include <Color.hpp>
+#include "Player.h"
 
 class Particle
 {
@@ -13,16 +14,18 @@ protected:
 	Vector2 vector;
 	int lifespan;	//フレーム数
 	Color* color;
+	Vector2 retainSize;
 
 public:
-	Particle(Vector2 pos, int lifespan) :location(pos), lifespan(lifespan), vector(Vector2()), color(new Color()) {
+	Particle(Vector2 pos, int lifespan,Player player) :location(pos), lifespan(lifespan), vector(Vector2()), color(new Color()) {
 		vector.x = sinf((rand() % 360) * (float(M_PI) / 180.f));
 		vector.y = cosf((rand() % 360) * (float(M_PI) / 180.f));
+		retainSize = player.GetSize();
 	}
 	virtual void Update() = 0;
 	virtual void Draw(GlobalVariable globalV) = 0;
-	bool isAlive() {
-		return lifespan >= 0;
+	bool isAlive() {		  
+		return lifespan >= 0; 
 	}
 };
 
