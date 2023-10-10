@@ -27,6 +27,8 @@ private:
 	bool isTimeStop_;
 	int stopLimit_;
 
+	unsigned int skyColor_;
+
 public:
 	//イニシャライズ
 	void Init();
@@ -46,6 +48,9 @@ public:
 
 	int GetStopLimit() { return stopLimit_; }
 	void SetStopLimit(int value) { stopLimit_ = value; }
+
+	unsigned int GetSkyColor() { return skyColor_; }
+	void SetSkyColor(unsigned int color) { skyColor_ = color; }
 
 	//アップデート
 	void Update();

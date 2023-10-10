@@ -520,6 +520,16 @@ void Player::Update(char* keys, char* preKeys, int* cameraPosX, int* cameraPosY,
 	} else if (*miniCameraPos > (64 * 240) - 5440) {
 		*miniCameraPos = (64 * 240) - 5440;
 	}
+
+	//プレイヤーの座標によって表示する空の色を変える
+	map.SetSkyColor(
+		0x28bae2ff + 
+		(int((float(0x10) / 239.0f) * address_.y) << 24) +
+		(int((float(-0x8d) / 239.0f) * address_.y) << 16) +
+		(int((float(-0x7b) / 239.0f) * address_.y) << 8)
+	);
+
+	Novice::ScreenPrintf(100, 40, "%x", map.GetSkyColor());
 }
 
 

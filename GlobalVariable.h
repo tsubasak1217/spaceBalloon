@@ -39,3 +39,8 @@ enum BlockType {
 	life = 9,
 	clockItem = 10
 };
+
+struct Vector2Int final {
+	int x;
+	int y;
+};

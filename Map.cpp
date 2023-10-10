@@ -174,7 +174,7 @@ void Map::Draw(GlobalVariable globalV) {
 			1280,
 			720,
 			0.0f,
-			0x2e4c80ff,
+			skyColor_,
 			kFillModeSolid
 		);
 	} else {
@@ -187,6 +187,8 @@ void Map::Draw(GlobalVariable globalV) {
 			kFillModeSolid
 		);
 	}
+
+	Novice::ScreenPrintf(100, 20, "%x", skyColor_);
 
 	for (int row = 0; row < mapRow; row++) {
 		for (int col = 0; col < mapCol; col++) {
@@ -515,8 +517,21 @@ void Map::Draw(GlobalVariable globalV) {
 					);
 				}
 
+
+				
 			}
 		}
+
+		//ミニマップ用
+		Novice::DrawBox(
+			int((birdPos_[i].x / 17) + 1120),
+			int((birdPos_[i].y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17),
+			int(miniMapSize),
+			int(miniMapSize),
+			0.0f,
+			RED,
+			kFillModeSolid
+		);
 	}
 
 
@@ -547,21 +562,6 @@ void Map::Draw(GlobalVariable globalV) {
 						int(miniMapSize),
 						0.0f,
 						0xf7efdfff,
-						kFillModeSolid
-					);
-
-					break;
-
-				case bird:
-
-					//描画
-					Novice::DrawBox(
-						int((pos_[row][col].x / 17) + 1120),
-						int((pos_[row][col].y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17),
-						int(miniMapSize),
-						int(miniMapSize),
-						0.0f,
-						RED,
 						kFillModeSolid
 					);
 
