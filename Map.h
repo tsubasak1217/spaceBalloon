@@ -14,7 +14,7 @@ private:
 	//座標
 	Vector2 pos_[mapRow][mapCol];
 	std::vector<Vector2>birdPos_;
-	std::vector<Vector2Int>birdAddress_;
+	std::vector<Vector2>birdAddress_;
 	std::vector<int>birdDirection_;
 
 	//縦横の幅
@@ -37,7 +37,7 @@ public:
 
 	Vector2 GetPos(int row, int col){ return pos_[row][col]; }
 	std::vector<Vector2>GetBirdPos() { return birdPos_; }
-	std::vector<Vector2Int>GetBirdAddress() { return birdAddress_; }
+	std::vector<Vector2>GetBirdAddress() { return birdAddress_; }
 
 	Vector2 GetSize() { return size_; }
 
