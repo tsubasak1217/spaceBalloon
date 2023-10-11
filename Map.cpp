@@ -1,5 +1,18 @@
 #include "Map.h"
 
+//void Map::SetSkyColor(unsigned int startColor, unsigned int aimColor, int propotion) {
+//
+//	int Red(int color){ return (color >> 24) << 24; }
+//	int Green(int color) { return (color >> 24) << 24; }
+//	int Red(int color) { return (color >> 24) << 24; }
+//
+//
+//	int difRed = (aimColor >> 24) - (startColor >> 24);
+//	int difGreen = ((aimColor - (aimColor << 24)) >> 16) - ((startColor - (aimColor << 24)) >> 16);
+//	int difBlue = ((aimColor - (aimColor << 24) - (difGreen << 16)) >> 8) - ((startColor - (aimColor << 24) - (difGreen << 16)) >> 8);
+//	int difAlpha = (aimColor - (difGreen << 8)) - (startColor - (difGreen << 8));
+//}
+
 void Map::Init() {
 	blockType_ = LoadFile("./Resources./spaceBalloon_map.csv");
 
