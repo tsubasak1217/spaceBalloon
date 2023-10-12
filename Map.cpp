@@ -612,7 +612,6 @@ void Map::Draw(GlobalVariable globalV) {
 		);
 	}
 
-
 	Novice::DrawBox(
 		1120,
 		24,
