@@ -107,6 +107,7 @@
     <ClCompile Include="C:\KamataEngine\DirectXGame\base\TextureManager.cpp" />
     <ClCompile Include="C:\KamataEngine\DirectXGame\2d\ImGuiManager.cpp" />
     <ClCompile Include="C:\KamataEngine\Adapter\Novice.cpp" />
+    <ClCompile Include="ChangeScene.cpp" />
     <ClCompile Include="Easing.cpp" />
     <ClCompile Include="Color.cpp" />
     <ClCompile Include="Emitter.cpp" />
@@ -116,6 +117,7 @@
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="MyFunc.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Title.cpp" />
     <ClCompile Include="Trajectory.cpp" />
   </ItemGroup>
@@ -146,6 +148,7 @@
     <ClInclude Include="C:\KamataEngine\DirectXGame\input\Input.h" />
     <ClInclude Include="C:\KamataEngine\DirectXGame\scene\GameScene.h" />
     <ClInclude Include="C:\KamataEngine\Adapter\Novice.h" />
+    <ClInclude Include="ChangeScene.h" />
     <ClInclude Include="Color.hpp" />
     <ClInclude Include="Emitter.h" />
     <ClInclude Include="Easing.h" />
@@ -154,6 +157,7 @@
     <ClInclude Include="MyFunc.h" />
     <ClInclude Include="Particle.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="Scene.h" />
     <ClInclude Include="Title.h" />
     <ClInclude Include="Trajectory.h" />
   </ItemGroup>

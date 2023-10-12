@@ -43,6 +43,12 @@ enum BlockType {
 	firstPos = 99
 };
 
+enum SceneNum {
+	title,
+	game,
+	clear
+};
+
 struct Vector2Int final {
 	int x;
 	int y;

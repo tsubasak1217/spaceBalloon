@@ -57,11 +57,60 @@ private:
 	//スコア変数
 	int scoreCount_;
 
-
 public:
 
 	//イニシャライズ(初期化関数)
-	void Init() {
+	void Init(Scene scene) {
+
+		switch (scene.GetSceneNum()) {
+			//=====================================================================================
+			//                                      タイトル
+			//=====================================================================================
+		case title:
+
+			balloonLevel_ = 0.0f;
+			size_ = { 5.0f + (balloonLevel_ * 2.0f),5.0f + (balloonLevel_ * 2.0f) };
+			pos_ = { 640.0f,260.0f };
+
+			respawnPos_ = { 0.0f,0.0f };
+
+			gravity_ = -0.8f;
+			weight_ = 0.0f;
+			volume_ = 1;
+			airResistance_ = 0.5f;
+
+			speed_ = 4.0f;
+			windSpeed_ = { 0.0f,0.0f };
+			velocity_ = { 0.0f,0.0f };
+			acceleration_ = { 0.0f,0.0f };
+
+			isAccelable_ = false;
+
+			life_ = 3;
+			isAlive_ = true;
+			isUnrivaled_ = false;
+			unrivaledLimit_ = 0;
+			holdLimit_ = 300;
+
+			color_ = 0xff5181ff;
+
+			easeT_ = 0.0f;
+			windT_ = 0.0f;
+			knockBackCount_ = 0;
+
+			address_ = { int(pos_.x) / 64,int(pos_.y) / 64 };
+
+			hitDirection_ = 0;
+			preHitDirection_ = 0;
+
+			scoreCount_ = 0;
+
+			break;
+
+			//=====================================================================================
+			//                                     ゲーム本編
+			//=====================================================================================
+		case game:
 
 		balloonLevel_ = 0.0f;
 		size_ = { 5.0f + (balloonLevel_ * 2.0f),5.0f + (balloonLevel_ * 2.0f) };
@@ -99,6 +148,18 @@ public:
 		preHitDirection_ = 0;
 
 		scoreCount_ = 0;
+
+		break;
+
+		//=====================================================================================
+		//                                     クリア画面
+		//=====================================================================================
+		case clear:
+			break;
+
+		default:
+			break;
+		}
 	}
 
 	//アクセッサ
@@ -128,8 +189,8 @@ public:
 	
 
 	// アップデート
-	void Update(char* keys, char* preKeys, int* cameraPosX,int* cameraPosY, int* miniCameraPos, Map& map);
+	void Update(char* keys, char* preKeys, int* cameraPosX,int* cameraPosY, int* miniCameraPos, Map& map, Scene& scene);
 
 	//ドロー
-	void Draw(GlobalVariable globalV);
+	void Draw(GlobalVariable globalV,Scene scene);
 };

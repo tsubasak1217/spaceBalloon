@@ -1,8 +1,8 @@
 #pragma once
 #include <Vector2.h>
 #include <Novice.h>
+#include "ChangeScene.h"
 #include "MyFunc.h"
-#include "GlobalVariable.h"
 
 class Map{
 
@@ -67,10 +67,10 @@ public:
 	void SetResetBlockOrder(bool flag) { resetBlockOrder_ = flag; }
 
 	//アップデート
-	void Update();
+	void Update(Scene scene);
 
 	//ドロー
-	void Draw(GlobalVariable globalV);
+	void Draw(GlobalVariable globalV,Scene scene);
 
 	enum Direction {
 		Up,
