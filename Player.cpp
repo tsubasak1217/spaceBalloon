@@ -12,6 +12,18 @@ void Player::Update(char* keys, char* preKeys, int* cameraPosX, int* cameraPosY,
 		}
 	}
 
+	//自爆リトライ処理
+	if (holdLimit_ == 0) {
+		life_ = 0;
+		isAlive_ = false;
+	}
+
+	if (!isAlive_) {
+		map.SetResetBlockOrder(true);
+		pos_ = respawnPos_;
+		life_ = 1;
+		isAlive_ = true;
+	}
 
 	// 風船が膨らんだりしぼんだりする処理
 
@@ -27,12 +39,18 @@ void Player::Update(char* keys, char* preKeys, int* cameraPosX, int* cameraPosY,
 				}
 			}
 
+			//自爆の制限時間を減らす(リトライ用)
+			holdLimit_--;
 
 		} else {
 			if (balloonLevel_ > 0.0f) {
 				balloonLevel_ -= 0.8f;
 			}
+
+			//自爆の制限時間を戻す(リトライ用)
+			holdLimit_ = 300;
 		}
+
 	} else {
 
 		if (balloonLevel_ > 0.0f) {
@@ -48,6 +66,7 @@ void Player::Update(char* keys, char* preKeys, int* cameraPosX, int* cameraPosY,
 	if (balloonLevel_ > 32.0f) {
 		balloonLevel_ = 32.0f;
 	}
+
 	//
 	preHitDirection_ = hitDirection_;
 	hitDirection_ = 0;
@@ -344,12 +363,49 @@ void Player::Update(char* keys, char* preKeys, int* cameraPosX, int* cameraPosY,
 							size_.x
 						)) {
 
-							//スコア加算
+							//時間停止
 							map.SetIsTimeStop(true);
 							map.SetStopLimit(300);
 
 							//取得済み(ブロックタイプを何もない0に変更)
 							//map.SetBlockType(address_.y + i, address_.x + j, 0);
+						}
+
+					} else if (map.GetBlockType(address_.y + i, address_.x + j) == 11) {
+
+						if (IsHitBox_BallDirection(
+							{ map.GetPos(address_.y + i, address_.x + j).x + 32, map.GetPos(address_.y + i, address_.x + j).y - 32 },
+							pos_,
+							map.GetSize(),
+							size_.x
+						)) {
+
+							//加速可能にする							
+							isAccelable_ = true;
+
+							//取得済み(ブロックタイプを何もない0に変更)
+							map.SetBlockType(address_.y + i, address_.x + j, 0);
+						}
+
+					} else if (map.GetBlockType(address_.y + i, address_.x + j) == 98) {
+
+						if (IsHitBox_BallDirection(
+							{ map.GetPos(address_.y + i, address_.x + j).x + 32, map.GetPos(address_.y + i, address_.x + j).y - 32 },
+							pos_,
+							map.GetSize(),
+							size_.x
+						)) {
+
+							//マップファイルにブロックタイプの保存を命令する
+							if (int(respawnPos_.y / 64.0f) != address_.y + i) {
+								if (int(respawnPos_.x / 64.0f) != address_.x + j) {
+									map.SetSaveBlockOrder(true);
+								}
+							}
+
+							//リスポーン地点の更新
+							respawnPos_.x = map.GetPos(address_.y + i, address_.x + j).x + 32.0f;
+							respawnPos_.y = map.GetPos(address_.y + i, address_.x + j).y - 32.0f;
 						}
 					}
 				}

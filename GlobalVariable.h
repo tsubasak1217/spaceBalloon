@@ -37,7 +37,10 @@ enum BlockType {
 	thunder = 7,
 	score = 8,
 	life = 9,
-	clockItem = 10
+	clockItem = 10,
+	accel = 11,
+	savePoint = 98,
+	firstPos = 99
 };
 
 struct Vector2Int final {

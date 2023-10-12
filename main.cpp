@@ -71,6 +71,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		effect->Draw(globalV);
 		player.Draw(globalV);
 
+		Novice::ScreenPrintf(100, 20, "%d", map.GetSavedBlockType(0, 0));
+		Novice::ScreenPrintf(100, 40, "%d", map.GetBlockType(0, 0));
 		///
 		/// ↑描画処理ここまで
 		///

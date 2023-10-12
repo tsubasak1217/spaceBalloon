@@ -23,7 +23,15 @@ private:
 
 	//ブロックの種類を番号で示す(マップチップ)
 	std::vector<std::vector<int>>blockType_;
+	std::vector<std::vector<int>>savedBlockType_;
 
+	//プレイヤーからのブロック保存命令を受け取るフラグ
+	bool saveBlockOrder_;
+
+	//プレイヤーからのブロック復元命令を受け取るフラグ
+	bool resetBlockOrder_;
+
+	//
 	bool isTimeStop_;
 	int stopLimit_;
 
@@ -36,6 +44,9 @@ public:
 	//アクセッサ
 	int GetBlockType(int row, int col) { return blockType_[row][col]; }
 	void SetBlockType(int row, int col,int blockType) { blockType_[row][col] = blockType; }
+
+	int GetSavedBlockType(int row, int col) { return savedBlockType_[row][col]; }
+	void SetSavedBlockType(int row, int col, int savedBlockType) { savedBlockType_[row][col] = savedBlockType; }
 
 	Vector2 GetPos(int row, int col){ return pos_[row][col]; }
 	std::vector<Vector2>GetBirdPos() { return birdPos_; }
@@ -51,6 +62,9 @@ public:
 
 	unsigned int GetSkyColor() { return skyColor_; }
 	void SetSkyColor(unsigned int color) { skyColor_ = color; }
+
+	void SetSaveBlockOrder(bool flag) { saveBlockOrder_ = flag; }
+	void SetResetBlockOrder(bool flag) { resetBlockOrder_ = flag; }
 
 	//アップデート
 	void Update();

@@ -6,6 +6,9 @@ void Map::Init() {
 
 	//行を反転
 	std::reverse(blockType_.begin(), blockType_.end());
+	
+	//savedBlockType_(ブロックの保存配列)にコピー
+	savedBlockType_ = blockType_;
 
 	//大きさ
 	size_ = { 64.0f,64.0f };
@@ -65,6 +68,22 @@ void Map::Init() {
 
 //==================================================================================
 void Map::Update() {
+
+	//====================外部からの命令=====================
+
+	//ブロックの保存命令があった時の処理
+	if (saveBlockOrder_) {
+		savedBlockType_ = blockType_;
+		saveBlockOrder_ = false;
+	}
+
+	//ブロック番号の復元命令があった時の処理
+	if (resetBlockOrder_) {
+		blockType_ = savedBlockType_;
+		resetBlockOrder_ = false;
+	}
+
+	//=====================自分の更新処理======================
 
 	//時間停止カウントの更新
 	if (stopLimit_ > 0) {
@@ -335,11 +354,41 @@ void Map::Draw(GlobalVariable globalV) {
 
 							break;
 
+						case accel:
+
+							//描画
+							Novice::DrawBox(
+								int(pos_[row][col].x) - globalV.GetCameraPosX(),
+								int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
+								int(size_.x),
+								int(size_.y),
+								0.0f,
+								0xff8c00ff,
+								kFillModeSolid
+							);
+
+							break;
+
+						case savePoint:
+
+							//描画
+							Novice::DrawBox(
+								int(pos_[row][col].x) - globalV.GetCameraPosX(),
+								int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
+								int(size_.x),
+								int(size_.y),
+								0.0f,
+								0x7cfc00ff,
+								kFillModeSolid
+							);
+
+							break;
+
 						default:
 							break;
 						}
 
-					} else {
+					} else {//============================================================================================
 
 						switch (blockType_[row][col]) {
 						case normal:
@@ -471,6 +520,36 @@ void Map::Draw(GlobalVariable globalV) {
 								int(size_.y),
 								0.0f,
 								0x000000ff,
+								kFillModeSolid
+							);
+
+							break;
+
+						case accel:
+
+							//描画
+							Novice::DrawBox(
+								int(pos_[row][col].x) - globalV.GetCameraPosX(),
+								int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
+								int(size_.x),
+								int(size_.y),
+								0.0f,
+								GrayScale(0xff8c00ff),
+								kFillModeSolid
+							);
+
+							break;
+
+						case savePoint:
+
+							//描画
+							Novice::DrawBox(
+								int(pos_[row][col].x) - globalV.GetCameraPosX(),
+								int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
+								int(size_.x),
+								int(size_.y),
+								0.0f,
+								GrayScale(0x7cfc00ff),
 								kFillModeSolid
 							);
 

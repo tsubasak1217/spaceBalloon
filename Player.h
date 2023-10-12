@@ -10,6 +10,9 @@ private:
 	Vector2 pos_;
 	Vector2 size_;
 
+	//復活座標
+	Vector2 respawnPos_;
+
 	//風船の膨張レベル
 	float balloonLevel_;
 
@@ -24,6 +27,9 @@ private:
 	Vector2 velocity_;
 	Vector2 acceleration_;
 
+	//加速アイテムを持っているかどうか(加速可能か)
+	bool isAccelable_;
+
 	//プレイヤーの番地
 	Vector2Int address_;
 
@@ -32,6 +38,7 @@ private:
 	bool isAlive_;
 	bool isUnrivaled_;//無敵状態かどうか
 	int unrivaledLimit_;
+	int holdLimit_;
 
 	//色
 	int color_;
@@ -60,6 +67,8 @@ public:
 		size_ = { 5.0f + (balloonLevel_ * 2.0f),5.0f + (balloonLevel_ * 2.0f) };
 		pos_ = { 640.0f,size_.y };
 
+		respawnPos_ = { 0.0f,0.0f };
+
 		gravity_ = -0.8f;
 		weight_ = 0.0f;
 		volume_ = 1;
@@ -70,10 +79,13 @@ public:
 		velocity_ = { 0.0f,0.0f };
 		acceleration_ = { 0.0f,0.0f };
 
+		isAccelable_ = false;
+
 		life_ = 3;
 		isAlive_ = true;
 		isUnrivaled_ = false;
 		unrivaledLimit_ = 0;
+		holdLimit_ = 300;
 
 		color_ = 0xff5181ff;
 
