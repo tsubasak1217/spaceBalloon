@@ -1,11 +1,11 @@
 ﻿#include "Trajectory.h"
 #include <Novice.h>
+#include "Map.h"
 
-void Trajectory::Update()
+void Trajectory::Update(Player player, Map map)
 {
 	lifespan--;
 	color->subAlpha(4);
-
 	location.x += vector.x;
 	location.y += vector.y;
 }

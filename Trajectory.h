@@ -5,12 +5,10 @@
 class Trajectory :
     public Particle
 {
-private:
-    
 public:
     Trajectory(Vector2 pos_, int lifespan,Vector2 retainSize) :Particle(pos_, lifespan,retainSize) {}
 
-    void Update()override;
+    void Update(Player player, Map map)override;
     void Draw(GlobalVariable globalV)override;
 
 };

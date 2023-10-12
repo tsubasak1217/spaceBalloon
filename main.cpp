@@ -56,7 +56,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		map.Update();
 		player.Update(keys,preKeys,&globalV.cameraPosX_, &globalV.cameraPosY_, &globalV.miniCameraPos_, map);
-		effect->Update(player);
+		effect->Update(player,map);
 
 		///
 		/// ↑更新処理ここまで

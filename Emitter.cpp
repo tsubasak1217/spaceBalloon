@@ -1,7 +1,7 @@
 ﻿#include "Emitter.h"
 #include "Trajectory.h"
 
-void Emitter::Update(Player player) {
+void Emitter::Update(Player player, Map map/*,Color* color*/) {
 
 	pos_ = player.GetPos();
 	size_ = player.GetSize() / 4;
@@ -9,11 +9,17 @@ void Emitter::Update(Player player) {
 	if (++frameCount >= DeterminedFrame) {
 		particles.push_back(new Trajectory(pos_, 60,size_));
 		frameCount = 0;
+		/*if (player.GetIsUnrivaled()) {
+			color->setCode(PINK);
+		}
+		else {
+			color->setCode(WHITE);
+		}*/
 	}
 
 	auto iterator = particles.begin();
 	while (iterator != particles.end()) {
-		(*iterator)->Update();
+		(*iterator)->Update(player, map);
 		if ((*iterator)->isAlive()) {
 			iterator++;
 		} else {
