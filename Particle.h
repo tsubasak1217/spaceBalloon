@@ -14,7 +14,7 @@ protected:
 	Vector2 vector;
 	int lifespan;	//フレーム数
 	Color* color;
-	Vector2 retainSize;
+	//Vector2 retainSize;
 
 public:
 	Particle(Vector2 pos, int lifespan) :location(pos), lifespan(lifespan), vector(Vector2()), color(new Color()) {

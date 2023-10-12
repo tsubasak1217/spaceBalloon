@@ -6,7 +6,7 @@ class Trajectory :
     public Particle
 {
 private:
-    float size;
+    float size = 6;
     Trajectory(Vector2 pos_, int lifespan) :Particle(pos_, lifespan) {}
 
 public:
