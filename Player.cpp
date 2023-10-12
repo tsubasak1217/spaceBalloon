@@ -522,14 +522,10 @@ void Player::Update(char* keys, char* preKeys, int* cameraPosX, int* cameraPosY,
 	}
 
 	//プレイヤーの座標によって表示する空の色を変える
-	map.SetSkyColor(
-		0x28bae2ff + 
-		(int((float(0x10) / 239.0f) * address_.y) << 24) +
-		(int((float(-0x8d) / 239.0f) * address_.y) << 16) +
-		(int((float(-0x7b) / 239.0f) * address_.y) << 8)
-	);
-
-	Novice::ScreenPrintf(100, 40, "%x", map.GetSkyColor());
+	map.SetSkyColor(ChangeColor(0x40aebaff,0x221e31ff,239,float(address_.y)));
+	if (map.GetIsTimeStop()) {
+		map.SetSkyColor(GrayScale(map.GetSkyColor()));
+	}
 }
 
 

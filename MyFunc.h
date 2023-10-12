@@ -48,3 +48,14 @@ bool IsHitBox_Ball(Vector2 boxCenter, Vector2 ballPos, Vector2 boxSize, float ba
 int IsHitBox_BallDirection(Vector2 boxCenter, Vector2 ballPos, Vector2 boxSize, float ballRasius);
 
 bool CheckBalloonLimit(int hitDirection, int preHitDirection);
+
+void SetColor(unsigned int startColor, unsigned int aimColor, int propotion);
+
+//色を変える関数
+int Red(int color);
+int Green(int color);
+int Blue(int color);
+int Alpha(int color);
+
+int ChangeColor(int startColor, int aimColor, float divideNum, float rate);
+int GrayScale(int color);

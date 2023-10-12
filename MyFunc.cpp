@@ -344,3 +344,47 @@ bool CheckBalloonLimit(int hitDirection, int preHitDirection) {
 		return true;
 	}
 };
+
+int Red(int color) {return (color >> 24) & 0xFF;}
+int Green(int color) { return (color >> 16) & 0xFF; }
+int Blue(int color) { return (color >> 8) & 0xFF; }
+int Alpha(int color) { return color & 0xFF; }
+
+int ChangeColor(int startColor, int aimColor, float divideNum,float rate) {
+
+	//二色の差を求める
+	int difRed = Red(aimColor) - Red(startColor);
+	int difGreen = Green(aimColor) - Green(startColor);
+	int difBlue = Blue(aimColor) - Blue(startColor);
+	int difAlpha = Alpha(aimColor) - Alpha(startColor);
+
+	//差分を任意の値で割る
+	float dividedRed = float(difRed) / divideNum;
+	float dividedGreen = float(difGreen) / divideNum;
+	float dividedBlue = float(difBlue) / divideNum;
+	float dividedAlpha = float(difAlpha) / divideNum;
+
+	//割った値をrate倍する
+	int Red = int(dividedRed * rate) << 24;
+	int Green = int(dividedGreen * rate) << 16;
+	int Blue = int(dividedBlue * rate) << 8;
+	int Alpha = int(dividedAlpha * rate);
+
+	//色を足して返す
+	return startColor + Red + Green + Blue + Alpha;
+}
+
+int GrayScale(int color) {
+
+	int Red = (color >> 24) & 0xFF;
+	int Green = (color >> 16) & 0xFF;
+	int Blue = (color >> 8) & 0xFF;
+
+	int trancedRed = int(float(Red) * 0.2126f);
+	int trancedGreen = int(float(Green) * 0.7152f);
+	int trancedBlue = int(float(Blue) * 0.0722f);
+
+	int gray = int((trancedRed + trancedGreen + trancedBlue) / 3);
+
+	return 0xFF + (gray << 24) + (gray << 16) + (gray << 8);
+}
