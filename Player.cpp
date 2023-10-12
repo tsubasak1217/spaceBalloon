@@ -415,7 +415,7 @@ void Player::Update(char* keys, char* preKeys, int* cameraPosX, int* cameraPosY,
 
 	//風を受ける処理
 	if (
-		map.GetBlockType(address_.y, address_.x) >= 2 &&
+		map.GetBlockType(int(address_.y), address_.x) >= 2 &&
 		map.GetBlockType(address_.y, address_.x) <= 5) {//プレイヤーが風域にいるとき
 
 		if (windT_ < 1.0f) {
