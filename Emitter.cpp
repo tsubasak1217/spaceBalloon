@@ -4,9 +4,10 @@
 void Emitter::Update(Player player) {
 
 	pos_ = player.GetPos();
+	size_ = player.GetSize() / 4;
 
 	if (++frameCount >= DeterminedFrame) {
-		particles.push_back(new Trajectory(pos_, 60));
+		particles.push_back(new Trajectory(pos_, 60,size_));
 		frameCount = 0;
 	}
 
