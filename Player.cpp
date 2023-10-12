@@ -332,7 +332,7 @@ void Player::Update(char* keys, char* preKeys, int* cameraPosX, int* cameraPosY,
 							//スコア加算
 							scoreCount_++;
 							//取得済み(ブロックタイプを何もない0に変更)
-							map.SetBlockType(address_.y + i, address_.x + j,0);
+							map.SetBlockType(address_.y + i, address_.x + j, 0);
 						}
 
 
@@ -397,11 +397,12 @@ void Player::Update(char* keys, char* preKeys, int* cameraPosX, int* cameraPosY,
 						)) {
 
 							//マップファイルにブロックタイプの保存を命令する
-							if (int(respawnPos_.y / 64.0f) != address_.y + i) {
-								if (int(respawnPos_.x / 64.0f) != address_.x + j) {
-									map.SetSaveBlockOrder(true);
-								}
+							if ((int(respawnPos_.y) / 64 != address_.y + i) or (int(respawnPos_.x) / 64 != address_.x + j)) {
+								map.SetSaveBlockOrder(true);
 							}
+
+							Novice::ScreenPrintf(200, 20, "%d,%d", int(respawnPos_.y) / 64, int(respawnPos_.x) / 64);
+							Novice::ScreenPrintf(200, 40, "%d,%d", address_.y + i, address_.x + j);
 
 							//リスポーン地点の更新
 							respawnPos_.x = map.GetPos(address_.y + i, address_.x + j).x + 32.0f;
@@ -578,7 +579,7 @@ void Player::Update(char* keys, char* preKeys, int* cameraPosX, int* cameraPosY,
 	}
 
 	//プレイヤーの座標によって表示する空の色を変える
-	map.SetSkyColor(ChangeColor(0x40aebaff,0x221e31ff,239,float(address_.y)));
+	map.SetSkyColor(ChangeColor(0x40aebaff, 0x221e31ff, 239, float(address_.y)));
 	if (map.GetIsTimeStop()) {
 		map.SetSkyColor(GrayScale(map.GetSkyColor()));
 	}
