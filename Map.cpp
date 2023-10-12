@@ -501,7 +501,7 @@ void Map::Draw(GlobalVariable globalV) {
 						int(size_.x),
 						int(size_.y),
 						0.0f,
-						RED,
+						0xff0000ff,
 						kFillModeSolid
 					);
 				} else {
@@ -528,7 +528,7 @@ void Map::Draw(GlobalVariable globalV) {
 			int(miniMapSize),
 			int(miniMapSize),
 			0.0f,
-			RED,
+			0xff0000ff,
 			kFillModeSolid
 		);
 	}
