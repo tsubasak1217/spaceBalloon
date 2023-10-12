@@ -1,9 +1,9 @@
 #include "Player.h"
 
 // アップデート
-void Player::Update(char* keys, char* preKeys, int* cameraPosX, int* cameraPosY, int* miniCameraPos, Map map) {
+void Player::Update(char* keys, char* preKeys, int* cameraPosX, int* cameraPosY, int* miniCameraPos, Map& map) {
 
-	//無敵時間、フラグの更新
+	//無敵時間、フラグの更新,時間停止カウントの更新
 	if (unrivaledLimit_ > 0) {
 		unrivaledLimit_--;
 
@@ -11,6 +11,7 @@ void Player::Update(char* keys, char* preKeys, int* cameraPosX, int* cameraPosY,
 			isUnrivaled_ = false;
 		}
 	}
+
 
 	// 風船が膨らんだりしぼんだりする処理
 
@@ -268,9 +269,9 @@ void Player::Update(char* keys, char* preKeys, int* cameraPosX, int* cameraPosY,
 							break;
 						}
 
-						//雷雲との当たり判定
+						//雷雲との当たり判定=============================================================-
 					} else if (map.GetBlockType(address_.y + i, address_.x + j) == 7) {
-					
+
 						if (IsHitBox_BallDirection(
 							{ map.GetPos(address_.y + i, address_.x + j).x + 32, map.GetPos(address_.y + i, address_.x + j).y - 32 },
 							pos_,
@@ -278,9 +279,9 @@ void Player::Update(char* keys, char* preKeys, int* cameraPosX, int* cameraPosY,
 							size_.x
 						)) {
 
-							
+
 							if (unrivaledLimit_ <= 0) {
-								
+
 								velocity_.x = 0.0f;
 								if (velocity_.y >= 0.0f) {
 									velocity_.y = 0.0f;
@@ -297,6 +298,58 @@ void Player::Update(char* keys, char* preKeys, int* cameraPosX, int* cameraPosY,
 							}
 
 
+						}
+
+						//スコアアイテムの取得判定===================================================
+					} else if (map.GetBlockType(address_.y + i, address_.x + j) == 8) {
+
+						if (IsHitBox_BallDirection(
+							{ map.GetPos(address_.y + i, address_.x + j).x + 32, map.GetPos(address_.y + i, address_.x + j).y - 32 },
+							pos_,
+							map.GetSize(),
+							size_.x
+						)) {
+
+							//スコア加算
+							scoreCount_++;
+							//取得済み(ブロックタイプを何もない0に変更)
+							map.SetBlockType(address_.y + i, address_.x + j,0);
+						}
+
+
+						//残機アイテムの取得判定====================================================
+					} else if (map.GetBlockType(address_.y + i, address_.x + j) == 9) {
+
+						if (IsHitBox_BallDirection(
+							{ map.GetPos(address_.y + i, address_.x + j).x + 32, map.GetPos(address_.y + i, address_.x + j).y - 32 },
+							pos_,
+							map.GetSize(),
+							size_.x
+						)) {
+
+							//スコア加算
+							life_++;
+							//取得済み(ブロックタイプを何もない0に変更)
+							map.SetBlockType(address_.y + i, address_.x + j, 0);
+
+						}
+
+						//時間停止アイテムの取得判定===============================================
+					} else if (map.GetBlockType(address_.y + i, address_.x + j) == 10) {
+
+						if (IsHitBox_BallDirection(
+							{ map.GetPos(address_.y + i, address_.x + j).x + 32, map.GetPos(address_.y + i, address_.x + j).y - 32 },
+							pos_,
+							map.GetSize(),
+							size_.x
+						)) {
+
+							//スコア加算
+							map.SetIsTimeStop(true);
+							map.SetStopLimit(300);
+
+							//取得済み(ブロックタイプを何もない0に変更)
+							//map.SetBlockType(address_.y + i, address_.x + j, 0);
 						}
 					}
 				}
@@ -466,6 +519,12 @@ void Player::Update(char* keys, char* preKeys, int* cameraPosX, int* cameraPosY,
 		*miniCameraPos = 0;
 	} else if (*miniCameraPos > (64 * 240) - 5440) {
 		*miniCameraPos = (64 * 240) - 5440;
+	}
+
+	//プレイヤーの座標によって表示する空の色を変える
+	map.SetSkyColor(ChangeColor(0x40aebaff,0x221e31ff,239,float(address_.y)));
+	if (map.GetIsTimeStop()) {
+		map.SetSkyColor(GrayScale(map.GetSkyColor()));
 	}
 }
 

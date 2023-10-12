@@ -25,7 +25,7 @@ private:
 	Vector2 acceleration_;
 
 	//プレイヤーの番地
-	Vector2 address_;
+	Vector2Int address_;
 
 	//プレイヤーの残機など
 	int life_;
@@ -46,6 +46,9 @@ private:
 	//ブロックと当たった方向を格納する変数
 	int hitDirection_;
 	int preHitDirection_;
+
+	//スコア変数
+	int scoreCount_;
 
 
 public:
@@ -82,6 +85,8 @@ public:
 
 		hitDirection_ = 0;
 		preHitDirection_ = 0;
+
+		scoreCount_ = 0;
 	}
 
 	//アクセッサ
@@ -108,8 +113,10 @@ public:
 	int GetUnrivaledLimit() { return unrivaledLimit_; }
 	void SetUnrivaledLimit(int value) { unrivaledLimit_ = value; }
 
+	
+
 	// アップデート
-	void Update(char* keys, char* preKeys, int* cameraPosX,int* cameraPosY, int* miniCameraPos, Map map);
+	void Update(char* keys, char* preKeys, int* cameraPosX,int* cameraPosY, int* miniCameraPos, Map& map);
 
 	//ドロー
 	void Draw(GlobalVariable globalV);

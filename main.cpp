@@ -10,7 +10,7 @@ const char kWindowTitle[] = "スペースバルーン";
 //======================================================
 //						構造体
 //======================================================
-//a
+
 
 
 //======================================================
@@ -66,15 +66,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓描画処理ここから
 		///
 
-		
-		Novice::DrawBox(
-			0, 0,
-			1280,
-			720,
-			0.0f,
-			0x2e4c80ff,
-			kFillModeSolid
-		);
 
 		map.Draw(globalV);
 		effect->Draw(globalV);

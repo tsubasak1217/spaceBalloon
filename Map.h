@@ -14,7 +14,7 @@ private:
 	//座標
 	Vector2 pos_[mapRow][mapCol];
 	std::vector<Vector2>birdPos_;
-	std::vector<Vector2>birdAddress_;
+	std::vector<Vector2Int>birdAddress_;
 	std::vector<int>birdDirection_;
 
 	//縦横の幅
@@ -23,6 +23,11 @@ private:
 
 	//ブロックの種類を番号で示す(マップチップ)
 	std::vector<std::vector<int>>blockType_;
+
+	bool isTimeStop_;
+	int stopLimit_;
+
+	unsigned int skyColor_;
 
 public:
 	//イニシャライズ
@@ -34,9 +39,18 @@ public:
 
 	Vector2 GetPos(int row, int col){ return pos_[row][col]; }
 	std::vector<Vector2>GetBirdPos() { return birdPos_; }
-	std::vector<Vector2>GetBirdAddress() { return birdAddress_; }
+	std::vector<Vector2Int>GetBirdAddress() { return birdAddress_; }
 
 	Vector2 GetSize() { return size_; }
+
+	bool GetIsTimeStop() { return isTimeStop_; }
+	void SetIsTimeStop(bool flag) { isTimeStop_ = flag; }
+
+	int GetStopLimit() { return stopLimit_; }
+	void SetStopLimit(int value) { stopLimit_ = value; }
+
+	unsigned int GetSkyColor() { return skyColor_; }
+	void SetSkyColor(unsigned int color) { skyColor_ = color; }
 
 	//アップデート
 	void Update();
