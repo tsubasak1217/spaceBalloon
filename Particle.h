@@ -14,10 +14,10 @@ protected:
 	Vector2 vector;
 	int lifespan;	//フレーム数
 	Color* color;
-	//Vector2 retainSize;
+	Vector2 retainSize;
 
 public:
-	Particle(Vector2 pos, int lifespan) :location(pos), lifespan(lifespan), vector(Vector2()), color(new Color()) {
+	Particle(Vector2 pos, int lifespan,Vector2 retainSize) :location(pos), lifespan(lifespan), retainSize(retainSize), vector(Vector2()), color(new Color()) {
 		vector.x = sinf((rand() % 360) * (float(M_PI) / 180.f));
 		vector.y = cosf((rand() % 360) * (float(M_PI) / 180.f));
 	}
@@ -26,5 +26,6 @@ public:
 	bool isAlive() {		  
 		return lifespan >= 0; 
 	}
+
 };
 

@@ -13,12 +13,14 @@ class Emitter{
 		int frameCount;
 		Vector2 pos_;
 		std::vector<Particle*> particles;
+		Vector2 size_;
 
 	public:
 		Emitter() {
 			frameCount = 0;
 			pos_ = { 0,0 };
 			particles.clear();
+			size_ = { 0,0 };
 		};
 
 		//アップデート
