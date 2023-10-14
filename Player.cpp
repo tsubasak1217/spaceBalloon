@@ -1,7 +1,12 @@
 #include "Player.h"
 
 // アップデート
-void Player::Update(char* keys, char* preKeys, int* cameraPosX, int* cameraPosY, int* miniCameraPos, Map& map, Scene& scene) {
+void Player::Update(
+	char* keys, char* preKeys,
+	int* cameraPosX,
+	int* cameraPosY, int* miniCameraPos,
+	Map& map, Scene scene, ChangeScene& changeScene
+) {
 
 
 
@@ -56,16 +61,17 @@ void Player::Update(char* keys, char* preKeys, int* cameraPosX, int* cameraPosY,
 		windSpeed_.y *= 0.95f;
 
 		//移動
-		pos_.y += (velocity_.y + windSpeed_.y) - (airResistance_ * velocity_.y);
-		pos_.x += (velocity_.x + windSpeed_.x);
-
+		if (!changeScene.GetIsChange()) {
+			pos_.y += (velocity_.y + windSpeed_.y) - (airResistance_ * velocity_.y);
+			pos_.x += (velocity_.x + windSpeed_.x);
+		}
 		//==================================移動制限の壁====================================
 
 		//下
-		if (pos_.y < 0.0f + size_.y) {
-			pos_.y = 0.0f + size_.y;
+		if (pos_.y < 260.0f + size_.y) {
+			pos_.y = 260.0f + size_.y;
 			//
-			velocity_.y *= -1.0f * 0.6f;
+			//velocity_.y *= -1.0f * 0.6f;
 			hitDirection_ = 1;
 			if (CheckBalloonLimit(hitDirection_, preHitDirection_)) {
 				balloonLevel_ -= 0.4f;
@@ -73,9 +79,9 @@ void Player::Update(char* keys, char* preKeys, int* cameraPosX, int* cameraPosY,
 		}
 
 		// 上にフレームアウトしたらシーン切り替え
-		
-		if(pos_.y >= 720.0f + 68.0f){
 
+		if (pos_.y >= 720.0f + 80.0f) {
+			changeScene.SetIsChange(true);
 		}
 
 		break;
@@ -287,6 +293,105 @@ void Player::Update(char* keys, char* preKeys, int* cameraPosX, int* cameraPosY,
 			}
 		}
 
+		//============================風船の紐===================================
+
+		ropePos_[0] = pos_;
+
+		for (int i = 1; i < 32; i++) {
+
+			//ループ強制退出用
+			int roopCount = 0;
+
+			//座標を求めるための変数
+			float difX;
+			float difY;
+			float normalizeX;
+			float normalizeY;
+			float leng;
+
+			//下が空いていれば紐が落ちていくようにする
+			if (int(ropePos_[i].y / 64.0f) - 1 >= 0 && int(ropePos_[i].y / 64.0f) < 240) {
+				if (int(ropePos_[i].x / 64.0f) >= 0 && int(ropePos_[i].x / 64.0f) < 40) {
+
+					if (map.GetBlockType(int(ropePos_[i].y / 64.0f) - 1, int(ropePos_[i].x / 64.0f)) == 1) {
+
+						if (!IsHitBox_BallDirection(
+							{ map.GetPos(int(ropePos_[i].y / 64.0f) - 1, int(ropePos_[i].x / 64.0f)).x + 32,
+							map.GetPos(int(ropePos_[i].y / 64.0f) - 1, int(ropePos_[i].x / 64.0f)).y - 32 },
+							{ ropePos_[i].x,ropePos_[i].y },
+							map.GetSize(),
+							2
+						)) {
+
+							difX = ropePos_[i].x - ropePos_[i - 1].x;
+							difY = ropePos_[i].y - 1 - ropePos_[i - 1].y;
+
+						} else {
+							difX = ropePos_[i].x - ropePos_[i - 1].x;
+							difY = ropePos_[i].y - ropePos_[i - 1].y;
+						}
+					} else if (map.GetBlockType(int(ropePos_[i].y / 64.0f), int(ropePos_[i].x / 64.0f)) == 1) {
+
+						difX = ropePos_[i].x - ropePos_[i - 1].x;
+						difY = ropePos_[i].y - ropePos_[i - 1].y;
+
+					} else {
+						difX = ropePos_[i].x - ropePos_[i - 1].x;
+						difY = ropePos_[i].y - 1 - ropePos_[i - 1].y;
+					}
+				}
+
+			} else {
+				difX = ropePos_[i].x - ropePos_[i - 1].x;
+				difY = ropePos_[i].y - ropePos_[i - 1].y;
+			}
+
+			leng = CheckLength(ropePos_[i], ropePos_[i - 1]);
+
+			if (leng != 0) {
+
+				normalizeX = difX / leng;
+				normalizeY = difY / leng;
+
+				ropePos_[i].x = ropePos_[i - 1].x + (normalizeX * ropeLength_);
+				ropePos_[i].y = ropePos_[i - 1].y + (normalizeY * ropeLength_);
+			}
+
+
+			//更新後の座標がブロックに当たっていたら、当たらなくなるまで押し戻す
+			while (true){
+
+				if (int(ropePos_[i].y / 64.0f) >= 0 && int(ropePos_[i].y / 64.0f) < 240) {
+					if (int(ropePos_[i].x / 64.0f) >= 0 && int(ropePos_[i].x / 64.0f) < 40) {
+						if (map.GetBlockType(int(ropePos_[i].y / 64.0f), int(ropePos_[i].x / 64.0f)) == 1) {
+
+								difY = (ropePos_[i].y + 4) - ropePos_[i - 1].y;
+								leng = CheckLength({ ropePos_[i].x,ropePos_[i].y + 4 }, ropePos_[i - 1]);
+
+								normalizeX = difX / leng;
+								normalizeY = difY / leng;
+
+								ropePos_[i].x = ropePos_[i - 1].x + (normalizeX * ropeLength_);
+								ropePos_[i].y = ropePos_[i - 1].y + (normalizeY * ropeLength_);
+
+						} else {
+							break;
+						}
+					} else {
+						break;
+					}
+				} else {
+					break;
+				}
+
+				roopCount++;
+
+				//32ループで強制退出
+				if (roopCount > 32) {
+					break;
+				}
+			}
+		}
 
 		//====================================================================
 		//						ブロックとの当たり判定
@@ -709,6 +814,16 @@ void Player::Draw(GlobalVariable globalV, Scene scene) {
 
 		if (!isUnrivaled_) {
 
+			for (int i = 0; i < 32 - 1; i++) {
+				Novice::DrawLine(
+					int(ropePos_[i].x) - globalV.GetCameraPosX(),
+					int(ropePos_[i].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
+					int(ropePos_[i + 1].x) - globalV.GetCameraPosX(),
+					int(ropePos_[i + 1].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
+					0xffffffff
+				);
+			}
+
 			Novice::DrawEllipse(
 				int(pos_.x) - globalV.GetCameraPosX(),
 				int(pos_.y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
@@ -720,6 +835,16 @@ void Player::Draw(GlobalVariable globalV, Scene scene) {
 			);
 
 		} else {
+
+			for (int i = 0; i < 32 - 1; i++) {
+				Novice::DrawLine(
+					int(ropePos_[i].x) - globalV.GetCameraPosX(),
+					int(ropePos_[i].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
+					int(ropePos_[i + 1].x) - globalV.GetCameraPosX(),
+					int(ropePos_[i + 1].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
+					0xffffffff
+				);
+			}
 
 			if (unrivaledLimit_ / 5 % 2 == 0) {
 				Novice::DrawEllipse(
@@ -800,9 +925,9 @@ void Player::Draw(GlobalVariable globalV, Scene scene) {
 
 		break;
 
-	//=====================================================================================
-	//                                     クリア画面
-	//=====================================================================================
+		//=====================================================================================
+		//                                     クリア画面
+		//=====================================================================================
 	case clear:
 		break;
 

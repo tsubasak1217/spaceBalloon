@@ -14,6 +14,10 @@ public:
 		shiftTimer_ = 120;
 	}
 
+	void Update();
+
+	void Draw();
+
 	//アクセッサ
 	int GetShiftTimer() { return shiftTimer_; }
 	void SetShiftTimer(int value) { shiftTimer_ = value; }

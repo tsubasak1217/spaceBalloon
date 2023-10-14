@@ -57,6 +57,10 @@ private:
 	//スコア変数
 	int scoreCount_;
 
+	//===================ロープ=======================
+	Vector2 ropePos_[32];
+	float ropeLength_;
+
 public:
 
 	//イニシャライズ(初期化関数)
@@ -72,6 +76,14 @@ public:
 			size_ = { 5.0f + (balloonLevel_ * 2.0f),5.0f + (balloonLevel_ * 2.0f) };
 			pos_ = { 640.0f,260.0f };
 
+			ropeLength_ = 8.0f;
+			ropePos_[0] = { pos_.x,pos_.y - size_.y };
+			for (int i = 1; i < 32; i++) {
+				
+				ropePos_[i].x = ropePos_[i - 1].x;
+				ropePos_[i].y = ropePos_[i - 1].y - ropeLength_;
+			}
+			
 			respawnPos_ = { 0.0f,0.0f };
 
 			gravity_ = -0.8f;
@@ -115,6 +127,14 @@ public:
 		balloonLevel_ = 0.0f;
 		size_ = { 5.0f + (balloonLevel_ * 2.0f),5.0f + (balloonLevel_ * 2.0f) };
 		pos_ = { 640.0f,size_.y };
+
+		ropeLength_ = 8.0f;
+		ropePos_[0] = { pos_.x,pos_.y - size_.y };
+		for (int i = 1; i < 32; i++) {
+
+			ropePos_[i].x = ropePos_[i - 1].x;
+			ropePos_[i].y = ropePos_[i - 1].y - ropeLength_;
+		}
 
 		respawnPos_ = { 0.0f,0.0f };
 
@@ -189,7 +209,11 @@ public:
 	
 
 	// アップデート
-	void Update(char* keys, char* preKeys, int* cameraPosX,int* cameraPosY, int* miniCameraPos, Map& map, Scene& scene);
+	void Update(
+		char* keys, char* preKeys, 
+		int* cameraPosX,int* cameraPosY, int* miniCameraPos, 
+		Map& map, Scene scene, ChangeScene& changeScene
+	);
 
 	//ドロー
 	void Draw(GlobalVariable globalV,Scene scene);
