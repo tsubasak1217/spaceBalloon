@@ -341,9 +341,9 @@ void Player::Update(
 					}
 				}
 
-			} else {
+			} else if (int(ropePos_[i].y / 64.0f) - 1 < 0) {
 				difX = ropePos_[i].x - ropePos_[i - 1].x;
-				difY = ropePos_[i].y - ropePos_[i - 1].y;
+				difY = ropePos_[i].y - 1 - ropePos_[i - 1].y;
 			}
 
 			leng = CheckLength(ropePos_[i], ropePos_[i - 1]);
@@ -359,20 +359,20 @@ void Player::Update(
 
 
 			//更新後の座標がブロックに当たっていたら、当たらなくなるまで押し戻す
-			while (true){
+			while (true) {
 
 				if (int(ropePos_[i].y / 64.0f) >= 0 && int(ropePos_[i].y / 64.0f) < 240) {
 					if (int(ropePos_[i].x / 64.0f) >= 0 && int(ropePos_[i].x / 64.0f) < 40) {
 						if (map.GetBlockType(int(ropePos_[i].y / 64.0f), int(ropePos_[i].x / 64.0f)) == 1) {
 
-								difY = (ropePos_[i].y + 4) - ropePos_[i - 1].y;
-								leng = CheckLength({ ropePos_[i].x,ropePos_[i].y + 4 }, ropePos_[i - 1]);
+							difY = (ropePos_[i].y + 4) - ropePos_[i - 1].y;
+							leng = CheckLength({ ropePos_[i].x,ropePos_[i].y + 4 }, ropePos_[i - 1]);
 
-								normalizeX = difX / leng;
-								normalizeY = difY / leng;
+							normalizeX = difX / leng;
+							normalizeY = difY / leng;
 
-								ropePos_[i].x = ropePos_[i - 1].x + (normalizeX * ropeLength_);
-								ropePos_[i].y = ropePos_[i - 1].y + (normalizeY * ropeLength_);
+							ropePos_[i].x = ropePos_[i - 1].x + (normalizeX * ropeLength_);
+							ropePos_[i].y = ropePos_[i - 1].y + (normalizeY * ropeLength_);
 
 						} else {
 							break;
