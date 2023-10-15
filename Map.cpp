@@ -3,11 +3,17 @@
 
 void Map::Init() {
 
+	cloudPos_[0] = { 0.0f,0.0f };
+	cloudPos_[1] = { 0.0f,0.0f };
+
+	titleLogoPos_[0] = { 0.0f,0.0f };
+	titleLogoPos_[1] = { 0.0f,0.0f };
+
 	blockType_ = LoadFile("./Resources./spaceBalloon_map.csv");
 
 	//行を反転
 	std::reverse(blockType_.begin(), blockType_.end());
-	
+
 	//savedBlockType_(ブロックの保存配列)にコピー
 	savedBlockType_ = blockType_;
 
@@ -76,6 +82,19 @@ void Map::Update(Scene scene) {
 		//=====================================================================================
 	case title:
 
+		//タイトルロゴをふわふわさせる
+		titleTimeCount_++;
+		theta_ = float(titleTimeCount_) / 256.0f;
+
+		//雲のスクロール
+		cloudPos_[0].x += 2;
+		cloudPos_[1].x += 1;
+
+		for (int i = 0; i < 2; i++) {
+			if (cloudPos_[i].x >= 1280) {
+				cloudPos_[i].x = 0;
+			}
+		}
 
 		break;
 
@@ -209,18 +228,69 @@ void Map::Update(Scene scene) {
 		break;
 	}
 
-	
+
 }
 
 
 //==========================================================================================================================
-void Map::Draw(GlobalVariable globalV,Scene scene) {
+void Map::Draw(GlobalVariable globalV, Scene scene,ChangeScene changeScene) {
 
 	switch (scene.GetSceneNum()) {
 		//=====================================================================================
 		//                                      タイトル
 		//=====================================================================================
 	case title:
+
+		//背景の空
+		Novice::DrawSprite(
+			0, int(0 + (EaseInQuint(changeScene.easeT_) * 720)),
+			titleImgs_[0],
+			1, 1,
+			0.0f,
+			WHITE
+		);
+
+		//スクロールする雲
+		for (int i = 0; i < 2; i++) {
+
+			Novice::DrawSprite(
+				int(cloudPos_[i].x),
+				int(cloudPos_[i].y + (EaseInQuint(changeScene.easeT_) * 720)),
+				titleImgs_[i + 1],
+				1, 1,
+				0.0f,
+				WHITE
+			);
+
+			Novice::DrawSprite(
+				int(cloudPos_[i].x - 1280),
+				int(cloudPos_[i].y + (EaseInQuint(changeScene.easeT_) * 720)),
+				titleImgs_[i + 1],
+				1, 1,
+				0.0f,
+				WHITE
+			);
+
+		}
+
+		//タイトルロゴ================================
+		Novice::DrawSprite(
+			int(titleLogoPos_[0].x + 32),
+			int(titleLogoPos_[0].y + (24.0f * sinf(theta_ * float(M_PI))) +(EaseInQuint(changeScene.easeT_) * 720)),
+			titleImgs_[3],
+			1, 1,
+			0.0f,
+			WHITE
+		);
+
+		Novice::DrawSprite(
+			int(titleLogoPos_[1].x + 32),
+			int(titleLogoPos_[1].y + (24.0f * sinf(-theta_ * float(M_PI))) +(EaseInQuint(changeScene.easeT_) * 720)),
+			titleImgs_[4],
+			1, 1,
+			0.0f,
+			WHITE
+		);
 
 		break;
 

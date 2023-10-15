@@ -61,7 +61,7 @@ void Player::Update(
 		windSpeed_.y *= 0.95f;
 
 		//移動
-		if (!changeScene.GetIsChange()) {
+		if (!changeScene.GetIsFinish()) {
 			pos_.y += (velocity_.y + windSpeed_.y) - (airResistance_ * velocity_.y);
 			pos_.x += (velocity_.x + windSpeed_.x);
 		}
@@ -71,7 +71,7 @@ void Player::Update(
 		if (pos_.y < 260.0f + size_.y) {
 			pos_.y = 260.0f + size_.y;
 			//
-			//velocity_.y *= -1.0f * 0.6f;
+			velocity_.y *= -1.0f * 0.1f;
 			hitDirection_ = 1;
 			if (CheckBalloonLimit(hitDirection_, preHitDirection_)) {
 				balloonLevel_ -= 0.4f;
@@ -81,7 +81,16 @@ void Player::Update(
 		// 上にフレームアウトしたらシーン切り替え
 
 		if (pos_.y >= 720.0f + 80.0f) {
-			changeScene.SetIsChange(true);
+			changeScene.SetIsFinish(true);
+		}
+
+		//シーン以降終了時に初期化命令を出す
+		if (changeScene.GetFinishTimer() <= 1) {
+			changeScene.SetInitOrder(true);
+		}
+
+		if (changeScene.GetInitOrder()) {
+			Init(game);
 		}
 
 		break;
@@ -770,12 +779,31 @@ void Player::Update(
 		if (map.GetIsTimeStop()) {
 			map.SetSkyColor(GrayScale(map.GetSkyColor()));
 		}
+
+		//シーン以降終了時に初期化命令を出す
+		if (changeScene.GetFinishTimer() <= 1) {
+			changeScene.SetInitOrder(true);
+		}
+
+		if (changeScene.GetInitOrder()) {
+			Init(clear);
+		}
+
 		break;
 
 		//=====================================================================================
 		//                                     クリア画面
 		//=====================================================================================
 	case clear:
+
+		//シーン以降終了時に初期化命令を出す
+		if (changeScene.GetFinishTimer() <= 1) {
+			changeScene.SetInitOrder(true);
+		}
+
+		if (changeScene.GetInitOrder()) {
+			Init(title);
+		}
 		break;
 
 	default:

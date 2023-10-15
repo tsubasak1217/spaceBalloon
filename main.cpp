@@ -37,7 +37,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	changeScene.Init();
 
 	Player player;
-	player.Init(scene);
+	player.Init(title);
 
 	Emitter* effect = new Emitter();
 
@@ -64,6 +64,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		player.Update(keys,preKeys,&globalV.cameraPosX_, &globalV.cameraPosY_, &globalV.miniCameraPos_, map, scene,changeScene);
 		effect->Update(player);
 
+		changeScene.Update(scene);
+
 		///
 		/// ↑更新処理ここまで
 		///
@@ -73,13 +75,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 
 
-		map.Draw(globalV, scene);
+		map.Draw(globalV, scene,changeScene);
 		effect->Draw(globalV);
 		player.Draw(globalV,scene);
+		changeScene.Draw(scene);
 
 		Novice::ScreenPrintf(100, 20, "%d", map.GetSavedBlockType(0, 0));
 		Novice::ScreenPrintf(100, 40, "%d", map.GetBlockType(0, 0));
-		Novice::ScreenPrintf(100, 60, "%d", changeScene.GetIsChange());
+		Novice::ScreenPrintf(100, 60, "%d", changeScene.GetIsFinish());
 		///
 		/// ↑描画処理ここまで
 		///

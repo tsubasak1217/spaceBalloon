@@ -9,7 +9,7 @@ private:
 public:
 	//イニシャライズ
 	void Init(){
-		sceneNum_ = game;
+		sceneNum_ = title;
 	}
 
 	//アクセッサ

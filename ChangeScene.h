@@ -1,28 +1,45 @@
 #pragma once
 #include "Scene.h"
+#include <Novice.h>
+#include "Easing.h"
 
 class ChangeScene{
 private:
-	bool isChangeScene_;
-	int shiftTimer_;
+	bool isStartScene_;
+	bool isFinishScene_;
+
+	int finishTimer_;
+	int startTimer_;
+
+	bool initOrder_;
 
 public:
 
+	float easeT_;
+
 	//イニシャライズ
 	void Init() {
-		isChangeScene_ = false;
-		shiftTimer_ = 120;
+		isFinishScene_ = false;
+		isStartScene_ = true;
+		finishTimer_ = 120;
+		easeT_ = 0.0f;
 	}
 
-	void Update();
+	void Update(Scene& scene);
 
-	void Draw();
+	void Draw(Scene scene);
 
 	//アクセッサ
-	int GetShiftTimer() { return shiftTimer_; }
-	void SetShiftTimer(int value) { shiftTimer_ = value; }
+	int GetFinishTimer() { return finishTimer_; }
+	void SetFinishTimer(int value) { finishTimer_ = value; }
 
-	bool GetIsChange() { return isChangeScene_; }
-	void SetIsChange(bool flag) { isChangeScene_ = flag; }
+	bool GetIsFinish() { return isFinishScene_; }
+	void SetIsFinish(bool flag) { isFinishScene_ = flag; }
+
+	bool GetIsStart() { return isStartScene_; }
+	void SetIsStart(bool flag) { isStartScene_ = flag; }
+
+	bool GetInitOrder() { return initOrder_; }
+	void SetInitOrder(bool flag) { initOrder_ = flag; }
 };
 
