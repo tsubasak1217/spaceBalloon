@@ -384,7 +384,7 @@ int GrayScale(int color) {
 	int trancedGreen = int(float(Green) * 0.7152f);
 	int trancedBlue = int(float(Blue) * 0.0722f);
 
-	int gray = int((trancedRed + trancedGreen + trancedBlue) / 3);
+	int gray = int(trancedRed + trancedGreen + trancedBlue);
 
 	return 0xFF + (gray << 24) + (gray << 16) + (gray << 8);
 }
