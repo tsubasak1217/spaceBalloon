@@ -37,6 +37,9 @@ void Map::Init() {
 	}
 
 	//鳥の初期番地計算
+	birdAddress_.clear();
+	birdDirection_.clear();
+
 	for (int i = 0; i < birdPos_.size(); i++) {
 		birdAddress_.push_back(
 			{
@@ -44,7 +47,9 @@ void Map::Init() {
 			int((birdPos_[i].y - (size_.y / 2)) / size_.y)
 			}
 		);
+	}
 
+	for (int i = 0; i < birdAddress_.size(); i++) {
 		//初期の方向代入
 		if (blockType_[birdAddress_[i].y][birdAddress_[i].x + 1] == 66 or
 			blockType_[birdAddress_[i].y][birdAddress_[i].x + 1] == 6) {
@@ -233,7 +238,7 @@ void Map::Update(Scene scene) {
 
 
 //==========================================================================================================================
-void Map::Draw(GlobalVariable globalV, Scene scene,ChangeScene changeScene) {
+void Map::Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene) {
 
 	switch (scene.GetSceneNum()) {
 		//=====================================================================================
@@ -275,8 +280,8 @@ void Map::Draw(GlobalVariable globalV, Scene scene,ChangeScene changeScene) {
 
 		//タイトルロゴ================================
 		Novice::DrawSprite(
-			int(titleLogoPos_[0].x + 32),
-			int(titleLogoPos_[0].y + (24.0f * sinf(theta_ * float(M_PI))) +(EaseInQuint(changeScene.easeT_) * 720)),
+			int(titleLogoPos_[0].x + 28),
+			int(titleLogoPos_[0].y + (24.0f * sinf(theta_ * float(M_PI))) + (EaseInQuint(changeScene.easeT_) * 720)),
 			titleImgs_[3],
 			1, 1,
 			0.0f,
@@ -285,7 +290,7 @@ void Map::Draw(GlobalVariable globalV, Scene scene,ChangeScene changeScene) {
 
 		Novice::DrawSprite(
 			int(titleLogoPos_[1].x + 32),
-			int(titleLogoPos_[1].y + (24.0f * sinf(-theta_ * float(M_PI))) +(EaseInQuint(changeScene.easeT_) * 720)),
+			int(titleLogoPos_[1].y + (24.0f * sinf(-theta_ * float(M_PI))) + (EaseInQuint(changeScene.easeT_) * 720)),
 			titleImgs_[4],
 			1, 1,
 			0.0f,
@@ -321,460 +326,931 @@ void Map::Draw(GlobalVariable globalV, Scene scene,ChangeScene changeScene) {
 			);
 		}
 
-		for (int row = 0; row < mapRow; row++) {
-			for (int col = 0; col < mapCol; col++) {
+		if (changeScene.GetIsStart()) {
 
-				//ブロックの座標がスクリーン内のとき
-				if (int(pos_[row][col].x) - globalV.GetCameraPosX() >= 0 - size_.x &&
-					int(pos_[row][col].x) - globalV.GetCameraPosX() <= 1280) {
-					if (int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY() >= 0 - size_.y &&
-						int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY() <= 720) {
+
+			for (int row = 0; row < mapRow; row++) {
+				for (int col = 0; col < mapCol; col++) {
+
+					//ブロックの座標がスクリーン内のとき
+					if (int(pos_[row][col].x) - globalV.GetCameraPosX() >= 0 - size_.x &&
+						int(pos_[row][col].x) - globalV.GetCameraPosX() <= 1280) {
+						if (int(pos_[row][col].y * -1.0f)
+							+ globalV.GetGroundPos() + globalV.GetCameraPosY() + int((EaseInQuint(1.0f - changeScene.easeT_) * -720)) >= 0 - size_.y &&
+							int(pos_[row][col].y * -1.0f)
+							+ globalV.GetGroundPos() + globalV.GetCameraPosY() + int((EaseInQuint(1.0f - changeScene.easeT_) * -720)) <= 720) {
+
+							if (!isTimeStop_) {
+								switch (blockType_[row][col]) {
+
+								case normal:
+									//描画
+									Novice::DrawBox(
+										int(pos_[row][col].x) - globalV.GetCameraPosX(),
+										int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY() + int((EaseInQuint(1.0f - changeScene.easeT_) * -720)),
+										int(size_.x),
+										int(size_.y),
+										0.0f,
+										0xf7efdfff,
+										kFillModeSolid
+									);
+
+									break;
+
+								case wind_up:
+
+									//描画
+									Novice::DrawBox(
+										int(pos_[row][col].x) - globalV.GetCameraPosX(),
+										int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY() + int((EaseInQuint(1.0f - changeScene.easeT_) * -720)),
+										int(size_.x),
+										int(size_.y),
+										0.0f,
+										0xff5d5064,
+										kFillModeSolid
+									);
+
+									break;
+
+								case wind_right:
+
+									//描画
+									Novice::DrawBox(
+										int(pos_[row][col].x) - globalV.GetCameraPosX(),
+										int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY() + int((EaseInQuint(1.0f - changeScene.easeT_) * -720)),
+										int(size_.x),
+										int(size_.y),
+										0.0f,
+										0xffdd5064,
+										kFillModeSolid
+									);
+
+									break;
+
+								case wind_down:
+
+									//描画
+									Novice::DrawBox(
+										int(pos_[row][col].x) - globalV.GetCameraPosX(),
+										int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY() + int((EaseInQuint(1.0f - changeScene.easeT_) * -720)),
+										int(size_.x),
+										int(size_.y),
+										0.0f,
+										0xa7ff5064,
+										kFillModeSolid
+									);
+
+									break;
+
+								case wind_left:
+
+									//描画
+									Novice::DrawBox(
+										int(pos_[row][col].x) - globalV.GetCameraPosX(),
+										int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY() + int((EaseInQuint(1.0f - changeScene.easeT_) * -720)),
+										int(size_.x),
+										int(size_.y),
+										0.0f,
+										0x50ffda64,
+										kFillModeSolid
+									);
+
+									break;
+
+								case thunder:
+
+									//描画
+									Novice::DrawBox(
+										int(pos_[row][col].x) - globalV.GetCameraPosX(),
+										int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY() + int((EaseInQuint(1.0f - changeScene.easeT_) * -720)),
+										int(size_.x),
+										int(size_.y),
+										0.0f,
+										0x666666ff,
+										kFillModeSolid
+									);
+
+									break;
+
+								case score:
+
+									//描画
+									Novice::DrawBox(
+										int(pos_[row][col].x) - globalV.GetCameraPosX(),
+										int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY() + int((EaseInQuint(1.0f - changeScene.easeT_) * -720)),
+										int(size_.x),
+										int(size_.y),
+										0.0f,
+										0xffd500ff,
+										kFillModeSolid
+									);
+
+									break;
+
+								case life:
+
+									//描画
+									Novice::DrawBox(
+										int(pos_[row][col].x) - globalV.GetCameraPosX(),
+										int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY() + int((EaseInQuint(1.0f - changeScene.easeT_) * -720)),
+										int(size_.x),
+										int(size_.y),
+										0.0f,
+										0xff5181ff,
+										kFillModeSolid
+									);
+
+									break;
+
+								case clockItem:
+
+									//描画
+									Novice::DrawBox(
+										int(pos_[row][col].x) - globalV.GetCameraPosX(),
+										int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY() + int((EaseInQuint(1.0f - changeScene.easeT_) * -720)),
+										int(size_.x),
+										int(size_.y),
+										0.0f,
+										0x000000ff,
+										kFillModeSolid
+									);
+
+									break;
+
+								case accel:
+
+									//描画
+									Novice::DrawBox(
+										int(pos_[row][col].x) - globalV.GetCameraPosX(),
+										int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY() + int((EaseInQuint(1.0f - changeScene.easeT_) * -720)),
+										int(size_.x),
+										int(size_.y),
+										0.0f,
+										0xff8c00ff,
+										kFillModeSolid
+									);
+
+									break;
+
+								case savePoint:
+
+									//描画
+									Novice::DrawBox(
+										int(pos_[row][col].x) - globalV.GetCameraPosX(),
+										int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY() + int((EaseInQuint(1.0f - changeScene.easeT_) * -720)),
+										int(size_.x),
+										int(size_.y),
+										0.0f,
+										0x7cfc00ff,
+										kFillModeSolid
+									);
+
+									break;
+
+								default:
+									break;
+								}
+
+							} else {//============================================================================================
+
+								switch (blockType_[row][col]) {
+								case normal:
+									//描画
+									Novice::DrawBox(
+										int(pos_[row][col].x) - globalV.GetCameraPosX(),
+										int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
+										int(size_.x),
+										int(size_.y),
+										0.0f,
+										0xf7f7f7ff,
+										kFillModeSolid
+									);
+
+									break;
+
+								case wind_up:
+
+									//描画
+									Novice::DrawBox(
+										int(pos_[row][col].x) - globalV.GetCameraPosX(),
+										int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
+										int(size_.x),
+										int(size_.y),
+										0.0f,
+										0xffffff64,
+										kFillModeSolid
+									);
+
+									break;
+
+								case wind_right:
+
+									//描画
+									Novice::DrawBox(
+										int(pos_[row][col].x) - globalV.GetCameraPosX(),
+										int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
+										int(size_.x),
+										int(size_.y),
+										0.0f,
+										0xffffff64,
+										kFillModeSolid
+									);
+
+									break;
+
+								case wind_down:
+
+									//描画
+									Novice::DrawBox(
+										int(pos_[row][col].x) - globalV.GetCameraPosX(),
+										int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
+										int(size_.x),
+										int(size_.y),
+										0.0f,
+										0xa7a7a764,
+										kFillModeSolid
+									);
+
+									break;
+
+								case wind_left:
+
+									//描画
+									Novice::DrawBox(
+										int(pos_[row][col].x) - globalV.GetCameraPosX(),
+										int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
+										int(size_.x),
+										int(size_.y),
+										0.0f,
+										0x50505064,
+										kFillModeSolid
+									);
+
+									break;
+
+								case thunder:
+
+									//描画
+									Novice::DrawBox(
+										int(pos_[row][col].x) - globalV.GetCameraPosX(),
+										int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
+										int(size_.x),
+										int(size_.y),
+										0.0f,
+										0x666666ff,
+										kFillModeSolid
+									);
+
+									break;
+
+								case score:
+
+									//描画
+									Novice::DrawBox(
+										int(pos_[row][col].x) - globalV.GetCameraPosX(),
+										int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
+										int(size_.x),
+										int(size_.y),
+										0.0f,
+										0xffffffff,
+										kFillModeSolid
+									);
+
+									break;
+
+								case life:
+
+									//描画
+									Novice::DrawBox(
+										int(pos_[row][col].x) - globalV.GetCameraPosX(),
+										int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
+										int(size_.x),
+										int(size_.y),
+										0.0f,
+										0xffffffff,
+										kFillModeSolid
+									);
+
+									break;
+
+								case clockItem:
+
+									//描画
+									Novice::DrawBox(
+										int(pos_[row][col].x) - globalV.GetCameraPosX(),
+										int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
+										int(size_.x),
+										int(size_.y),
+										0.0f,
+										0x000000ff,
+										kFillModeSolid
+									);
+
+									break;
+
+								case accel:
+
+									//描画
+									Novice::DrawBox(
+										int(pos_[row][col].x) - globalV.GetCameraPosX(),
+										int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
+										int(size_.x),
+										int(size_.y),
+										0.0f,
+										GrayScale(0xff8c00ff),
+										kFillModeSolid
+									);
+
+									break;
+
+								case savePoint:
+
+									//描画
+									Novice::DrawBox(
+										int(pos_[row][col].x) - globalV.GetCameraPosX(),
+										int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
+										int(size_.x),
+										int(size_.y),
+										0.0f,
+										GrayScale(0x7cfc00ff),
+										kFillModeSolid
+									);
+
+									break;
+
+								default:
+									break;
+								}
+
+							}
+						}
+					}
+
+				}
+			}
+
+
+			//鳥の描画
+			for (int i = 0; i < birdPos_.size(); i++) {
+				if (int(birdPos_[i].x) - globalV.GetCameraPosX() >= 0 - size_.x &&
+					int(birdPos_[i].x) - globalV.GetCameraPosX() <= 1280) {
+					if (int(birdPos_[i].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY() >= 0 - size_.y &&
+						int(birdPos_[i].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY() <= 720) {
 
 						if (!isTimeStop_) {
-							switch (blockType_[row][col]) {
-
-							case normal:
-								//描画
-								Novice::DrawBox(
-									int(pos_[row][col].x) - globalV.GetCameraPosX(),
-									int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
-									int(size_.x),
-									int(size_.y),
-									0.0f,
-									0xf7efdfff,
-									kFillModeSolid
-								);
-
-								break;
-
-							case wind_up:
-
-								//描画
-								Novice::DrawBox(
-									int(pos_[row][col].x) - globalV.GetCameraPosX(),
-									int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
-									int(size_.x),
-									int(size_.y),
-									0.0f,
-									0xff5d5064,
-									kFillModeSolid
-								);
-
-								break;
-
-							case wind_right:
-
-								//描画
-								Novice::DrawBox(
-									int(pos_[row][col].x) - globalV.GetCameraPosX(),
-									int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
-									int(size_.x),
-									int(size_.y),
-									0.0f,
-									0xffdd5064,
-									kFillModeSolid
-								);
-
-								break;
-
-							case wind_down:
-
-								//描画
-								Novice::DrawBox(
-									int(pos_[row][col].x) - globalV.GetCameraPosX(),
-									int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
-									int(size_.x),
-									int(size_.y),
-									0.0f,
-									0xa7ff5064,
-									kFillModeSolid
-								);
-
-								break;
-
-							case wind_left:
-
-								//描画
-								Novice::DrawBox(
-									int(pos_[row][col].x) - globalV.GetCameraPosX(),
-									int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
-									int(size_.x),
-									int(size_.y),
-									0.0f,
-									0x50ffda64,
-									kFillModeSolid
-								);
-
-								break;
-
-							case thunder:
-
-								//描画
-								Novice::DrawBox(
-									int(pos_[row][col].x) - globalV.GetCameraPosX(),
-									int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
-									int(size_.x),
-									int(size_.y),
-									0.0f,
-									0x666666ff,
-									kFillModeSolid
-								);
-
-								break;
-
-							case score:
-
-								//描画
-								Novice::DrawBox(
-									int(pos_[row][col].x) - globalV.GetCameraPosX(),
-									int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
-									int(size_.x),
-									int(size_.y),
-									0.0f,
-									0xffd500ff,
-									kFillModeSolid
-								);
-
-								break;
-
-							case life:
-
-								//描画
-								Novice::DrawBox(
-									int(pos_[row][col].x) - globalV.GetCameraPosX(),
-									int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
-									int(size_.x),
-									int(size_.y),
-									0.0f,
-									0xff5181ff,
-									kFillModeSolid
-								);
-
-								break;
-
-							case clockItem:
-
-								//描画
-								Novice::DrawBox(
-									int(pos_[row][col].x) - globalV.GetCameraPosX(),
-									int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
-									int(size_.x),
-									int(size_.y),
-									0.0f,
-									0x000000ff,
-									kFillModeSolid
-								);
-
-								break;
-
-							case accel:
-
-								//描画
-								Novice::DrawBox(
-									int(pos_[row][col].x) - globalV.GetCameraPosX(),
-									int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
-									int(size_.x),
-									int(size_.y),
-									0.0f,
-									0xff8c00ff,
-									kFillModeSolid
-								);
-
-								break;
-
-							case savePoint:
-
-								//描画
-								Novice::DrawBox(
-									int(pos_[row][col].x) - globalV.GetCameraPosX(),
-									int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
-									int(size_.x),
-									int(size_.y),
-									0.0f,
-									0x7cfc00ff,
-									kFillModeSolid
-								);
-
-								break;
-
-							default:
-								break;
-							}
-
-						} else {//============================================================================================
-
-							switch (blockType_[row][col]) {
-							case normal:
-								//描画
-								Novice::DrawBox(
-									int(pos_[row][col].x) - globalV.GetCameraPosX(),
-									int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
-									int(size_.x),
-									int(size_.y),
-									0.0f,
-									0xf7f7f7ff,
-									kFillModeSolid
-								);
-
-								break;
-
-							case wind_up:
-
-								//描画
-								Novice::DrawBox(
-									int(pos_[row][col].x) - globalV.GetCameraPosX(),
-									int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
-									int(size_.x),
-									int(size_.y),
-									0.0f,
-									0xffffff64,
-									kFillModeSolid
-								);
-
-								break;
-
-							case wind_right:
-
-								//描画
-								Novice::DrawBox(
-									int(pos_[row][col].x) - globalV.GetCameraPosX(),
-									int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
-									int(size_.x),
-									int(size_.y),
-									0.0f,
-									0xffffff64,
-									kFillModeSolid
-								);
-
-								break;
-
-							case wind_down:
-
-								//描画
-								Novice::DrawBox(
-									int(pos_[row][col].x) - globalV.GetCameraPosX(),
-									int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
-									int(size_.x),
-									int(size_.y),
-									0.0f,
-									0xa7a7a764,
-									kFillModeSolid
-								);
-
-								break;
-
-							case wind_left:
-
-								//描画
-								Novice::DrawBox(
-									int(pos_[row][col].x) - globalV.GetCameraPosX(),
-									int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
-									int(size_.x),
-									int(size_.y),
-									0.0f,
-									0x50505064,
-									kFillModeSolid
-								);
-
-								break;
-
-							case thunder:
-
-								//描画
-								Novice::DrawBox(
-									int(pos_[row][col].x) - globalV.GetCameraPosX(),
-									int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
-									int(size_.x),
-									int(size_.y),
-									0.0f,
-									0x666666ff,
-									kFillModeSolid
-								);
-
-								break;
-
-							case score:
-
-								//描画
-								Novice::DrawBox(
-									int(pos_[row][col].x) - globalV.GetCameraPosX(),
-									int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
-									int(size_.x),
-									int(size_.y),
-									0.0f,
-									0xffffffff,
-									kFillModeSolid
-								);
-
-								break;
-
-							case life:
-
-								//描画
-								Novice::DrawBox(
-									int(pos_[row][col].x) - globalV.GetCameraPosX(),
-									int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
-									int(size_.x),
-									int(size_.y),
-									0.0f,
-									0xffffffff,
-									kFillModeSolid
-								);
-
-								break;
-
-							case clockItem:
-
-								//描画
-								Novice::DrawBox(
-									int(pos_[row][col].x) - globalV.GetCameraPosX(),
-									int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
-									int(size_.x),
-									int(size_.y),
-									0.0f,
-									0x000000ff,
-									kFillModeSolid
-								);
-
-								break;
-
-							case accel:
-
-								//描画
-								Novice::DrawBox(
-									int(pos_[row][col].x) - globalV.GetCameraPosX(),
-									int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
-									int(size_.x),
-									int(size_.y),
-									0.0f,
-									GrayScale(0xff8c00ff),
-									kFillModeSolid
-								);
-
-								break;
-
-							case savePoint:
-
-								//描画
-								Novice::DrawBox(
-									int(pos_[row][col].x) - globalV.GetCameraPosX(),
-									int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
-									int(size_.x),
-									int(size_.y),
-									0.0f,
-									GrayScale(0x7cfc00ff),
-									kFillModeSolid
-								);
-
-								break;
-
-							default:
-								break;
-							}
-
+							Novice::DrawBox(
+								int(birdPos_[i].x) - globalV.GetCameraPosX(),
+								int(birdPos_[i].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY() + int((EaseInQuint(1.0f - changeScene.easeT_) * -720)),
+								int(size_.x),
+								int(size_.y),
+								0.0f,
+								0xff0000ff,
+								kFillModeSolid
+							);
+						} else {
+							Novice::DrawBox(
+								int(birdPos_[i].x) - globalV.GetCameraPosX(),
+								int(birdPos_[i].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
+								int(size_.x),
+								int(size_.y),
+								0.0f,
+								0xffffffff,
+								kFillModeSolid
+							);
+						}
+
+
+
+					}
+				}
+
+				//ミニマップ用
+				Novice::DrawBox(
+					int((birdPos_[i].x / 17) + 1120),
+					int((birdPos_[i].y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17),
+					int(miniMapSize),
+					int(miniMapSize),
+					0.0f,
+					0xff0000ff,
+					kFillModeSolid
+				);
+			}
+
+
+			Novice::DrawBox(
+				1120,
+				24,
+				150,
+				320,
+				0.0f,
+				0x00000088,
+				kFillModeSolid
+			);
+
+			//ミニマップの表示
+			for (int row = 0; row < mapRow; row++) {
+				for (int col = 0; col < mapCol; col++) {
+
+					if (((pos_[row][col].y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17) >= 24 &&
+						((pos_[row][col].y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17) <= 340) {
+						switch (blockType_[row][col]) {
+
+						case normal:
+							//描画
+							Novice::DrawBox(
+								int((pos_[row][col].x / 17) + 1120),
+								int((pos_[row][col].y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17),
+								int(miniMapSize),
+								int(miniMapSize),
+								0.0f,
+								0xf7efdfff,
+								kFillModeSolid
+							);
+
+							break;
+
+						case thunder:
+
+							//描画
+							Novice::DrawBox(
+								int((pos_[row][col].x / 17) + 1120),
+								int((pos_[row][col].y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17),
+								int(miniMapSize),
+								int(miniMapSize),
+								0.0f,
+								0x666666ff,
+								kFillModeSolid
+							);
+
+							break;
+
+						default:
+							break;
 						}
 					}
 				}
 			}
-		}
 
+		} else {
+			//通常時============================================================================
+			for (int row = 0; row < mapRow; row++) {
+				for (int col = 0; col < mapCol; col++) {
 
-		//鳥の描画
-		for (int i = 0; i < birdPos_.size(); i++) {
-			if (int(birdPos_[i].x) - globalV.GetCameraPosX() >= 0 - size_.x &&
-				int(birdPos_[i].x) - globalV.GetCameraPosX() <= 1280) {
-				if (int(birdPos_[i].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY() >= 0 - size_.y &&
-					int(birdPos_[i].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY() <= 720) {
+					//ブロックの座標がスクリーン内のとき
+					if (int(pos_[row][col].x) - globalV.GetCameraPosX() >= 0 - size_.x &&
+						int(pos_[row][col].x) - globalV.GetCameraPosX() <= 1280) {
+						if (int(pos_[row][col].y * -1.0f)
+							+ globalV.GetGroundPos() + globalV.GetCameraPosY() >= 0 - size_.y &&
+							int(pos_[row][col].y * -1.0f)
+							+ globalV.GetGroundPos() + globalV.GetCameraPosY() <= 720) {
 
-					if (!isTimeStop_) {
-						Novice::DrawBox(
-							int(birdPos_[i].x) - globalV.GetCameraPosX(),
-							int(birdPos_[i].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
-							int(size_.x),
-							int(size_.y),
-							0.0f,
-							0xff0000ff,
-							kFillModeSolid
-						);
-					} else {
-						Novice::DrawBox(
-							int(birdPos_[i].x) - globalV.GetCameraPosX(),
-							int(birdPos_[i].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
-							int(size_.x),
-							int(size_.y),
-							0.0f,
-							0xffffffff,
-							kFillModeSolid
-						);
+							if (!isTimeStop_) {
+								switch (blockType_[row][col]) {
+
+								case normal:
+									//描画
+									Novice::DrawBox(
+										int(pos_[row][col].x) - globalV.GetCameraPosX(),
+										int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
+										int(size_.x),
+										int(size_.y),
+										0.0f,
+										0xf7efdfff,
+										kFillModeSolid
+									);
+
+									break;
+
+								case wind_up:
+
+									//描画
+									Novice::DrawBox(
+										int(pos_[row][col].x) - globalV.GetCameraPosX(),
+										int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
+										int(size_.x),
+										int(size_.y),
+										0.0f,
+										0xff5d5064,
+										kFillModeSolid
+									);
+
+									break;
+
+								case wind_right:
+
+									//描画
+									Novice::DrawBox(
+										int(pos_[row][col].x) - globalV.GetCameraPosX(),
+										int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
+										int(size_.x),
+										int(size_.y),
+										0.0f,
+										0xffdd5064,
+										kFillModeSolid
+									);
+
+									break;
+
+								case wind_down:
+
+									//描画
+									Novice::DrawBox(
+										int(pos_[row][col].x) - globalV.GetCameraPosX(),
+										int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
+										int(size_.x),
+										int(size_.y),
+										0.0f,
+										0xa7ff5064,
+										kFillModeSolid
+									);
+
+									break;
+
+								case wind_left:
+
+									//描画
+									Novice::DrawBox(
+										int(pos_[row][col].x) - globalV.GetCameraPosX(),
+										int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
+										int(size_.x),
+										int(size_.y),
+										0.0f,
+										0x50ffda64,
+										kFillModeSolid
+									);
+
+									break;
+
+								case thunder:
+
+									//描画
+									Novice::DrawBox(
+										int(pos_[row][col].x) - globalV.GetCameraPosX(),
+										int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
+										int(size_.x),
+										int(size_.y),
+										0.0f,
+										0x666666ff,
+										kFillModeSolid
+									);
+
+									break;
+
+								case score:
+
+									//描画
+									Novice::DrawBox(
+										int(pos_[row][col].x) - globalV.GetCameraPosX(),
+										int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
+										int(size_.x),
+										int(size_.y),
+										0.0f,
+										0xffd500ff,
+										kFillModeSolid
+									);
+
+									break;
+
+								case life:
+
+									//描画
+									Novice::DrawBox(
+										int(pos_[row][col].x) - globalV.GetCameraPosX(),
+										int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
+										int(size_.x),
+										int(size_.y),
+										0.0f,
+										0xff5181ff,
+										kFillModeSolid
+									);
+
+									break;
+
+								case clockItem:
+
+									//描画
+									Novice::DrawBox(
+										int(pos_[row][col].x) - globalV.GetCameraPosX(),
+										int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
+										int(size_.x),
+										int(size_.y),
+										0.0f,
+										0x000000ff,
+										kFillModeSolid
+									);
+
+									break;
+
+								case accel:
+
+									//描画
+									Novice::DrawBox(
+										int(pos_[row][col].x) - globalV.GetCameraPosX(),
+										int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
+										int(size_.x),
+										int(size_.y),
+										0.0f,
+										0xff8c00ff,
+										kFillModeSolid
+									);
+
+									break;
+
+								case savePoint:
+
+									//描画
+									Novice::DrawBox(
+										int(pos_[row][col].x) - globalV.GetCameraPosX(),
+										int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
+										int(size_.x),
+										int(size_.y),
+										0.0f,
+										0x7cfc00ff,
+										kFillModeSolid
+									);
+
+									break;
+
+								default:
+									break;
+								}
+
+							} else {//============================================================================================
+
+								switch (blockType_[row][col]) {
+								case normal:
+									//描画
+									Novice::DrawBox(
+										int(pos_[row][col].x) - globalV.GetCameraPosX(),
+										int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
+										int(size_.x),
+										int(size_.y),
+										0.0f,
+										0xf7f7f7ff,
+										kFillModeSolid
+									);
+
+									break;
+
+								case wind_up:
+
+									//描画
+									Novice::DrawBox(
+										int(pos_[row][col].x) - globalV.GetCameraPosX(),
+										int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
+										int(size_.x),
+										int(size_.y),
+										0.0f,
+										0xffffff64,
+										kFillModeSolid
+									);
+
+									break;
+
+								case wind_right:
+
+									//描画
+									Novice::DrawBox(
+										int(pos_[row][col].x) - globalV.GetCameraPosX(),
+										int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
+										int(size_.x),
+										int(size_.y),
+										0.0f,
+										0xffffff64,
+										kFillModeSolid
+									);
+
+									break;
+
+								case wind_down:
+
+									//描画
+									Novice::DrawBox(
+										int(pos_[row][col].x) - globalV.GetCameraPosX(),
+										int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
+										int(size_.x),
+										int(size_.y),
+										0.0f,
+										0xa7a7a764,
+										kFillModeSolid
+									);
+
+									break;
+
+								case wind_left:
+
+									//描画
+									Novice::DrawBox(
+										int(pos_[row][col].x) - globalV.GetCameraPosX(),
+										int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
+										int(size_.x),
+										int(size_.y),
+										0.0f,
+										0x50505064,
+										kFillModeSolid
+									);
+
+									break;
+
+								case thunder:
+
+									//描画
+									Novice::DrawBox(
+										int(pos_[row][col].x) - globalV.GetCameraPosX(),
+										int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
+										int(size_.x),
+										int(size_.y),
+										0.0f,
+										0x666666ff,
+										kFillModeSolid
+									);
+
+									break;
+
+								case score:
+
+									//描画
+									Novice::DrawBox(
+										int(pos_[row][col].x) - globalV.GetCameraPosX(),
+										int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
+										int(size_.x),
+										int(size_.y),
+										0.0f,
+										0xffffffff,
+										kFillModeSolid
+									);
+
+									break;
+
+								case life:
+
+									//描画
+									Novice::DrawBox(
+										int(pos_[row][col].x) - globalV.GetCameraPosX(),
+										int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
+										int(size_.x),
+										int(size_.y),
+										0.0f,
+										0xffffffff,
+										kFillModeSolid
+									);
+
+									break;
+
+								case clockItem:
+
+									//描画
+									Novice::DrawBox(
+										int(pos_[row][col].x) - globalV.GetCameraPosX(),
+										int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
+										int(size_.x),
+										int(size_.y),
+										0.0f,
+										0x000000ff,
+										kFillModeSolid
+									);
+
+									break;
+
+								case accel:
+
+									//描画
+									Novice::DrawBox(
+										int(pos_[row][col].x) - globalV.GetCameraPosX(),
+										int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
+										int(size_.x),
+										int(size_.y),
+										0.0f,
+										GrayScale(0xff8c00ff),
+										kFillModeSolid
+									);
+
+									break;
+
+								case savePoint:
+
+									//描画
+									Novice::DrawBox(
+										int(pos_[row][col].x) - globalV.GetCameraPosX(),
+										int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
+										int(size_.x),
+										int(size_.y),
+										0.0f,
+										GrayScale(0x7cfc00ff),
+										kFillModeSolid
+									);
+
+									break;
+
+								default:
+									break;
+								}
+
+							}
+						}
 					}
-
-
 
 				}
 			}
 
-			//ミニマップ用
+
+			//鳥の描画
+			for (int i = 0; i < birdPos_.size(); i++) {
+				if (int(birdPos_[i].x) - globalV.GetCameraPosX() >= 0 - size_.x &&
+					int(birdPos_[i].x) - globalV.GetCameraPosX() <= 1280) {
+					if (int(birdPos_[i].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY() >= 0 - size_.y &&
+						int(birdPos_[i].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY() <= 720) {
+
+						if (!isTimeStop_) {
+							Novice::DrawBox(
+								int(birdPos_[i].x) - globalV.GetCameraPosX(),
+								int(birdPos_[i].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
+								int(size_.x),
+								int(size_.y),
+								0.0f,
+								0xff0000ff,
+								kFillModeSolid
+							);
+						} else {
+							Novice::DrawBox(
+								int(birdPos_[i].x) - globalV.GetCameraPosX(),
+								int(birdPos_[i].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
+								int(size_.x),
+								int(size_.y),
+								0.0f,
+								0xffffffff,
+								kFillModeSolid
+							);
+						}
+
+
+
+					}
+				}
+
+				//ミニマップ用
+				Novice::DrawBox(
+					int((birdPos_[i].x / 17) + 1120),
+					int((birdPos_[i].y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17),
+					int(miniMapSize),
+					int(miniMapSize),
+					0.0f,
+					0xff0000ff,
+					kFillModeSolid
+				);
+			}
+
+
 			Novice::DrawBox(
-				int((birdPos_[i].x / 17) + 1120),
-				int((birdPos_[i].y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17),
-				int(miniMapSize),
-				int(miniMapSize),
+				1120,
+				24,
+				150,
+				320,
 				0.0f,
-				0xff0000ff,
+				0x00000088,
 				kFillModeSolid
 			);
-		}
 
+			//ミニマップの表示
+			for (int row = 0; row < mapRow; row++) {
+				for (int col = 0; col < mapCol; col++) {
 
-		Novice::DrawBox(
-			1120,
-			24,
-			150,
-			320,
-			0.0f,
-			0x00000088,
-			kFillModeSolid
-		);
+					if (((pos_[row][col].y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17) >= 24 &&
+						((pos_[row][col].y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17) <= 340) {
+						switch (blockType_[row][col]) {
 
-		//ミニマップの表示
-		for (int row = 0; row < mapRow; row++) {
-			for (int col = 0; col < mapCol; col++) {
+						case normal:
+							//描画
+							Novice::DrawBox(
+								int((pos_[row][col].x / 17) + 1120),
+								int((pos_[row][col].y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17),
+								int(miniMapSize),
+								int(miniMapSize),
+								0.0f,
+								0xf7efdfff,
+								kFillModeSolid
+							);
 
-				if (((pos_[row][col].y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17) >= 24 &&
-					((pos_[row][col].y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17) <= 340) {
-					switch (blockType_[row][col]) {
+							break;
 
-					case normal:
-						//描画
-						Novice::DrawBox(
-							int((pos_[row][col].x / 17) + 1120),
-							int((pos_[row][col].y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17),
-							int(miniMapSize),
-							int(miniMapSize),
-							0.0f,
-							0xf7efdfff,
-							kFillModeSolid
-						);
+						case thunder:
 
-						break;
+							//描画
+							Novice::DrawBox(
+								int((pos_[row][col].x / 17) + 1120),
+								int((pos_[row][col].y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17),
+								int(miniMapSize),
+								int(miniMapSize),
+								0.0f,
+								0x666666ff,
+								kFillModeSolid
+							);
 
-					case thunder:
+							break;
 
-						//描画
-						Novice::DrawBox(
-							int((pos_[row][col].x / 17) + 1120),
-							int((pos_[row][col].y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17),
-							int(miniMapSize),
-							int(miniMapSize),
-							0.0f,
-							0x666666ff,
-							kFillModeSolid
-						);
-
-						break;
-
-					default:
-						break;
+						default:
+							break;
+						}
 					}
 				}
 			}

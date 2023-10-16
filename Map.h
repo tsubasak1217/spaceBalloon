@@ -96,7 +96,7 @@ public:
 	Novice::LoadTexture("./Resources./Images./title./cloud2.png"),
 	Novice::LoadTexture("./Resources./Images./title./space.png"),
 	Novice::LoadTexture("./Resources./Images./title./balloon.png"),
-	Novice::LoadTexture("./Resources./Images./title./rope.png")
+	Novice::LoadTexture("./Resources./Images./title./rope.png"),
 	};
 
 };

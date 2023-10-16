@@ -8,7 +8,7 @@ void Player::Update(
 	Map& map, Scene scene, ChangeScene& changeScene
 ) {
 
-
+	grandTimeCount_++;
 
 	switch (scene.GetSceneNum()) {
 		//=====================================================================================
@@ -68,8 +68,8 @@ void Player::Update(
 		//==================================移動制限の壁====================================
 
 		//下
-		if (pos_.y < 260.0f + size_.y) {
-			pos_.y = 260.0f + size_.y;
+		if (pos_.y < 320.0f + size_.y) {
+			pos_.y = 320.0f + size_.y;
 			//
 			velocity_.y *= -1.0f * 0.1f;
 			hitDirection_ = 1;
@@ -122,7 +122,60 @@ void Player::Update(
 			isAlive_ = true;
 		}
 
-		// 風船が膨らんだりしぼんだりする処理
+		//加速のフラグに関する処理==========================================
+		
+
+		if (isCountStart_) {
+
+			doublePushLimit_--;
+
+			//ダッシュフラグを立てる
+			if (keys[DIK_SPACE] && !preKeys[DIK_SPACE]) {
+				isDash_ = true;
+				doublePushLimit_ = 0;
+				isAccelable_ = false;
+
+				//ダッシュする方向の決定
+				if (keys[DIK_D] or keys[DIK_RIGHT]) {
+					dashDirection_ = Right;
+
+				} else if (keys[DIK_A] or keys[DIK_LEFT]) {
+					dashDirection_ = Left;
+
+				} else if (keys[DIK_S] or keys[DIK_DOWN]) {
+					dashDirection_ = Down;
+				} else {
+					dashDirection_ = Up;
+				}
+
+			}
+
+			//二回押ししなかったとき、処理を終える
+			if (doublePushLimit_ <= 0) {
+				isCountStart_ = false;
+				doublePushLimit_ = 16;
+			}
+		}
+
+		if (keys[DIK_SPACE]) {
+
+			if (isAccelable_) {
+
+				if (!preKeys[DIK_SPACE]) {
+					isCountStart_ = true;
+				}
+			}
+		}
+
+		if (isDash_) {
+			dashLimit_--;
+			if (dashLimit_ <= 0) {
+				isDash_ = false;
+				dashLimit_ = 300;
+			}
+		}
+
+		// 風船が膨らんだりしぼんだりする処理=================================================
 
 		if (unrivaledLimit_ < 100) {
 
@@ -138,6 +191,8 @@ void Player::Update(
 
 				//自爆の制限時間を減らす(リトライ用)
 				holdLimit_--;
+
+
 
 			} else {
 				if (balloonLevel_ > 0.0f) {
@@ -250,6 +305,42 @@ void Player::Update(
 		windSpeed_.x *= 0.95f;
 		windSpeed_.y *= 0.95f;
 
+		//ダッシュしている際はその方向にのみ進む
+		if (isDash_) {
+			switch (dashDirection_) {
+			case Up:
+				velocity_.y = 12.0f;
+				windSpeed_.y = 0.0f;
+				velocity_.x = 0.0f;
+				windSpeed_.x = 0.0f;
+				break;
+
+			case Right:
+				velocity_.y = 0.0f;
+				windSpeed_.y = 0.0f;
+				velocity_.x = 12.0f;
+				windSpeed_.x = 0.0f;
+				break;
+
+			case Left:
+				velocity_.y = 0.0f;
+				windSpeed_.y = 0.0f;
+				velocity_.x = -12.0f;
+				windSpeed_.x = 0.0f;
+				break;
+
+			case Down:
+				velocity_.y = -12.0f;
+				windSpeed_.y = 0.0f;
+				velocity_.x = 0.0f;
+				windSpeed_.x = 0.0f;
+				break;
+
+			default:
+				break;
+			}
+		}
+
 		//移動
 		pos_.y += (velocity_.y + windSpeed_.y) - (airResistance_ * velocity_.y);
 		pos_.x += (velocity_.x + windSpeed_.x);
@@ -262,6 +353,7 @@ void Player::Update(
 			//
 			velocity_.y *= -1.0f * 0.6f;
 			hitDirection_ = 1;
+			isDash_ = false;
 			if (CheckBalloonLimit(hitDirection_, preHitDirection_)) {
 				balloonLevel_ -= 0.4f;
 			}
@@ -273,6 +365,7 @@ void Player::Update(
 
 			velocity_.y *= -1.0f * 0.6f;
 			hitDirection_ = 3;
+			isDash_ = false;
 			if (CheckBalloonLimit(hitDirection_, preHitDirection_)) {
 				balloonLevel_ -= 0.4f;
 			}
@@ -285,6 +378,7 @@ void Player::Update(
 			velocity_.x *= -1.0f * 0.6f;
 			knockBackCount_ = int(sqrtf(powf(velocity_.x, 2.0f))) * 8;
 			hitDirection_ = 4;
+			isDash_ = false;
 			if (CheckBalloonLimit(hitDirection_, preHitDirection_)) {
 				balloonLevel_ -= 0.4f;
 			}
@@ -297,6 +391,7 @@ void Player::Update(
 			velocity_.x *= -1.0f * 0.6f;
 			knockBackCount_ = int(sqrtf(powf(velocity_.x, 2.0f))) * 8;
 			hitDirection_ = 2;
+			isDash_ = false;
 			if (CheckBalloonLimit(hitDirection_, preHitDirection_)) {
 				balloonLevel_ -= 0.4f;
 			}
@@ -415,6 +510,17 @@ void Player::Update(
 
 						//通常ブロックとの当たり判定
 						if (map.GetBlockType(address_.y + i, address_.x + j) == 1) {
+
+							if (IsHitBox_BallDirection(
+								{ map.GetPos(address_.y + i, address_.x + j).x + 32, map.GetPos(address_.y + i, address_.x + j).y - 32 },
+								pos_,
+								map.GetSize(),
+								size_.x
+							)) {
+							
+								isDash_ = false;
+							}
+
 							switch (
 
 								IsHitBox_BallDirection(
@@ -842,6 +948,24 @@ void Player::Draw(GlobalVariable globalV, Scene scene) {
 
 		if (!isUnrivaled_) {
 
+			//加速できるときにエフェクトを出す
+			if (isAccelable_) {
+
+				for (int i = 0; i < 4; i++) {
+					Novice::DrawEllipse(
+						int(pos_.x) - globalV.GetCameraPosX(),
+						int(pos_.y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
+						int(size_.x + (size_.x * 0.8f) + (sinf((float(grandTimeCount_ + i * 32) / 128) * float(M_PI)) * size_.x * 0.8f)),
+						int(size_.y + (size_.x * 0.8f) + (sinf((float(grandTimeCount_ + i * 32) / 128) * float(M_PI)) * size_.y * 0.8f)),
+						0.0f,
+						0xffb6c11F + int((sinf((float(grandTimeCount_ + i * 8) / 16) * float(M_PI)) * 0x1F)),
+						kFillModeSolid
+					);
+				}
+			}
+
+
+			//風船の紐
 			for (int i = 0; i < 32 - 1; i++) {
 				Novice::DrawLine(
 					int(ropePos_[i].x) - globalV.GetCameraPosX(),
@@ -852,6 +976,7 @@ void Player::Draw(GlobalVariable globalV, Scene scene) {
 				);
 			}
 
+			//プレイヤー
 			Novice::DrawEllipse(
 				int(pos_.x) - globalV.GetCameraPosX(),
 				int(pos_.y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),

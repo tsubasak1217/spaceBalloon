@@ -49,6 +49,13 @@ enum SceneNum {
 	clear
 };
 
+enum Direction {
+	Up,
+	Right,
+	Down,
+	Left
+};
+
 struct Vector2Int final {
 	int x;
 	int y;

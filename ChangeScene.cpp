@@ -150,14 +150,13 @@ void ChangeScene::Draw(Scene scene) {
 
 		if (isStartScene_) {
 
-			Novice::DrawBox(
+			Novice::DrawSprite(
 				0,
 				int(0 + (EaseOutQuint(easeT_)) * 720),
-				1280,
-				720,
+				gameImgs_[0],
+				1,1,
 				0.0f,
-				WHITE,
-				kFillModeSolid
+				WHITE
 			);
 		}
 

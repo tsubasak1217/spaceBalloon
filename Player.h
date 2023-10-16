@@ -6,6 +6,9 @@ class Player {
 
 private:
 
+	//ずっと時間を計ってるやつ
+	int grandTimeCount_;
+
 	//座標、大きさ
 	Vector2 pos_;
 	Vector2 size_;
@@ -27,8 +30,13 @@ private:
 	Vector2 velocity_;
 	Vector2 acceleration_;
 
-	//加速アイテムを持っているかどうか(加速可能か)
+	//加速系
 	bool isAccelable_;
+	bool isCountStart_;
+	int doublePushLimit_;
+	bool isDash_;
+	int dashDirection_;
+	int dashLimit_;
 
 	//プレイヤーの番地
 	Vector2Int address_;
@@ -66,75 +74,16 @@ public:
 	//イニシャライズ(初期化関数)
 	void Init(int sceneNum) {
 
-		switch (sceneNum) {
-			//=====================================================================================
-			//                                      タイトル
-			//=====================================================================================
-		case title:
-
-			balloonLevel_ = 0.0f;
-			size_ = { 5.0f + (balloonLevel_ * 2.0f),5.0f + (balloonLevel_ * 2.0f) };
-			pos_ = { 640.0f,260.0f };
-
-			ropeLength_ = 8.0f;
-			ropePos_[0] = { pos_.x,pos_.y - size_.y };
-			for (int i = 1; i < 32; i++) {
-				
-				ropePos_[i].x = ropePos_[i - 1].x;
-				ropePos_[i].y = ropePos_[i - 1].y - ropeLength_;
-			}
-			
-			respawnPos_ = { 0.0f,0.0f };
-
-			gravity_ = -0.8f;
-			weight_ = 0.0f;
-			volume_ = 1;
-			airResistance_ = 0.5f;
-
-			speed_ = 4.0f;
-			windSpeed_ = { 0.0f,0.0f };
-			velocity_ = { 0.0f,0.0f };
-			acceleration_ = { 0.0f,0.0f };
-
-			isAccelable_ = false;
-
-			life_ = 3;
-			isAlive_ = true;
-			isUnrivaled_ = false;
-			unrivaledLimit_ = 0;
-			holdLimit_ = 300;
-
-			color_ = 0xff5181ff;
-
-			easeT_ = 0.0f;
-			windT_ = 0.0f;
-			knockBackCount_ = 0;
-
-			address_ = { int(pos_.x) / 64,int(pos_.y) / 64 };
-
-			hitDirection_ = 0;
-			preHitDirection_ = 0;
-
-			scoreCount_ = 0;
-
-			break;
-
-			//=====================================================================================
-			//                                     ゲーム本編
-			//=====================================================================================
-		case game:
+		life_ = 3;
+		isAlive_ = true;
+		isUnrivaled_ = false;
+		unrivaledLimit_ = 0;
+		holdLimit_ = 300;
 
 		balloonLevel_ = 0.0f;
 		size_ = { 5.0f + (balloonLevel_ * 2.0f),5.0f + (balloonLevel_ * 2.0f) };
-		pos_ = { 640.0f,size_.y };
-
+		address_ = { int(pos_.x) / 64,int(pos_.y) / 64 };
 		ropeLength_ = 8.0f;
-		ropePos_[0] = { pos_.x,pos_.y - size_.y };
-		for (int i = 1; i < 32; i++) {
-
-			ropePos_[i].x = ropePos_[i - 1].x;
-			ropePos_[i].y = ropePos_[i - 1].y - ropeLength_;
-		}
 
 		respawnPos_ = { 0.0f,0.0f };
 
@@ -147,33 +96,62 @@ public:
 		windSpeed_ = { 0.0f,0.0f };
 		velocity_ = { 0.0f,0.0f };
 		acceleration_ = { 0.0f,0.0f };
-
-		isAccelable_ = false;
-
-		life_ = 3;
-		isAlive_ = true;
-		isUnrivaled_ = false;
-		unrivaledLimit_ = 0;
-		holdLimit_ = 300;
-
-		color_ = 0xff5181ff;
-
 		easeT_ = 0.0f;
 		windT_ = 0.0f;
 		knockBackCount_ = 0;
 
-		address_ = { int(pos_.x) / 64,int(pos_.y) / 64 };
-
 		hitDirection_ = 0;
 		preHitDirection_ = 0;
 
-		scoreCount_ = 0;
+		grandTimeCount_ = 0;
+		isAccelable_ = false;
+		isCountStart_ = false;
+		doublePushLimit_ = 16;
+		isDash_ = false;
+		dashDirection_ = 0;
+		dashLimit_ = 300;
 
-		break;
+		color_ = 0xff5181ff;
 
-		//=====================================================================================
-		//                                     クリア画面
-		//=====================================================================================
+		switch (sceneNum) {
+			//=====================================================================================
+			//                                      タイトル
+			//=====================================================================================
+		case title:
+
+			pos_ = { 640.0f,400.0f };
+			
+			ropePos_[0] = { pos_.x,pos_.y - size_.y };
+			for (int i = 1; i < 32; i++) {
+
+				ropePos_[i].x = ropePos_[i - 1].x;
+				ropePos_[i].y = ropePos_[i - 1].y - ropeLength_;
+			}
+
+			scoreCount_ = 0;
+
+			break;
+
+			//=====================================================================================
+			//                                     ゲーム本編
+			//=====================================================================================
+		case game:
+
+			pos_ = { 640.0f,size_.y };
+
+			ropePos_[0] = { pos_.x,pos_.y - size_.y };
+			for (int i = 1; i < 32; i++) {
+
+				ropePos_[i].x = ropePos_[i - 1].x;
+				ropePos_[i].y = ropePos_[i - 1].y - ropeLength_;
+			}
+
+
+			break;
+
+			//=====================================================================================
+			//                                     クリア画面
+			//=====================================================================================
 		case clear:
 			break;
 
@@ -206,15 +184,15 @@ public:
 	int GetUnrivaledLimit() { return unrivaledLimit_; }
 	void SetUnrivaledLimit(int value) { unrivaledLimit_ = value; }
 
-	
+
 
 	// アップデート
 	void Update(
-		char* keys, char* preKeys, 
-		int* cameraPosX,int* cameraPosY, int* miniCameraPos, 
+		char* keys, char* preKeys,
+		int* cameraPosX, int* cameraPosY, int* miniCameraPos,
 		Map& map, Scene scene, ChangeScene& changeScene
 	);
 
 	//ドロー
-	void Draw(GlobalVariable globalV,Scene scene);
+	void Draw(GlobalVariable globalV, Scene scene);
 };

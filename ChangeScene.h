@@ -16,6 +16,10 @@ private:
 public:
 
 	float easeT_;
+	int gameImgs_[1] = {
+		Novice::LoadTexture("./Resources./Images./title./cloud3.png")
+	};
+
 
 	//イニシャライズ
 	void Init() {
