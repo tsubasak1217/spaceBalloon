@@ -10,8 +10,7 @@ private:
 
 	//
 	float theta_;
-	int timeCount_;
-	
+	int titleTimeCount_;
 
 	//タイトルのオブジェクト
 	Vector2 cloudPos_[2];
@@ -83,7 +82,6 @@ public:
 
 	//ドロー
 	void Draw(GlobalVariable globalV, Scene scene,ChangeScene changeScene);
-	void DrawBG();
 
 	enum Direction {
 		Up,

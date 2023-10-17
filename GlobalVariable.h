@@ -2,7 +2,6 @@
 class GlobalVariable {
 
 public:
-	int grandTimeCount_;
 	int groundPos_;
 	int cameraPosY_;
 	int cameraPosX_;
@@ -13,11 +12,6 @@ public:
 		cameraPosX_ = 0;
 		cameraPosY_ = 0;
 		miniCameraPos_ = 0;
-		grandTimeCount_ = 0;
-	}
-
-	void Update() {
-		grandTimeCount_++;
 	}
 
 	int GetGroundPos() { return groundPos_; }
