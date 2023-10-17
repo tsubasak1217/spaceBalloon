@@ -1,19 +1,20 @@
 ﻿#include "Emitter.h"
 #include "Trajectory.h"
 
-void Emitter::Update(Player player) {
+void Emitter::Update(Player player, Map map/*,Color* color*/) {
 
 	pos_ = player.GetPos();
+	size_ = player.GetSize() / 4;
 
 	if (++frameCount >= DeterminedFrame) {
-		particles.push_back(new Trajectory(pos_, 60));
+		particles.push_back(new Trajectory(pos_, 60,size_));
 		frameCount = 0;
 	}
 
 	auto iterator = particles.begin();
 	while (iterator != particles.end()) {
-		(*iterator)->Update();
-		if ((*iterator)->isAlive()) {
+		(*iterator)->Update(player, map);
+		if((*iterator) -> isAlive()){
 			iterator++;
 		} else {
 			iterator = particles.erase(iterator);

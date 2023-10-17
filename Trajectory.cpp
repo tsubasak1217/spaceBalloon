@@ -1,11 +1,11 @@
 ﻿#include "Trajectory.h"
 #include <Novice.h>
+#include "Map.h"
 
-void Trajectory::Update()
+void Trajectory::Update(Player player, Map map)
 {
 	lifespan--;
 	color->subAlpha(4);
-
 	location.x += vector.x;
 	location.y += vector.y;
 }
@@ -15,8 +15,8 @@ void Trajectory::Draw(GlobalVariable globalV)
 	Novice::DrawEllipse(
 		int(location.x) - globalV.GetCameraPosX(),
 		int(location.y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
-		6/*int(retainSize.x)*/,
-		6/*int(retainSize.y)*/,
+		int(retainSize.x),
+		int(retainSize.y),
 		0.0f,
 		color->to_int(),
 		kFillModeSolid
