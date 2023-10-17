@@ -5,7 +5,6 @@
 void Title::Update() {
 
 
-
 	if (atrrk == 1) {
 		time++;
 		if (time > 160) {
