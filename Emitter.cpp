@@ -9,17 +9,12 @@ void Emitter::Update(Player player, Map map/*,Color* color*/) {
 	if (++frameCount >= DeterminedFrame) {
 		particles.push_back(new Trajectory(pos_, 60,size_));
 		frameCount = 0;
-		/*if (player.GetIsUnrivaled()) {
-			color->setCode(PINK);
-		}
-		else {
-			color->setCode(WHITE);
-		}*/
 	}
 
 	auto iterator = particles.begin();
 	while (iterator != particles.end()) {
 		(*iterator)->Update(player, map);
+		if((*iterator) -> isAlive()){
 			iterator++;
 		} else {
 			iterator = particles.erase(iterator);

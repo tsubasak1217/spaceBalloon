@@ -24,7 +24,7 @@ public:
 	virtual void Update(Player player, Map map) = 0;
 	virtual void Draw(GlobalVariable globalV) = 0;
 	bool isAlive() {		  
-		return lifespan >= 0; 
+		return lifespan >= 0;
 	}
 };
 

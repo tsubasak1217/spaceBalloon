@@ -12,4 +12,3 @@ public:
     void Draw(GlobalVariable globalV)override;
 
 };
-
