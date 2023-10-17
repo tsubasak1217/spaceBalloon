@@ -87,9 +87,9 @@ public:
 
 	enum Direction {
 		Up,
-		Right,
 		Down,
-		Left
+		Left,
+		Right
 	};
 
 	int titleImgs_[6] = {

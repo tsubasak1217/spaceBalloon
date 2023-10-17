@@ -764,29 +764,19 @@ void Map::Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene) {
 					if (int(birdPos_[i].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY() >= 0 - size_.y &&
 						int(birdPos_[i].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY() <= 720) {
 
-						if (!isTimeStop_) {
-							Novice::DrawBox(
+							
+							Novice::DrawSpriteRect(
 								int(birdPos_[i].x) - globalV.GetCameraPosX(),
 								int(birdPos_[i].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
-								int(size_.x),
-								int(size_.y),
+								0 + (64 * (timeCount_ / 4 % 4)),
+								(64 * (birdDirection_[i]%2)) + (128 * isTimeStop_),
+								64,
+								64,
+								gameImgs_[4],
+								64.0f / 320.0f, 64.0f / 256.0f,
 								0.0f,
-								0xff0000ff,
-								kFillModeSolid
+								0xffffffff
 							);
-						} else {
-							Novice::DrawBox(
-								int(birdPos_[i].x) - globalV.GetCameraPosX(),
-								int(birdPos_[i].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
-								int(size_.x),
-								int(size_.y),
-								0.0f,
-								0xffffffff,
-								kFillModeSolid
-							);
-						}
-
-
 
 					}
 				}
