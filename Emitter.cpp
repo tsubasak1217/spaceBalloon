@@ -1,7 +1,7 @@
 ﻿#include "Emitter.h"
 #include "Trajectory.h"
 
-void Emitter::Update(Player player, Map map/*,Color* color*/) {
+void Emitter::Update(Player player, Map map) {
 
 	pos_ = player.GetPos();
 	size_ = player.GetSize() / 4;
@@ -13,7 +13,7 @@ void Emitter::Update(Player player, Map map/*,Color* color*/) {
 
 	auto iterator = particles.begin();
 	while (iterator != particles.end()) {
-		(*iterator)->Update(player, map);
+		(*iterator)->Update(map);
 		if((*iterator) -> isAlive()){
 			iterator++;
 		} else {

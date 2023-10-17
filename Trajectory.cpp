@@ -2,7 +2,7 @@
 #include <Novice.h>
 #include "Map.h"
 
-void Trajectory::Update(Player player, Map map)
+void Trajectory::Update(Map map)
 {
 	lifespan--;
 	color->subAlpha(4);
