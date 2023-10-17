@@ -269,7 +269,7 @@ int IsHitBox_BallDirection(Vector2 boxCenter, Vector2 ballPos, Vector2 boxSize, 
 	} else if (distY >= -boxSize.y / 2.0f && distY <= boxSize.y / 2.0f) {
 
 		if (distX >= (-boxSize.x / 2.0f) - ballRasius && distX <= (boxSize.x / 2.0f) + ballRasius) {
-			
+
 			if (distX >= 0) {
 				return 2;//右面に当たった
 			} else {
@@ -296,8 +296,8 @@ int IsHitBox_BallDirection(Vector2 boxCenter, Vector2 ballPos, Vector2 boxSize, 
 			}
 		} else if (distX >= 0 && distY >= 0) {//右上
 			if (CheckLength(boxCenter.x + boxSize.x / 2.0f, boxCenter.y + boxSize.y / 2.0f, ballPos.x, ballPos.y) <= ballRasius) {
-				
-				if (sqrtf(powf(distX,2.0f)) < sqrtf(powf(distY, 2.0f))) {
+
+				if (sqrtf(powf(distX, 2.0f)) < sqrtf(powf(distY, 2.0f))) {
 					return 1;//上面に当たった
 				} else {
 					return 2;//右面に当たった
@@ -309,7 +309,7 @@ int IsHitBox_BallDirection(Vector2 boxCenter, Vector2 ballPos, Vector2 boxSize, 
 
 		} else if (distX < 0 && distY < 0) {//左下
 			if (CheckLength(boxCenter.x - boxSize.x / 2.0f, boxCenter.y - boxSize.y / 2.0f, ballPos.x, ballPos.y) <= ballRasius) {
-				
+
 				if (sqrtf(powf(distX, 2.0f)) < sqrtf(powf(distY, 2.0f))) {
 					return 3;//上面に当たった
 				} else {
@@ -322,7 +322,7 @@ int IsHitBox_BallDirection(Vector2 boxCenter, Vector2 ballPos, Vector2 boxSize, 
 
 		} else {//右下
 			if (CheckLength(boxCenter.x + boxSize.x / 2.0f, boxCenter.y - boxSize.y / 2.0f, ballPos.x, ballPos.y) <= ballRasius) {
-				
+
 				if (sqrtf(powf(distX, 2.0f)) < sqrtf(powf(distY, 2.0f))) {
 					return 3;//上面に当たった
 				} else {
@@ -345,12 +345,12 @@ bool CheckBalloonLimit(int hitDirection, int preHitDirection) {
 	}
 };
 
-int Red(int color) {return (color >> 24) & 0xFF;}
+int Red(int color) { return (color >> 24) & 0xFF; }
 int Green(int color) { return (color >> 16) & 0xFF; }
 int Blue(int color) { return (color >> 8) & 0xFF; }
 int Alpha(int color) { return color & 0xFF; }
 
-int ChangeColor(int startColor, int aimColor, float divideNum,float rate) {
+int ChangeColor(int startColor, int aimColor, float divideNum, float rate) {
 
 	//二色の差を求める
 	int difRed = Red(aimColor) - Red(startColor);
@@ -384,7 +384,7 @@ int GrayScale(int color) {
 	int trancedGreen = int(float(Green) * 0.7152f);
 	int trancedBlue = int(float(Blue) * 0.0722f);
 
-	int gray = int((trancedRed + trancedGreen + trancedBlue) / 3);
+	int gray = int(trancedRed + trancedGreen + trancedBlue);
 
 	return 0xFF + (gray << 24) + (gray << 16) + (gray << 8);
 }

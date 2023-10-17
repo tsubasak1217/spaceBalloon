@@ -6,9 +6,6 @@ class Player {
 
 private:
 
-	//ずっと時間を計ってるやつ
-	int grandTimeCount_;
-
 	//座標、大きさ
 	Vector2 pos_;
 	Vector2 size_;
@@ -103,7 +100,6 @@ public:
 		hitDirection_ = 0;
 		preHitDirection_ = 0;
 
-		grandTimeCount_ = 0;
 		isAccelable_ = false;
 		isCountStart_ = false;
 		doublePushLimit_ = 16;
@@ -119,8 +115,8 @@ public:
 			//=====================================================================================
 		case title:
 
-			pos_ = { 640.0f,320.0f + size_.x };
-			
+			pos_ = { 640.0f,320.0f + size_.y};
+
 			ropePos_[0] = { pos_.x,pos_.y - size_.y };
 			for (int i = 1; i < 32; i++) {
 

@@ -10,7 +10,8 @@ private:
 
 	//
 	float theta_;
-	int titleTimeCount_;
+	int timeCount_;
+
 
 	//タイトルのオブジェクト
 	Vector2 cloudPos_[2];
@@ -81,7 +82,8 @@ public:
 	void Update(Scene scene);
 
 	//ドロー
-	void Draw(GlobalVariable globalV, Scene scene,ChangeScene changeScene);
+	void Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene);
+	void DrawBG();
 
 	enum Direction {
 		Up,
@@ -105,7 +107,7 @@ public:
 	Novice::LoadTexture("./Resources./Images./game./wind.png"),
 	Novice::LoadTexture("./Resources./Images./game./saveFlag.png"),
 	Novice::LoadTexture("./Resources./Images./game./bird.png"),
-		//Novice::LoadTexture("./Resources./Images./title./rope.png"),
+	//Novice::LoadTexture("./Resources./Images./title./rope.png"),
 	};
 };
 
