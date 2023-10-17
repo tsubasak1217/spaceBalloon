@@ -20,7 +20,6 @@ void Emitter::Update(Player player, Map map/*,Color* color*/) {
 	auto iterator = particles.begin();
 	while (iterator != particles.end()) {
 		(*iterator)->Update(player, map);
-		if ((*iterator)->isAlive()) {
 			iterator++;
 		} else {
 			iterator = particles.erase(iterator);
