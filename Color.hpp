@@ -1,7 +1,7 @@
 #pragma once
 
 #define RED 0xFF0000FF
-#define GREEN 0x008000FF
+//#define GREEN 0x008000FF
 #define BLUE 0x0000FFFF
 #define WHITE 0xFFFFFFFF
 #define BLACK 0x000000FF

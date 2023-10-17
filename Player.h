@@ -6,6 +6,9 @@ class Player {
 
 private:
 
+	//ずっと時間を計ってるやつ
+	int grandTimeCount_;
+
 	//座標、大きさ
 	Vector2 pos_;
 	Vector2 size_;
@@ -100,6 +103,7 @@ public:
 		hitDirection_ = 0;
 		preHitDirection_ = 0;
 
+		grandTimeCount_ = 0;
 		isAccelable_ = false;
 		isCountStart_ = false;
 		doublePushLimit_ = 16;
