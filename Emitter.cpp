@@ -2,7 +2,6 @@
 #include "Trajectory.h"
 
 void Emitter::Update(Player player, Map map/*,Color* color*/) {
-
 	pos_ = player.GetPos();
 	size_ = player.GetSize() / 4;
 
