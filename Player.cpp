@@ -405,11 +405,11 @@ void Player::Update(
 			int roopCount = 0;
 
 			//座標を求めるための変数
-			float difX;
-			float difY;
-			float normalizeX;
-			float normalizeY;
-			float leng;
+			float difX = 0;
+			float difY = 0;
+			float normalizeX = 0;
+			float normalizeY = 0;
+			float leng = 0;
 
 			//下が空いていれば紐が落ちていくようにする
 			if (int(ropePos_[i].y / 64.0f) - 1 >= 0 && int(ropePos_[i].y / 64.0f) < 240) {

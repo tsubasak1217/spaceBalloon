@@ -21,7 +21,7 @@ public:
 		vector.x = sinf((rand() % 360) * (float(M_PI) / 180.f));
 		vector.y = cosf((rand() % 360) * (float(M_PI) / 180.f));
 	}
-	virtual void Update(Player player, Map map) = 0;
+	virtual void Update(Map map) = 0;
 	virtual void Draw(GlobalVariable globalV) = 0;
 	bool isAlive() {		  
 		return lifespan >= 0;

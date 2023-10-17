@@ -101,12 +101,12 @@ public:
 	Novice::LoadTexture("./Resources./Images./title./rope.png"),
 	};
 
-	int gameImgs_[4] = {
+	int gameImgs_[5] = {
 	Novice::LoadTexture("./Resources./Images./game./cloud_normal.png"),
 	Novice::LoadTexture("./Resources./Images./game./cloud_thunder.png"),
 	Novice::LoadTexture("./Resources./Images./game./wind.png"),
 	Novice::LoadTexture("./Resources./Images./game./saveFlag.png"),
-		//Novice::LoadTexture("./Resources./Images./title./balloon.png"),
+	Novice::LoadTexture("./Resources./Images./game./bird.png"),
 		//Novice::LoadTexture("./Resources./Images./title./rope.png"),
 	};
 };

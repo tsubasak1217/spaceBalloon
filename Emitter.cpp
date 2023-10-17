@@ -4,7 +4,7 @@
 void Emitter::Update(Player player, Map map/*,Color* color*/) {
 
 	pos_ = player.GetPos();
-	size_ = { player.GetSize().x / 4, player.GetSize().y / 4 };
+	size_ ={ player.GetSize().x / 4, player.GetSize().y / 4 };
 
 	if (++frameCount >= DeterminedFrame) {
 		particles.push_back(new Trajectory(pos_, 60,size_));
@@ -13,7 +13,7 @@ void Emitter::Update(Player player, Map map/*,Color* color*/) {
 
 	auto iterator = particles.begin();
 	while (iterator != particles.end()) {
-		(*iterator)->Update(player, map);
+		(*iterator)->Update(map);
 		if((*iterator) -> isAlive()){
 			iterator++;
 		} else {
