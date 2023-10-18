@@ -12,6 +12,7 @@ private:
 	float theta_;
 	int timeCount_;
 
+	int allScoreItem_;
 
 	//タイトルのオブジェクト
 	Vector2 cloudPos_[2];
@@ -101,13 +102,19 @@ public:
 	Novice::LoadTexture("./Resources./Images./title./rope.png"),
 	};
 
-	int gameImgs_[5] = {
+	int gameImgs_[7] = {
 	Novice::LoadTexture("./Resources./Images./game./cloud_normal.png"),
 	Novice::LoadTexture("./Resources./Images./game./cloud_thunder.png"),
 	Novice::LoadTexture("./Resources./Images./game./wind.png"),
 	Novice::LoadTexture("./Resources./Images./game./saveFlag.png"),
 	Novice::LoadTexture("./Resources./Images./game./bird.png"),
-	//Novice::LoadTexture("./Resources./Images./title./rope.png"),
+	Novice::LoadTexture("./Resources./Images./game./life.png"),
+	Novice::LoadTexture("./Resources./Images./game./score.png"),
+	};
+
+	int clearImgs_[2] = {
+	Novice::LoadTexture("./Resources./Images./clear./result.png"),
+	Novice::LoadTexture("./Resources./Images./clear./numFonts.png"),
 	};
 };
 
