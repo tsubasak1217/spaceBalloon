@@ -36,13 +36,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	ChangeScene changeScene;
 	changeScene.Init();
 
-	Player player;
-	player.Init(title);
-
 	Emitter* effect = new Emitter();
 
 	Map map;
 	map.Init();
+
+	Player player;
+	player.Init(title, map);
 
 	GlobalVariable globalV;
 	globalV.Init();
@@ -62,11 +62,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		globalV.Update();
 
-		map.Update(scene);
+		map.Update(scene,changeScene);
 		player.Update(keys, preKeys, &globalV.cameraPosX_, &globalV.cameraPosY_, &globalV.miniCameraPos_, map, scene, changeScene);
 		effect->Update(player,map);
 
-		changeScene.Update(scene);
+		changeScene.Update(scene,keys);
 
 		///
 		/// ↑更新処理ここまで
@@ -82,16 +82,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		}
 
 		effect->Draw(globalV);
-		player.Draw(globalV, scene);
+		player.Draw(globalV, scene,changeScene);
 
 		if (scene.GetSceneNum() > title) {
 			map.Draw(globalV, scene, changeScene);
 		}
 		changeScene.Draw(scene);
 
-		Novice::ScreenPrintf(100, 20, "%d", globalV.grandTimeCount_);
-		Novice::ScreenPrintf(100, 40, "%d", map.GetBlockType(0, 0));
-		Novice::ScreenPrintf(100, 60, "%d", changeScene.GetIsFinish());
+		Novice::ScreenPrintf(100, 20, "%d", changeScene.GetFinishTimer());
+		//Novice::ScreenPrintf(100, 40, "%d,%d", map.GetPlayerRespawnAddress().y, map.GetPlayerRespawnAddress().x);
+		//Novice::ScreenPrintf(100, 60, "%d", changeScene.GetIsFinish());
+
 		///
 		/// ↑描画処理ここまで
 		///

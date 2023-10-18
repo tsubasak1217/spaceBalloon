@@ -1,7 +1,7 @@
 #include "ChangeScene.h"
 
 
-void ChangeScene::Update(Scene& scene) {
+void ChangeScene::Update(Scene& scene,char*keys) {
 
 	if (isStartScene_) {
 		startTimer_--;
@@ -11,13 +11,13 @@ void ChangeScene::Update(Scene& scene) {
 		finishTimer_--;
 	}
 
-	if (initOrder_) {
+	/*if (initOrder_) {
 		initOrder_ = false;
 	}
 
 	if (finishTimer_ <= 0) {
 		initOrder_ = true;
-	}
+	}*/
 
 	switch (scene.GetSceneNum()) {
 
@@ -29,7 +29,7 @@ void ChangeScene::Update(Scene& scene) {
 
 		if (isStartScene_) {
 
-			easeT_ += 0.01f;
+			//easeT_ += 0.01f;
 			if (easeT_ > 1.0f) {
 				easeT_ = 1.0f;
 			}
@@ -72,7 +72,7 @@ void ChangeScene::Update(Scene& scene) {
 
 			if (startTimer_ <= 0) {
 				isStartScene_ = false;
-				startTimer_ = 60;
+				startTimer_ = 120;
 				easeT_ = 0.0f;
 			}
 
@@ -80,10 +80,17 @@ void ChangeScene::Update(Scene& scene) {
 
 		if (isFinishScene_) {
 
+			if (finishTimer_ <= 120) {
+				easeT_ += 0.01f;
+				if (easeT_ > 1.0f) {
+					easeT_ = 1.0f;
+				}
+			}
+
 			if (finishTimer_ <= 0) {
 				isFinishScene_ = false;
 				isStartScene_ = true;
-				finishTimer_ = 240;
+				finishTimer_ = 30;
 				easeT_ = 0;
 				scene.SetSceneNum(clear);
 			}
@@ -95,9 +102,25 @@ void ChangeScene::Update(Scene& scene) {
 		//シーン遷移
 		if (isStartScene_) {
 
+			easeT_ += 0.01f;
+			if (easeT_ > 1.0f) {
+				easeT_ = 1.0f;
+			}
+
+
 			if (startTimer_ <= 0) {
-				isStartScene_ = false;
-				startTimer_ = 60;
+
+				if (keys[DIK_SPACE]) {
+					clearSceneRole_++;
+					startTimer_ = 120;
+					easeT_ = 0.0f;
+				}
+
+				if (clearSceneRole_ >= 2) {
+					isStartScene_ = false;
+					isFinishScene_ = true;
+					clearSceneRole_ = 0;
+				}
 			}
 
 		}

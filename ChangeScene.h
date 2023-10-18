@@ -10,12 +10,15 @@ private:
 
 	int finishTimer_;
 	int startTimer_;
+	
 
 	bool initOrder_;
 
 public:
 
 	float easeT_;
+	int clearSceneRole_;
+
 	int gameImgs_[1] = {
 		Novice::LoadTexture("./Resources./Images./title./cloud3.png")
 	};
@@ -26,10 +29,11 @@ public:
 		isFinishScene_ = false;
 		isStartScene_ = true;
 		finishTimer_ = 120;
+		clearSceneRole_ = 0;
 		easeT_ = 0.0f;
 	}
 
-	void Update(Scene& scene);
+	void Update(Scene& scene, char* keys);
 
 	void Draw(Scene scene);
 

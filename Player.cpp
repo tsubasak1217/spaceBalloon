@@ -84,11 +84,7 @@ void Player::Update(
 
 		//シーン以降終了時に初期化命令を出す
 		if (changeScene.GetFinishTimer() <= 1) {
-			changeScene.SetInitOrder(true);
-		}
-
-		if (changeScene.GetInitOrder()) {
-			Init(game);
+			Init(game,map);
 		}
 
 		break;
@@ -118,6 +114,7 @@ void Player::Update(
 			if (!isAlive_) {
 				map.SetResetBlockOrder(true);
 				pos_ = respawnPos_;
+				velocity_ = { 0.0f,0.0f };
 				life_ = 1;
 				scoreCount_ = savedScoreCount_;
 				isAlive_ = true;
@@ -388,7 +385,7 @@ void Player::Update(
 
 			//======================上にフレームアウトしたらクリアフラグを立てる=========================
 
-			if (pos_.y > 64 * 242) {
+			if (pos_.y > 64 * 244) {
 				changeScene.SetIsFinish(true);
 			}
 
@@ -700,12 +697,10 @@ void Player::Update(
 										map.SetSaveBlockOrder(true);
 									}
 
-									Novice::ScreenPrintf(200, 20, "%d,%d", int(respawnPos_.y) / 64, int(respawnPos_.x) / 64);
-									Novice::ScreenPrintf(200, 40, "%d,%d", address_.y + i, address_.x + j);
-
 									//リスポーン地点の更新
 									respawnPos_.x = map.GetPos(address_.y + i, address_.x + j).x + 32.0f;
 									respawnPos_.y = map.GetPos(address_.y + i, address_.x + j).y - 32.0f;
+									map.SetPlayerRespawnAddress(int(respawnPos_.y / map.GetSize().y), int(respawnPos_.x / map.GetSize().x));
 
 									//スコアの保存
 									savedScoreCount_ = scoreCount_;
@@ -896,12 +891,10 @@ void Player::Update(
 		} else {//=======================================クリア後のシーン遷移===========================================-
 			//シーン以降終了時に初期化命令を出す
 			if (changeScene.GetFinishTimer() <= 1) {
-				changeScene.SetInitOrder(true);
+				Init(clear,map);
 			}
 
-			if (changeScene.GetInitOrder()) {
-				Init(clear);
-			}
+			
 
 		}
 			break;
@@ -913,12 +906,10 @@ void Player::Update(
 
 		//シーン以降終了時に初期化命令を出す
 		if (changeScene.GetFinishTimer() <= 1) {
-			changeScene.SetInitOrder(true);
+			Init(title,map);
 		}
 
-		if (changeScene.GetInitOrder()) {
-			Init(title);
-		}
+		
 		break;
 
 	default:
@@ -930,7 +921,7 @@ void Player::Update(
 
 
 //ドロー
-void Player::Draw(GlobalVariable globalV, Scene scene) {
+void Player::Draw(GlobalVariable globalV, Scene scene,ChangeScene changeScene) {
 
 	switch (scene.GetSceneNum()) {
 		//=====================================================================================
@@ -974,40 +965,92 @@ void Player::Draw(GlobalVariable globalV, Scene scene) {
 			}
 
 
-			//風船の紐
-			for (int i = 0; i < 32 - 1; i++) {
-				Novice::DrawLine(
-					int(ropePos_[i].x) - globalV.GetCameraPosX(),
-					int(ropePos_[i].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
-					int(ropePos_[i + 1].x) - globalV.GetCameraPosX(),
-					int(ropePos_[i + 1].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
-					0xffffffff
+			
+			if (changeScene.GetIsStart()) {
+
+				//風船の紐
+				for (int i = 0; i < 32 - 1; i++) {
+					Novice::DrawLine(
+						int(ropePos_[i].x) - globalV.GetCameraPosX(),
+						int(ropePos_[i].y * -1.0f) 
+						+ globalV.GetGroundPos() + globalV.GetCameraPosY()
+						+ int((EaseInQuint(1.0f - changeScene.easeT_) * -720)),
+						int(ropePos_[i + 1].x) - globalV.GetCameraPosX(),
+						int(ropePos_[i + 1].y * -1.0f)
+						+ globalV.GetGroundPos() + globalV.GetCameraPosY()
+						+ int((EaseInQuint(1.0f - changeScene.easeT_) * -720)),
+						0xffffffff
+					);
+				}
+
+				//プレイヤー
+				Novice::DrawEllipse(
+					int(pos_.x) - globalV.GetCameraPosX(),
+					int(pos_.y * -1.0f)
+					+ globalV.GetGroundPos() + globalV.GetCameraPosY()
+					+ int((EaseInQuint(1.0f - changeScene.easeT_) * -720)),
+					int(size_.x),
+					int(size_.y),
+					0.0f,
+					color_,
+					kFillModeSolid
 				);
+
+				//プレイヤーの風船の光
+				Novice::DrawEllipse(
+					int(pos_.x - size_.x * 0.4f) - globalV.GetCameraPosX(),
+					int((pos_.y + size_.y * 0.4f) * -1.0f)
+					+ globalV.GetGroundPos() + globalV.GetCameraPosY()
+					+ int((EaseInQuint(1.0f - changeScene.easeT_) * -720)),
+					int(size_.x * 0.3f),
+					int(size_.y * 0.3f),
+					0.1f,
+					0xffffff1f,
+					kFillModeSolid
+				);
+			} else {
+
+				//風船の紐
+				for (int i = 0; i < 32 - 1; i++) {
+					Novice::DrawLine(
+						int(ropePos_[i].x) - globalV.GetCameraPosX(),
+						int(ropePos_[i].y * -1.0f)
+						+ globalV.GetGroundPos() + globalV.GetCameraPosY(),
+						int(ropePos_[i + 1].x) - globalV.GetCameraPosX(),
+						int(ropePos_[i + 1].y * -1.0f)
+						+ globalV.GetGroundPos() + globalV.GetCameraPosY(),
+						0xffffffff
+					);
+				}
+
+				//プレイヤー
+				Novice::DrawEllipse(
+					int(pos_.x) - globalV.GetCameraPosX(),
+					int(pos_.y * -1.0f)
+					+ globalV.GetGroundPos() + globalV.GetCameraPosY(),
+					int(size_.x),
+					int(size_.y),
+					0.0f,
+					color_,
+					kFillModeSolid
+				);
+
+				//プレイヤーの風船の光
+				Novice::DrawEllipse(
+					int(pos_.x - size_.x * 0.4f) - globalV.GetCameraPosX(),
+					int((pos_.y + size_.y * 0.4f) * -1.0f)
+					+ globalV.GetGroundPos() + globalV.GetCameraPosY(),
+					int(size_.x * 0.3f),
+					int(size_.y * 0.3f),
+					0.1f,
+					0xffffff1f,
+					kFillModeSolid
+				);
+			
 			}
 
-			//プレイヤー
-			Novice::DrawEllipse(
-				int(pos_.x) - globalV.GetCameraPosX(),
-				int(pos_.y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
-				int(size_.x),
-				int(size_.y),
-				0.0f,
-				color_,
-				kFillModeSolid
-			);
 
-			//プレイヤーの風船の光
-			Novice::DrawEllipse(
-				int(pos_.x - size_.x * 0.4f) - globalV.GetCameraPosX(),
-				int((pos_.y + size_.y * 0.4f) * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
-				int(size_.x * 0.3f),
-				int(size_.y * 0.3f),
-				0.1f,
-				0xffffff1f,
-				kFillModeSolid
-			);
-
-		} else {
+		} else {//ダメージ受けた時の無敵時間===============================
 
 			for (int i = 0; i < 32 - 1; i++) {
 				Novice::DrawLine(
@@ -1029,6 +1072,18 @@ void Player::Draw(GlobalVariable globalV, Scene scene) {
 					color_,
 					kFillModeSolid
 				);
+
+				//プレイヤーの風船の光
+				Novice::DrawEllipse(
+					int(pos_.x - size_.x * 0.4f) - globalV.GetCameraPosX(),
+					int((pos_.y + size_.y * 0.4f) * -1.0f)
+					+ globalV.GetGroundPos() + globalV.GetCameraPosY(),
+					int(size_.x * 0.3f),
+					int(size_.y * 0.3f),
+					0.1f,
+					0xffffff1f,
+					kFillModeSolid
+				);
 			}
 		}
 
@@ -1039,7 +1094,7 @@ void Player::Draw(GlobalVariable globalV, Scene scene) {
 			4,
 			4,
 			0.0f,
-			color_,
+			color_ + int(EaseInQuint(changeScene.easeT_) * -0xff),
 			kFillModeSolid
 		);
 
@@ -1048,7 +1103,7 @@ void Player::Draw(GlobalVariable globalV, Scene scene) {
 			int((pos_.y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17) - 21,
 			int(pos_.x / 17) + 1120 + 38,
 			int((pos_.y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17) - 21,
-			RED
+			RED + int(EaseInQuint(changeScene.easeT_) * -0xff)
 		);
 
 		Novice::DrawLine(//左上→右上
@@ -1056,7 +1111,7 @@ void Player::Draw(GlobalVariable globalV, Scene scene) {
 			int((pos_.y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17) + 21,
 			int(pos_.x / 17) + 1120 + 38,
 			int((pos_.y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17) + 21,
-			RED
+			RED + int(EaseInQuint(changeScene.easeT_) * -0xff)
 		);
 
 		Novice::DrawLine(//左上→右上
@@ -1064,7 +1119,7 @@ void Player::Draw(GlobalVariable globalV, Scene scene) {
 			int((pos_.y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17) + 21,
 			int(pos_.x / 17) + 1120 - 38,
 			int((pos_.y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17) - 21,
-			RED
+			RED + int(EaseInQuint(changeScene.easeT_) * -0xff)
 		);
 
 		Novice::DrawLine(//左上→右上
@@ -1072,7 +1127,7 @@ void Player::Draw(GlobalVariable globalV, Scene scene) {
 			int((pos_.y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17) + 21,
 			int(pos_.x / 17) + 1120 + 38,
 			int((pos_.y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17) - 21,
-			RED
+			RED + int(EaseInQuint(changeScene.easeT_) * -0xff)
 		);
 
 
@@ -1085,16 +1140,11 @@ void Player::Draw(GlobalVariable globalV, Scene scene) {
 				10,
 				10,
 				0.0f,
-				color_,
+				color_ + int(EaseInQuint(changeScene.easeT_) * -0xff),
 				kFillModeSolid
 			);
 		}
 
-		if (isAlive_) {
-			Novice::ScreenPrintf(20, 40, "Alive");
-		} else {
-			Novice::ScreenPrintf(20, 40, "Dead");
-		}
 
 		break;
 

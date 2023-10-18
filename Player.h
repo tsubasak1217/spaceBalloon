@@ -70,7 +70,7 @@ private:
 public:
 
 	//イニシャライズ(初期化関数)
-	void Init(int sceneNum) {
+	void Init(int sceneNum,Map map) {
 
 		life_ = 3;
 		isAlive_ = true;
@@ -123,9 +123,11 @@ public:
 
 				ropePos_[i].x = ropePos_[i - 1].x;
 				ropePos_[i].y = ropePos_[i - 1].y - ropeLength_;
+				ropePos_[i] = { pos_.x,pos_.y - size_.y };
 			}
 
 			scoreCount_ = 0;
+			savedScoreCount_ = 0;
 
 			break;
 
@@ -134,7 +136,7 @@ public:
 			//=====================================================================================
 		case game:
 
-			pos_ = { 640.0f,/*230 * 64 +*/ size_.y };
+			pos_ = map.GetFirstPlayerPos();
 
 			ropePos_[0] = { pos_.x,pos_.y - size_.y };
 			for (int i = 1; i < 32; i++) {
@@ -150,6 +152,8 @@ public:
 			//                                     クリア画面
 			//=====================================================================================
 		case clear:
+
+			pos_ = { 640.0f,320.0f + size_.y };
 			break;
 
 		default:
@@ -191,5 +195,5 @@ public:
 	);
 
 	//ドロー
-	void Draw(GlobalVariable globalV, Scene scene);
+	void Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene);
 };

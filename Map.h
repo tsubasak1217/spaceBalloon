@@ -16,9 +16,11 @@ private:
 
 	//タイトルのオブジェクト
 	Vector2 cloudPos_[2];
-
 	//タイトルロゴ
 	Vector2 titleLogoPos_[2];
+
+	//クリア時の文字の位置
+	Vector2 clearResultPos_[2];
 
 	//縦横の配列数
 	static const int mapRow = 240;
@@ -29,6 +31,10 @@ private:
 	std::vector<Vector2>birdPos_;
 	std::vector<Vector2Int>birdAddress_;
 	std::vector<int>birdDirection_;
+
+	//プレイヤーの初期座標のブロックを格納
+	Vector2 firstPlayerPos_;
+	Vector2Int playerRespawnAddress_;
 
 	//縦横の幅
 	Vector2 size_;
@@ -64,6 +70,10 @@ public:
 	Vector2 GetPos(int row, int col) { return pos_[row][col]; }
 	std::vector<Vector2>GetBirdPos() { return birdPos_; }
 	std::vector<Vector2Int>GetBirdAddress() { return birdAddress_; }
+	Vector2 GetFirstPlayerPos() { return firstPlayerPos_; }
+
+	void SetPlayerRespawnAddress(int row, int col) { playerRespawnAddress_.x = col; playerRespawnAddress_.y = row; }
+	Vector2Int GetPlayerRespawnAddress() { return playerRespawnAddress_; }
 
 	Vector2 GetSize() { return size_; }
 
@@ -80,7 +90,7 @@ public:
 	void SetResetBlockOrder(bool flag) { resetBlockOrder_ = flag; }
 
 	//アップデート
-	void Update(Scene scene);
+	void Update(Scene scene, ChangeScene changeScene);
 
 	//ドロー
 	void Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene);
