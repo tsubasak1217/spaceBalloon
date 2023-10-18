@@ -83,8 +83,6 @@ public:
 		address_ = { int(pos_.x) / 64,int(pos_.y) / 64 };
 		ropeLength_ = 8.0f;
 
-		respawnPos_ = { 0.0f,0.0f };
-
 		gravity_ = -0.8f;
 		weight_ = 0.0f;
 		volume_ = 1;
@@ -117,6 +115,7 @@ public:
 		case title:
 
 			pos_ = { 640.0f,320.0f + size_.y };
+			respawnPos_ = pos_;
 
 			ropePos_[0] = { pos_.x,pos_.y - size_.y };
 			for (int i = 1; i < 32; i++) {
@@ -137,6 +136,7 @@ public:
 		case game:
 
 			pos_ = map.GetFirstPlayerPos();
+			respawnPos_ = pos_;
 
 			ropePos_[0] = { pos_.x,pos_.y - size_.y };
 			for (int i = 1; i < 32; i++) {
@@ -153,7 +153,9 @@ public:
 			//=====================================================================================
 		case clear:
 
-			pos_ = { 640.0f,320.0f + size_.y };
+			//pos_ = { 640.0f,320.0f + size_.y };
+			//respawnPos_ = pos_;
+
 			break;
 
 		default:
