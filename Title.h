@@ -1,51 +1,43 @@
 ﻿#pragma once
 #include <Vector2.h>
-
 class Title {
 
 private:
 
-	Vector2 titlePos_[12];//タイトルのx,y
-	Vector2 velocity_[12];//速度
-  	Vector2 acceleration_[12];//加速度
-	Vector2 Pos_[2] = { 0,0 };//タイトルの座標取得
+	Vector2 Box[12] = {0.0f,0.0f};
+	 Vector2 velocity[12] = { 0.0f,0.0f };//速度
+  	 Vector2 acceleration[12] = { 0.0f,0.0f };//加速度
 
-	int time;//タイマー
-	int timecount[12] = { 0 };//飛ばすフラグ
-	int jumpcount_[12];//飛ばす時間
-
-	//int titleResources_[12];//タイトル画像   
-
+	float width[2];
+	float vertical[2];
+	int atrrk;
+	int time;
+	int timecount[10] = { 0 };
+	int GG[10] = { 0 };
 public:
-
-
-
 	void Init() {
 		time = 0;
-		Pos_[0].x = 300.0f;
-		Pos_[0].y = 300.0f;
-		Pos_[1].x = 1000.0f;
-		Pos_[1].y = 500.0f;
+		atrrk = 1;
+		 width[0] = 100.0f;
+		 width[1] = 100.0f;
+		 vertical[0] = 200.0f;
+		 vertical[1] = 200.0f;
 
-		//titleResources_[0] = Novice::LoadTexture("./Resources/Images/title/05.png");
+		for (int i = 0; i < 12; i++) {
 
-		for (int i = 1; i < 13; i++) {
-			jumpcount_[i-1] = 5 * i;//跳ねる時間設定
-		}
-
-		for (int i = 0; i < 12; i++) {//位置
 			if (i < 5) {
-				titlePos_[i].x = Pos_[0].x;
-				titlePos_[i].y = Pos_[0].y;
-				Pos_[0].x += 120;
+				Box[i].x = width[0];
+				Box[i].y = vertical[0];
+				width[0] += 150;
 			}
 			if (i >= 5) {
-				titlePos_[i].x = Pos_[1].x;
-				titlePos_[i].y = Pos_[1].y;
-				Pos_[1].x -= 120;
+				Box[i].x = width[1];
+				Box[i].y = vertical[1];
+				width[1] -= 150;
 			}
-			acceleration_[i].y = 0.2f;//下へ加速
+			acceleration[i].y = 0.8f;
 		}
+	
 	};
 	
 	//アップデート
@@ -55,6 +47,5 @@ public:
 	void Draw();
 
 
-	
 };
 
