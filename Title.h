@@ -1,51 +1,52 @@
 ﻿#pragma once
 #include <Vector2.h>
+#include <Novice.h>
+
 class Title {
 
 private:
 
-	Vector2 Box[12];
-	 Vector2 velocity[12];//速度
-  	 Vector2 acceleration[12];//加速度
+	Vector2 titlePos[2];//タイトルのx,y
+	Vector2 velocity[2];//速度
+	Vector2 acceleration[2];//加速度
+	Vector2 Pos[2] = { 0,0 };//タイトルの座標取得
 
-	float width[2];
-	float vertical[2];
-	int atrrk;
-	int time;
-	int timecount[10] = { 0 };
-	int GG[10] = { 0 };
+	int time;//タイマー
+	int timecount[2] = { 0 };//飛ばすフラグ
+	int jumpcount[2];//飛ばす時間
+
 public:
+
+	int titleResources[2]{
+	Novice::LoadTexture("./Resources./Images./title./space.png"),
+	Novice::LoadTexture("./Resources./Images./title./balloon.png"),
+	};
+
 	void Init() {
 		time = 0;
-		atrrk = 1;
-		 width[0] = 100.0f;
-		 width[1] = 100.0f;
-		 vertical[0] = 200.0f;
-		 vertical[1] = 200.0f;
+		Pos[0].x = 0.0f;
+		Pos[0].y = 250.0f;
+		Pos[1].x = 50.0f;
+		Pos[1].y = 250.0f;
 
-		for (int i = 0; i < 12; i++) {
-
-			if (i < 5) {
-				Box[i].x = width[0];
-				Box[i].y = vertical[0];
-				width[0] += 150;
-			}
-			if (i >= 5) {
-				Box[i].x = width[1];
-				Box[i].y = vertical[1];
-				width[1] -= 150;
-			}
-			acceleration[i].y = 0.8f;
+		for (int i = 1; i < 3; i++) {
+			jumpcount[i - 1] = 5 * i;//跳ねる時間設定
 		}
-	
+
+		for (int i = 0; i < 2; i++) {//位置
+			if (i < 2) {
+				titlePos[i].x = Pos[i].x;
+				titlePos[i].y = Pos[i].y;
+
+			}
+			acceleration[i].y = 0.2f;//下へ加速
+		}
 	};
-	
+
 	//アップデート
 	void Update();
 
 	//ドロー
 	void Draw();
-
-
 };
 

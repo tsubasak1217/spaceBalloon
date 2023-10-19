@@ -1,6 +1,6 @@
 #include "Player.h"
 #include "Emitter.h"
-
+#include "Title.h"
 //======================================================
 //					グローバル変数/定数
 //======================================================
@@ -46,6 +46,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	GlobalVariable globalV;
 	globalV.Init();
+	
+	Title title;
+	title.Init();
 
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
@@ -59,11 +62,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 		/// ↓更新処理ここから
 		///
+		
+		title.Update();
 
-		globalV.Update();
-
-		map.Update(scene,changeScene);
-		player.Update(keys, preKeys, &globalV.cameraPosX_, &globalV.cameraPosY_, &globalV.miniCameraPos_, map, scene, changeScene);
+		map.Update(scene);
+		player.Update(keys,preKeys,&globalV.cameraPosX_, &globalV.cameraPosY_, &globalV.miniCameraPos_, map, scene,changeScene);
 		effect->Update(player,map);
 
 		changeScene.Update(scene,keys);
@@ -76,11 +79,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓描画処理ここから
 		///
 
-		map.DrawBG();
-		if (scene.GetSceneNum() == title) {
-			map.Draw(globalV, scene, changeScene);
-		}
-
+	
 		effect->Draw(globalV);
 		player.Draw(globalV, scene,changeScene);
 
@@ -88,11 +87,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			map.Draw(globalV, scene, changeScene);
 		}
 		changeScene.Draw(scene);
-
-		Novice::ScreenPrintf(100, 20, "%d", changeScene.GetStartTimer());
-		//Novice::ScreenPrintf(100, 40, "%d,%d", map.GetPlayerRespawnAddress().y, map.GetPlayerRespawnAddress().x);
-		//Novice::ScreenPrintf(100, 60, "%d", changeScene.GetIsFinish());
-
+	
+		Novice::ScreenPrintf(100, 20, "%d", map.GetSavedBlockType(0, 0));
+		Novice::ScreenPrintf(100, 40, "%d", map.GetBlockType(0, 0));
+		Novice::ScreenPrintf(100, 60, "%d", changeScene.GetIsFinish());
 		///
 		/// ↑描画処理ここまで
 		///

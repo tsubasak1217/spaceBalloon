@@ -38,7 +38,7 @@ void ChangeScene::Update(Scene& scene,char*keys) {
 	switch (scene.GetSceneNum()) {
 
 
-	case title://========================================================
+	case titleScene://========================================================
 
 
 		//シーン遷移
@@ -158,7 +158,7 @@ void ChangeScene::Update(Scene& scene,char*keys) {
 				isStartScene_ = true;
 				finishTimer_ = 120;
 				easeT_ = 0;
-				scene.SetSceneNum(title);
+				scene.SetSceneNum(titleScene);
 			}
 		}
 		break;
@@ -174,7 +174,7 @@ void ChangeScene::Draw(Scene scene) {
 
 	switch (scene.GetSceneNum()) {
 
-	case title://========================================================
+	case titleScene://========================================================
 
 		if (isStartScene_) {
 

@@ -1,8 +1,7 @@
 #include "Map.h"
-
+#include "Title.h"
 
 void Map::Init() {
-
 	cloudPos_[0] = { 0.0f,0.0f };
 	cloudPos_[1] = { 0.0f,0.0f };
 
@@ -110,7 +109,7 @@ void Map::Update(Scene scene, ChangeScene changeScene) {
 		//=====================================================================================
 		//                                      タイトル
 		//=====================================================================================
-	case title:
+	case titleScene:
 
 		//タイトルロゴをふわふわさせる
 		timeCount_++;
@@ -312,7 +311,7 @@ void Map::Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene) {
 		//=====================================================================================
 		//                                      タイトル
 		//=====================================================================================
-	case title:
+	case titleScene:
 
 		//背景の空
 		Novice::DrawSprite(
@@ -364,6 +363,8 @@ void Map::Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene) {
 			0.0f,
 			WHITE
 		);
+
+	
 
 		break;
 

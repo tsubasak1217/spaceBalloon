@@ -50,7 +50,7 @@ enum BlockType {
 };
 
 enum SceneNum {
-	title,
+	titleScene,
 	game,
 	clear
 };
