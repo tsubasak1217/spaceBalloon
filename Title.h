@@ -39,9 +39,7 @@ public:
 				titlePos[i].y = Pos[i].y;
 
 			}
-
 			acceleration[i].y = 0.2f;//下へ加速
-
 		}
 	};
 
