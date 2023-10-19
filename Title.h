@@ -4,9 +4,9 @@ class Title {
 
 private:
 
-	Vector2 Box[12] = {0.0f,0.0f};
-	 Vector2 velocity[12] = { 0.0f,0.0f };//速度
-  	 Vector2 acceleration[12] = { 0.0f,0.0f };//加速度
+	Vector2 Box[12];
+	 Vector2 velocity[12];//速度
+  	 Vector2 acceleration[12];//加速度
 
 	float width[2];
 	float vertical[2];
