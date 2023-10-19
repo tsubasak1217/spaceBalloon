@@ -10,12 +10,15 @@ private:
 
 	int finishTimer_;
 	int startTimer_;
+	
 
 	bool initOrder_;
 
 public:
 
 	float easeT_;
+	int clearSceneRole_;
+
 	int gameImgs_[1] = {
 		Novice::LoadTexture("./Resources./Images./title./cloud3.png")
 	};
@@ -26,16 +29,20 @@ public:
 		isFinishScene_ = false;
 		isStartScene_ = true;
 		finishTimer_ = 120;
+		clearSceneRole_ = 0;
 		easeT_ = 0.0f;
 	}
 
-	void Update(Scene& scene);
+	void Update(Scene& scene, char* keys);
 
 	void Draw(Scene scene);
 
 	//アクセッサ
 	int GetFinishTimer() { return finishTimer_; }
 	void SetFinishTimer(int value) { finishTimer_ = value; }
+
+	int GetStartTimer() { return startTimer_; }
+	void SetStartTimer(int value) { startTimer_ = value; }
 
 	bool GetIsFinish() { return isFinishScene_; }
 	void SetIsFinish(bool flag) { isFinishScene_ = flag; }

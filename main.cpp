@@ -27,8 +27,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	srand((unsigned)time(NULL));
 
 	// キー入力結果を受け取る箱
-	char keys[256] = {0};
-	char preKeys[256] = {0};
+	char keys[256] = { 0 };
+	char preKeys[256] = { 0 };
 
 	Scene scene;
 	scene.Init();
@@ -36,13 +36,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	ChangeScene changeScene;
 	changeScene.Init();
 
-	Player player;
-	player.Init(titleScene);
-
 	Emitter* effect = new Emitter();
 
 	Map map;
 	map.Init();
+
+	Player player;
+	player.Init(title, map);
 
 	GlobalVariable globalV;
 	globalV.Init();
@@ -69,7 +69,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		player.Update(keys,preKeys,&globalV.cameraPosX_, &globalV.cameraPosY_, &globalV.miniCameraPos_, map, scene,changeScene);
 		effect->Update(player,map);
 
-		changeScene.Update(scene);
+		changeScene.Update(scene,keys);
 
 		///
 		/// ↑更新処理ここまで
@@ -80,9 +80,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 
 	
-		map.Draw(globalV, scene,changeScene);
 		effect->Draw(globalV);
-		player.Draw(globalV,scene);
+		player.Draw(globalV, scene,changeScene);
+
+		if (scene.GetSceneNum() > title) {
+			map.Draw(globalV, scene, changeScene);
+		}
 		changeScene.Draw(scene);
 		title.Draw();
 		Novice::ScreenPrintf(100, 20, "%d", map.GetSavedBlockType(0, 0));

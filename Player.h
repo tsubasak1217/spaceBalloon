@@ -6,9 +6,6 @@ class Player {
 
 private:
 
-	//ずっと時間を計ってるやつ
-	int grandTimeCount_;
-
 	//座標、大きさ
 	Vector2 pos_;
 	Vector2 size_;
@@ -64,6 +61,7 @@ private:
 
 	//スコア変数
 	int scoreCount_;
+	int savedScoreCount_;
 
 	//===================ロープ=======================
 	Vector2 ropePos_[32];
@@ -72,7 +70,7 @@ private:
 public:
 
 	//イニシャライズ(初期化関数)
-	void Init(int sceneNum) {
+	void Init(int sceneNum,Map map) {
 
 		life_ = 3;
 		isAlive_ = true;
@@ -84,8 +82,6 @@ public:
 		size_ = { 5.0f + (balloonLevel_ * 2.0f),5.0f + (balloonLevel_ * 2.0f) };
 		address_ = { int(pos_.x) / 64,int(pos_.y) / 64 };
 		ropeLength_ = 8.0f;
-
-		respawnPos_ = { 0.0f,0.0f };
 
 		gravity_ = -0.8f;
 		weight_ = 0.0f;
@@ -103,7 +99,6 @@ public:
 		hitDirection_ = 0;
 		preHitDirection_ = 0;
 
-		grandTimeCount_ = 0;
 		isAccelable_ = false;
 		isCountStart_ = false;
 		doublePushLimit_ = 16;
@@ -119,16 +114,19 @@ public:
 			//=====================================================================================
 		case titleScene:
 
-			pos_ = { 640.0f,400.0f };
-			
+			pos_ = { 640.0f,320.0f + size_.y };
+			respawnPos_ = pos_;
+
 			ropePos_[0] = { pos_.x,pos_.y - size_.y };
 			for (int i = 1; i < 32; i++) {
 
 				ropePos_[i].x = ropePos_[i - 1].x;
 				ropePos_[i].y = ropePos_[i - 1].y - ropeLength_;
+				ropePos_[i] = { pos_.x,pos_.y - size_.y };
 			}
 
 			scoreCount_ = 0;
+			savedScoreCount_ = 0;
 
 			break;
 
@@ -137,7 +135,8 @@ public:
 			//=====================================================================================
 		case game:
 
-			pos_ = { 640.0f,size_.y };
+			pos_ = map.GetFirstPlayerPos();
+			respawnPos_ = pos_;
 
 			ropePos_[0] = { pos_.x,pos_.y - size_.y };
 			for (int i = 1; i < 32; i++) {
@@ -153,6 +152,10 @@ public:
 			//                                     クリア画面
 			//=====================================================================================
 		case clear:
+
+			//pos_ = { 640.0f,320.0f + size_.y };
+			//respawnPos_ = pos_;
+
 			break;
 
 		default:
@@ -194,5 +197,5 @@ public:
 	);
 
 	//ドロー
-	void Draw(GlobalVariable globalV, Scene scene);
+	void Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene);
 };
