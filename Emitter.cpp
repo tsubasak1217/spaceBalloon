@@ -1,15 +1,20 @@
 ﻿#include "Emitter.h"
 #include "Trajectory.h"
 
-void Emitter::Update(Player player, Map map) {
+void Emitter::Update(Player player, Map map, Color color) {
 	pos_ = player.GetPos();
 	size_ = player.GetSize() / 4;
 	
-
 	if (++frameCount >= DeterminedFrame) {
 		//動いているときにエフェクトを表示
 		if (sqrtf(powf(pos_.x - previousFramePos_.x,2)) >= 2 || sqrtf(powf(pos_.y - previousFramePos_.y,2)) >= 2) {
-			particles.push_back(new Trajectory(pos_, 60, size_));
+			if (player.GetIsUnrivaled()) {
+				color.setCode(0xff5181ff);
+			}
+			else {
+				color.setCode(WHITE);
+			}
+			particles.push_back(new Trajectory(pos_, 60, size_,color));
 			frameCount = 0;
 		}
 	}
@@ -23,13 +28,7 @@ void Emitter::Update(Player player, Map map) {
 			iterator = particles.erase(iterator);
 		}
 	}
-
 	previousFramePos_ = pos_;
-
-	/* デバック */
-	Novice::ScreenPrintf(100, 80, "%f,%f", player.GetPos().x, player.GetPos().y);
-	Novice::ScreenPrintf(100, 100, "%f,%f", previousFramePos_.x,previousFramePos_.y);
-	Novice::ScreenPrintf(100, 120, "%f,%f", player.GetVelocity().x, player.GetVelocity().y);
 }
 
 void Emitter::Draw(GlobalVariable globalV) {
