@@ -16,13 +16,14 @@ private:
 
 	//星の表示に関するもの
 	bool isMoveStar_;
+	bool moveMode_;
 	float starT_;
 	float starRadius_;
 	float starTheta_;
 	unsigned int starColor_[3] = {
-		0xffa500ff,
-		0xffff00ff,
-		0xffffffff
+		0xffffffff,
+		0x7dfae3ff,
+		0xff5181ff
 	};
 
 
@@ -46,7 +47,7 @@ public:
 		isMoveStar_ = false;
 		starT_ = 0.0f;
 		starRadius_ = 0.0f;
-		starTheta_ = 0.0f;
+		moveMode_ = 1;
 	}
 
 	void Update(Scene& scene, char* keys);
@@ -71,5 +72,6 @@ public:
 	void SetInitOrder(bool flag) { initOrder_ = flag; }
 
 	void SetIsMoveStar(bool flag) { isMoveStar_ = flag; }
+	void SetMoveMode(bool flag) { moveMode_ = flag; }
 };
 

@@ -1,5 +1,7 @@
 #pragma once
 #include <math.h>
+#include <stdio.h>
+#include <time.h>
 #include <Vector2.h>
 #include <Novice.h>
 #define _USE_MATH_DEFINES

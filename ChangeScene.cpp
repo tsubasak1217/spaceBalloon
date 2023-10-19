@@ -3,24 +3,48 @@
 
 void ChangeScene::DrawChangeStar() {
 
-	starT_ += 0.01f;
-	if (starT_ > 1.0f) {
-		starT_ = 1.0f;
+	if (moveMode_ == 1) {
+		starT_ += 0.01f;
+		if (starT_ > 1.0f) {
+			starT_ = 1.0f;
+		}
+	} else {
+		starT_ -= 0.01f;
+		if (starT_ < 0.0f) {
+			starT_ = 0.0f;
+			isMoveStar_ = false;
+		}
 	}
+
 
 	starTheta_ += (1.0f / 48.0f) * float(M_PI);
 
-	for (int i = 0; i < 3; i++) {
-		DrawStar(
-			{ 640.0f,360.0f },
-			EaseInOutExpo(starT_) * (2000 * powf(float(i),float(i))),
-			starTheta_,
-			starColor_[i]
-		);
-	}
+
+	DrawStar(
+		{ 640.0f,360.0f },
+		EaseInOutExpo(starT_) * 8000,
+		starTheta_,
+		starColor_[2]
+	);
+
+	DrawStar(
+		{ 640.0f,360.0f },
+		EaseInOutExpo(starT_) * 4000,
+		starTheta_,
+		starColor_[1]
+	);
+
+	DrawStar(
+		{ 640.0f,360.0f },
+		EaseInOutExpo(starT_) * 2000,
+		starTheta_,
+		starColor_[0]
+	);
+
+
 };
 
-void ChangeScene::Update(Scene& scene,char*keys) {
+void ChangeScene::Update(Scene& scene, char* keys) {
 
 	if (isStartScene_) {
 		if (startTimer_ > 0) {
@@ -133,7 +157,7 @@ void ChangeScene::Update(Scene& scene,char*keys) {
 				if (keys[DIK_SPACE]) {
 					clearSceneRole_++;
 					easeT_ = 0.0f;
-					
+
 					if (clearSceneRole_ == 1) {
 						startTimer_ = 240;
 					} else {
@@ -203,7 +227,7 @@ void ChangeScene::Draw(Scene scene) {
 				0,
 				int(0 + (EaseOutQuint(easeT_)) * 720),
 				gameImgs_[0],
-				1,1,
+				1, 1,
 				0.0f,
 				WHITE
 			);
@@ -211,6 +235,10 @@ void ChangeScene::Draw(Scene scene) {
 
 		//雲が上から来る
 		if (isFinishScene_) {
+		}
+
+		if (isMoveStar_) {
+			DrawChangeStar();
 		}
 
 		break;

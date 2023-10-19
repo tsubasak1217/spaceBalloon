@@ -5,8 +5,11 @@ void Player::Update(
 	char* keys, char* preKeys,
 	int* cameraPosX,
 	int* cameraPosY, int* miniCameraPos,
-	Map& map, Scene scene, ChangeScene& changeScene
+	Map& map, Scene scene, ChangeScene& changeScene,
+	GlobalVariable globalV
 ) {
+	//unsigned int currentTime = unsigned int(time(nullptr));
+	//srand(currentTime);
 
 	switch (scene.GetSceneNum()) {
 		//=====================================================================================
@@ -84,7 +87,7 @@ void Player::Update(
 
 		//シーン以降終了時に初期化命令を出す
 		if (changeScene.GetFinishTimer() <= 1) {
-			Init(game,map);
+			Init(game, map);
 		}
 
 		break;
@@ -113,12 +116,52 @@ void Player::Update(
 
 			//死んだときの処理==============================================
 			if (!isAlive_) {
-				map.SetResetBlockOrder(true);
-				pos_ = respawnPos_;
-				velocity_ = { 0.0f,0.0f };
-				life_ = 1;
-				scoreCount_ = savedScoreCount_;
-				isAlive_ = true;
+
+				//死亡エフェクトに関する処理--------------
+				if (retryTimeCount_ == 100) {
+
+					for (int i = 0; i < 12; i++) {
+						triangleTheta_[i] = float(rand());
+					}
+
+					savePos_.x = pos_.x - globalV.GetCameraPosX();
+					savePos_.y = pos_.y - globalV.GetCameraPosY();
+				}
+
+				triangleEaseT_ += 0.025f;
+				if (triangleEaseT_ > 1.0f) {
+					triangleEaseT_ = 1.0f;
+				}
+
+				for (int i = 0; i < 12; i++) {
+					triangleCenter_[i].x = savePos_.x + cosf((triangleTheta_[i]/256)*float(M_PI)) * (EaseOutExpo(triangleEaseT_) * efectRadius_);
+					triangleCenter_[i].y = savePos_.y + sinf((triangleTheta_[i]/256)*float(M_PI)) * (EaseOutExpo(triangleEaseT_) * efectRadius_);
+				}
+
+
+				//リトライ処理-------------------------
+				retryTimeCount_--;
+				changeScene.SetMoveMode(1);
+
+				if (retryTimeCount_ <= 80) {
+					changeScene.SetIsMoveStar(true);
+
+					if (retryTimeCount_ <= 0) {
+						changeScene.SetMoveMode(0);
+						map.SetResetBlockOrder(true);
+						pos_ = respawnPos_;
+						velocity_ = { 0.0f,0.0f };
+						life_ = 1;
+						scoreCount_ = savedScoreCount_;
+						retryTimeCount_ = 100;
+						triangleEaseT_ = 0.0f;
+						isAlive_ = true;
+					}
+				}
+			}
+
+			for (int i = 0; i < 12; i++) {
+				Novice::ScreenPrintf(400, 20 + 20 * i, "%f", savePos_.y + sinf(triangleTheta_[i]) * (EaseOutExpo(triangleEaseT_) * efectRadius_));
 			}
 
 			//加速のフラグに関する処理==========================================
@@ -827,41 +870,41 @@ void Player::Update(
 
 			//風を受ける処理
 
-			if(address_.y >= 0 && address_.y < 240)
-			if (!map.GetIsTimeStop()) {
-				if (
-					map.GetBlockType(int(address_.y), address_.x) >= 2 &&
-					map.GetBlockType(address_.y, address_.x) <= 5) {//プレイヤーが風域にいるとき
+			if (address_.y >= 0 && address_.y < 240)
+				if (!map.GetIsTimeStop()) {
+					if (
+						map.GetBlockType(int(address_.y), address_.x) >= 2 &&
+						map.GetBlockType(address_.y, address_.x) <= 5) {//プレイヤーが風域にいるとき
 
-					if (windT_ < 1.0f) {
-						windT_ += 0.03125f;
+						if (windT_ < 1.0f) {
+							windT_ += 0.03125f;
+						}
+
+						switch (map.GetBlockType(address_.y, address_.x)) {
+
+						case wind_up:
+							windSpeed_.y = EaseInSine(windT_) * (speed_ * 2.0f);
+							break;
+
+						case wind_right:
+							windSpeed_.x = EaseInSine(windT_) * (speed_ + 2.0f);
+							break;
+
+						case wind_down:
+							windSpeed_.y = -EaseInSine(windT_) * (speed_ * 2.0f);
+							break;
+
+						case wind_left:
+							windSpeed_.x = -EaseInSine(windT_) * (speed_ + 2.0f);
+							break;
+						}
+
+					} else {
+						windT_ = 0.0f;
 					}
-
-					switch (map.GetBlockType(address_.y, address_.x)) {
-
-					case wind_up:
-						windSpeed_.y = EaseInSine(windT_) * (speed_ * 2.0f);
-						break;
-
-					case wind_right:
-						windSpeed_.x = EaseInSine(windT_) * (speed_ + 2.0f);
-						break;
-
-					case wind_down:
-						windSpeed_.y = -EaseInSine(windT_) * (speed_ * 2.0f);
-						break;
-
-					case wind_left:
-						windSpeed_.x = -EaseInSine(windT_) * (speed_ + 2.0f);
-						break;
-					}
-
 				} else {
 					windT_ = 0.0f;
 				}
-			} else {
-				windT_ = 0.0f;
-			}
 
 
 			//カメラ座標の計算
@@ -895,13 +938,13 @@ void Player::Update(
 		} else {//=======================================クリア後のシーン遷移===========================================-
 			//シーン以降終了時に初期化命令を出す
 			if (changeScene.GetFinishTimer() <= 1) {
-				Init(clear,map);
+				Init(clear, map);
 			}
 
-			
+
 
 		}
-			break;
+		break;
 
 		//=====================================================================================
 		//                                     クリア画面
@@ -910,10 +953,10 @@ void Player::Update(
 
 		//シーン以降終了時に初期化命令を出す
 		if (changeScene.GetFinishTimer() <= 1) {
-			Init(titleScene,map);
+			Init(titleScene, map);
 		}
 
-		
+
 		break;
 
 	default:
@@ -925,7 +968,7 @@ void Player::Update(
 
 
 //ドロー
-void Player::Draw(GlobalVariable globalV, Scene scene,ChangeScene changeScene) {
+void Player::Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene) {
 
 	switch (scene.GetSceneNum()) {
 		//=====================================================================================
@@ -969,125 +1012,128 @@ void Player::Draw(GlobalVariable globalV, Scene scene,ChangeScene changeScene) {
 			}
 
 
-			
-			if (changeScene.GetIsStart()) {
+			if (isAlive_) {
+				if (changeScene.GetIsStart()) {
 
-				//風船の紐
-				for (int i = 0; i < 32 - 1; i++) {
-					Novice::DrawLine(
-						int(ropePos_[i].x) - globalV.GetCameraPosX(),
-						int(ropePos_[i].y * -1.0f) 
+					//風船の紐
+					for (int i = 0; i < 32 - 1; i++) {
+						Novice::DrawLine(
+							int(ropePos_[i].x) - globalV.GetCameraPosX(),
+							int(ropePos_[i].y * -1.0f)
+							+ globalV.GetGroundPos() + globalV.GetCameraPosY()
+							+ int((EaseInQuint(1.0f - changeScene.easeT_) * -720)),
+							int(ropePos_[i + 1].x) - globalV.GetCameraPosX(),
+							int(ropePos_[i + 1].y * -1.0f)
+							+ globalV.GetGroundPos() + globalV.GetCameraPosY()
+							+ int((EaseInQuint(1.0f - changeScene.easeT_) * -720)),
+							0xffffffff
+						);
+					}
+
+					//プレイヤー
+					Novice::DrawEllipse(
+						int(pos_.x) - globalV.GetCameraPosX(),
+						int(pos_.y * -1.0f)
 						+ globalV.GetGroundPos() + globalV.GetCameraPosY()
 						+ int((EaseInQuint(1.0f - changeScene.easeT_) * -720)),
-						int(ropePos_[i + 1].x) - globalV.GetCameraPosX(),
-						int(ropePos_[i + 1].y * -1.0f)
+						int(size_.x),
+						int(size_.y),
+						0.0f,
+						color_,
+						kFillModeSolid
+					);
+
+					//プレイヤーの風船の光
+					Novice::DrawEllipse(
+						int(pos_.x - size_.x * 0.4f) - globalV.GetCameraPosX(),
+						int((pos_.y + size_.y * 0.4f) * -1.0f)
 						+ globalV.GetGroundPos() + globalV.GetCameraPosY()
 						+ int((EaseInQuint(1.0f - changeScene.easeT_) * -720)),
-						0xffffffff
+						int(size_.x * 0.3f),
+						int(size_.y * 0.3f),
+						0.1f,
+						0xffffff1f,
+						kFillModeSolid
 					);
-				}
+				} else {
 
-				//プレイヤー
-				Novice::DrawEllipse(
-					int(pos_.x) - globalV.GetCameraPosX(),
-					int(pos_.y * -1.0f)
-					+ globalV.GetGroundPos() + globalV.GetCameraPosY()
-					+ int((EaseInQuint(1.0f - changeScene.easeT_) * -720)),
-					int(size_.x),
-					int(size_.y),
-					0.0f,
-					color_,
-					kFillModeSolid
-				);
+					//風船の紐
+					for (int i = 0; i < 32 - 1; i++) {
+						Novice::DrawLine(
+							int(ropePos_[i].x) - globalV.GetCameraPosX(),
+							int(ropePos_[i].y * -1.0f)
+							+ globalV.GetGroundPos() + globalV.GetCameraPosY(),
+							int(ropePos_[i + 1].x) - globalV.GetCameraPosX(),
+							int(ropePos_[i + 1].y * -1.0f)
+							+ globalV.GetGroundPos() + globalV.GetCameraPosY(),
+							0xffffffff
+						);
+					}
 
-				//プレイヤーの風船の光
-				Novice::DrawEllipse(
-					int(pos_.x - size_.x * 0.4f) - globalV.GetCameraPosX(),
-					int((pos_.y + size_.y * 0.4f) * -1.0f)
-					+ globalV.GetGroundPos() + globalV.GetCameraPosY()
-					+ int((EaseInQuint(1.0f - changeScene.easeT_) * -720)),
-					int(size_.x * 0.3f),
-					int(size_.y * 0.3f),
-					0.1f,
-					0xffffff1f,
-					kFillModeSolid
-				);
-			} else {
-
-				//風船の紐
-				for (int i = 0; i < 32 - 1; i++) {
-					Novice::DrawLine(
-						int(ropePos_[i].x) - globalV.GetCameraPosX(),
-						int(ropePos_[i].y * -1.0f)
+					//プレイヤー
+					Novice::DrawEllipse(
+						int(pos_.x) - globalV.GetCameraPosX(),
+						int(pos_.y * -1.0f)
 						+ globalV.GetGroundPos() + globalV.GetCameraPosY(),
-						int(ropePos_[i + 1].x) - globalV.GetCameraPosX(),
-						int(ropePos_[i + 1].y * -1.0f)
-						+ globalV.GetGroundPos() + globalV.GetCameraPosY(),
-						0xffffffff
+						int(size_.x),
+						int(size_.y),
+						0.0f,
+						color_,
+						kFillModeSolid
 					);
+
+					//プレイヤーの風船の光
+					Novice::DrawEllipse(
+						int(pos_.x - size_.x * 0.4f) - globalV.GetCameraPosX(),
+						int((pos_.y + size_.y * 0.4f) * -1.0f)
+						+ globalV.GetGroundPos() + globalV.GetCameraPosY(),
+						int(size_.x * 0.3f),
+						int(size_.y * 0.3f),
+						0.1f,
+						0xffffff1f,
+						kFillModeSolid
+					);
+
 				}
-
-				//プレイヤー
-				Novice::DrawEllipse(
-					int(pos_.x) - globalV.GetCameraPosX(),
-					int(pos_.y * -1.0f)
-					+ globalV.GetGroundPos() + globalV.GetCameraPosY(),
-					int(size_.x),
-					int(size_.y),
-					0.0f,
-					color_,
-					kFillModeSolid
-				);
-
-				//プレイヤーの風船の光
-				Novice::DrawEllipse(
-					int(pos_.x - size_.x * 0.4f) - globalV.GetCameraPosX(),
-					int((pos_.y + size_.y * 0.4f) * -1.0f)
-					+ globalV.GetGroundPos() + globalV.GetCameraPosY(),
-					int(size_.x * 0.3f),
-					int(size_.y * 0.3f),
-					0.1f,
-					0xffffff1f,
-					kFillModeSolid
-				);
-			
 			}
-
 
 		} else {//ダメージ受けた時の無敵時間===============================
 
-			for (int i = 0; i < 32 - 1; i++) {
-				Novice::DrawLine(
-					int(ropePos_[i].x) - globalV.GetCameraPosX(),
-					int(ropePos_[i].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
-					int(ropePos_[i + 1].x) - globalV.GetCameraPosX(),
-					int(ropePos_[i + 1].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
-					0xffffffff
-				);
-			}
+			if (isAlive_) {
 
-			if (unrivaledLimit_ / 5 % 2 == 0) {
-				Novice::DrawEllipse(
-					int(pos_.x) - globalV.GetCameraPosX(),
-					int(pos_.y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
-					int(size_.x),
-					int(size_.y),
-					0.0f,
-					color_,
-					kFillModeSolid
-				);
+				for (int i = 0; i < 32 - 1; i++) {
+					Novice::DrawLine(
+						int(ropePos_[i].x) - globalV.GetCameraPosX(),
+						int(ropePos_[i].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
+						int(ropePos_[i + 1].x) - globalV.GetCameraPosX(),
+						int(ropePos_[i + 1].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
+						0xffffffff
+					);
+				}
 
-				//プレイヤーの風船の光
-				Novice::DrawEllipse(
-					int(pos_.x - size_.x * 0.4f) - globalV.GetCameraPosX(),
-					int((pos_.y + size_.y * 0.4f) * -1.0f)
-					+ globalV.GetGroundPos() + globalV.GetCameraPosY(),
-					int(size_.x * 0.3f),
-					int(size_.y * 0.3f),
-					0.1f,
-					0xffffff1f,
-					kFillModeSolid
-				);
+				if (unrivaledLimit_ / 5 % 2 == 0) {
+					Novice::DrawEllipse(
+						int(pos_.x) - globalV.GetCameraPosX(),
+						int(pos_.y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
+						int(size_.x),
+						int(size_.y),
+						0.0f,
+						color_,
+						kFillModeSolid
+					);
+
+					//プレイヤーの風船の光
+					Novice::DrawEllipse(
+						int(pos_.x - size_.x * 0.4f) - globalV.GetCameraPosX(),
+						int((pos_.y + size_.y * 0.4f) * -1.0f)
+						+ globalV.GetGroundPos() + globalV.GetCameraPosY(),
+						int(size_.x * 0.3f),
+						int(size_.y * 0.3f),
+						0.1f,
+						0xffffff1f,
+						kFillModeSolid
+					);
+				}
 			}
 		}
 
@@ -1149,6 +1195,18 @@ void Player::Draw(GlobalVariable globalV, Scene scene,ChangeScene changeScene) {
 			);
 		}
 
+		//死亡エフェクト
+		if (!isAlive_) {
+			for (int i = 0; i < 12; i++) {
+
+				DrawTriangle(
+					triangleCenter_[i],
+					32.0f,
+					((float(globalV.grandTimeCount_) / 32.0f)) * float(M_PI),
+					color_
+				);
+			}
+		}
 
 		break;
 
