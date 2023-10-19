@@ -1,6 +1,6 @@
 #include "Player.h"
 #include "Emitter.h"
-
+#include "Title.h"
 //======================================================
 //					グローバル変数/定数
 //======================================================
@@ -46,7 +46,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	GlobalVariable globalV;
 	globalV.Init();
-
+	Title title;
+	title.Init();
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
 		// フレームの開始
@@ -59,13 +60,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 		/// ↓更新処理ここから
 		///
-
+		title.Update();
 		map.Update(scene);
 		player.Update(keys,preKeys,&globalV.cameraPosX_, &globalV.cameraPosY_, &globalV.miniCameraPos_, map, scene,changeScene);
 		effect->Update(player,map);
 
 		changeScene.Update(scene);
-
+	
 		///
 		/// ↑更新処理ここまで
 		///
@@ -73,12 +74,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 		/// ↓描画処理ここから
 		///
-
-
+		
 		map.Draw(globalV, scene,changeScene);
 		effect->Draw(globalV);
 		player.Draw(globalV,scene);
 		changeScene.Draw(scene);
+
+		title.Draw();
 
 		Novice::ScreenPrintf(100, 20, "%d", map.GetSavedBlockType(0, 0));
 		Novice::ScreenPrintf(100, 40, "%d", map.GetBlockType(0, 0));
