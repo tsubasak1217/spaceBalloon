@@ -364,7 +364,7 @@ void Map::Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene) {
 			WHITE
 		);
 
-		//title.Draw();
+	
 
 		break;
 
