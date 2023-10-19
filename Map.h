@@ -56,6 +56,12 @@ private:
 
 	unsigned int skyColor_;
 
+	//プレイヤーから送られてきたスコアを格納する変数
+	int score_;
+	int scoreDigit[3] = { 0 };
+	int achievement;
+
+
 public:
 	//イニシャライズ
 	void Init();
@@ -88,6 +94,9 @@ public:
 
 	void SetSaveBlockOrder(bool flag) { saveBlockOrder_ = flag; }
 	void SetResetBlockOrder(bool flag) { resetBlockOrder_ = flag; }
+
+	void SetScore(int value) { score_ = value; }
+
 
 	//アップデート
 	void Update(Scene scene, ChangeScene changeScene);

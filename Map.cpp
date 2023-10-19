@@ -14,7 +14,10 @@ void Map::Init() {
 
 	//スコアアイテムの総数をカウントするやつ
 	allScoreItem_ = 0;
-
+	achievement = 0;
+	for (int i = 0; i < 3; i++) {
+		scoreDigit[i] = 0;
+	}
 	//csvからマップを読み込み
 	blockType_ = LoadFile("./Resources./spaceBalloon_map.csv");
 
@@ -29,7 +32,11 @@ void Map::Init() {
 	size_ = { 64.0f,64.0f };
 	miniMapSize = 4.0f;
 
+	//初期化
+	birdAddress_.clear();
+	birdDirection_.clear();
 	birdPos_.clear();
+	allScoreItem_ = 0;
 
 	for (int row = 0; row < mapRow; row++) {
 		for (int col = 0; col < mapCol; col++) {
@@ -44,10 +51,12 @@ void Map::Init() {
 				allScoreItem_++;
 			}
 
+			//鳥の座標を格納していく
 			if (blockType_[row][col] == 6) {
 				birdPos_.push_back(pos_[row][col]);
 			}
 
+			//プレイヤーの初期座標
 			if (blockType_[row][col] == 99) {
 				firstPlayerPos_.x = (size_.x * col) + (size_.x * 0.5f);
 				firstPlayerPos_.y = (size_.y * (row + 1)) - (size_.y * 0.5f);
@@ -55,9 +64,6 @@ void Map::Init() {
 		}
 	}
 
-	//鳥の初期番地計算
-	birdAddress_.clear();
-	birdDirection_.clear();
 
 	for (int i = 0; i < birdPos_.size(); i++) {
 		birdAddress_.push_back(
@@ -98,7 +104,7 @@ void Map::Init() {
 }
 
 //==================================================================================
-void Map::Update(Scene scene,ChangeScene changeScene) {
+void Map::Update(Scene scene, ChangeScene changeScene) {
 
 	switch (scene.GetSceneNum()) {
 		//=====================================================================================
@@ -135,6 +141,12 @@ void Map::Update(Scene scene,ChangeScene changeScene) {
 		if (!isTimeStop_) {
 			timeCount_++;
 		}
+
+		//スコアの更新
+		achievement = int((score_ / allScoreItem_) * 100);
+		scoreDigit[0] = achievement / 100;
+		scoreDigit[1] = achievement / 100 % 10;
+		scoreDigit[2] = achievement / 10 % 1;
 
 		//====================外部からの命令=====================
 
@@ -379,7 +391,7 @@ void Map::Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene) {
 									Novice::DrawSpriteRect(
 										int(pos_[row][col].x) - globalV.GetCameraPosX() - 6,
 										int(pos_[row][col].y * -1.0f)
-										+ globalV.GetGroundPos() + globalV.GetCameraPosY() 
+										+ globalV.GetGroundPos() + globalV.GetCameraPosY()
 										+ int((EaseInQuint(1.0f - changeScene.easeT_) * -720)) - 6,
 										0 + (76 * (isTimeStop_)),
 										0,
@@ -398,7 +410,7 @@ void Map::Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene) {
 									//描画
 									Novice::DrawSpriteRect(
 										int(pos_[row][col].x) - globalV.GetCameraPosX() - 6,
-										int(pos_[row][col].y * -1.0f) 
+										int(pos_[row][col].y * -1.0f)
 										+ globalV.GetGroundPos() + globalV.GetCameraPosY()
 										+ int((EaseInQuint(1.0f - changeScene.easeT_) * -720)) - 6,
 										0 + (76 * (isTimeStop_)),
@@ -420,7 +432,7 @@ void Map::Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene) {
 										int(pos_[row][col].x) - globalV.GetCameraPosX(),
 										int((pos_[row][col].y * -1.0f))
 										+ globalV.GetGroundPos() + globalV.GetCameraPosY()
-										+ int(sinf((globalV.grandTimeCount_ / 64.0f) * float(M_PI)) * 6.0f) 
+										+ int(sinf((globalV.grandTimeCount_ / 64.0f) * float(M_PI)) * 6.0f)
 										+ int((EaseInQuint(1.0f - changeScene.easeT_) * -720)),
 										0 + (64 * (globalV.grandTimeCount_ / 16 % 3)),
 										0,
@@ -440,7 +452,7 @@ void Map::Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene) {
 									Novice::DrawSpriteRect(
 										int(pos_[row][col].x) - globalV.GetCameraPosX(),
 										int((pos_[row][col].y * -1.0f))
-										+ globalV.GetGroundPos() + globalV.GetCameraPosY() 
+										+ globalV.GetGroundPos() + globalV.GetCameraPosY()
 										+ int(sinf((globalV.grandTimeCount_ / 64.0f) * float(M_PI)) * 6.0f)
 										+ int((EaseInQuint(1.0f - changeScene.easeT_) * -720)),
 										0 + (64 * (globalV.grandTimeCount_ / 16 % 3)),
@@ -460,8 +472,8 @@ void Map::Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene) {
 									//描画
 									Novice::DrawBox(
 										int(pos_[row][col].x) - globalV.GetCameraPosX(),
-										int(pos_[row][col].y * -1.0f) 
-										+ globalV.GetGroundPos() + globalV.GetCameraPosY() 
+										int(pos_[row][col].y * -1.0f)
+										+ globalV.GetGroundPos() + globalV.GetCameraPosY()
 										+ int((EaseInQuint(1.0f - changeScene.easeT_) * -720)),
 										int(size_.x),
 										int(size_.y),
@@ -477,7 +489,7 @@ void Map::Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene) {
 									//描画
 									Novice::DrawBox(
 										int(pos_[row][col].x) - globalV.GetCameraPosX(),
-										int(pos_[row][col].y * -1.0f) 
+										int(pos_[row][col].y * -1.0f)
 										+ globalV.GetGroundPos() + globalV.GetCameraPosY()
 										+ int((EaseInQuint(1.0f - changeScene.easeT_) * -720)),
 										int(size_.x),
@@ -495,7 +507,7 @@ void Map::Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene) {
 									Novice::DrawSpriteRect(
 										int(pos_[row][col].x) - globalV.GetCameraPosX(),
 										int(pos_[row][col].y * -1.0f)
-										+ globalV.GetGroundPos() + globalV.GetCameraPosY() 
+										+ globalV.GetGroundPos() + globalV.GetCameraPosY()
 										+ int((EaseInQuint(1.0f - changeScene.easeT_) * -720)),
 										0 + (64 * (timeCount_ / 4 % 3)),
 										0 + (128 * isTimeStop_),
@@ -521,8 +533,8 @@ void Map::Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene) {
 									//描画
 									Novice::DrawSpriteRect(
 										int(pos_[row][col].x) - globalV.GetCameraPosX(),
-										int(pos_[row][col].y * -1.0f) 
-										+ globalV.GetGroundPos() + globalV.GetCameraPosY() 
+										int(pos_[row][col].y * -1.0f)
+										+ globalV.GetGroundPos() + globalV.GetCameraPosY()
 										+ int((EaseInQuint(1.0f - changeScene.easeT_) * -720)),
 										0 + (32 * (timeCount_ / 2 % 7)),
 										0 + (32 * ((blockType_[row][col]) - 2)),
@@ -573,7 +585,7 @@ void Map::Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene) {
 				//ミニマップ用
 				Novice::DrawBox(
 					int((birdPos_[i].x / 17) + 1120),
-					int((birdPos_[i].y / 17) * -1.0f) + 344 
+					int((birdPos_[i].y / 17) * -1.0f) + 344
 					+ int(globalV.GetMiniCameraPos() / 17),
 					int(miniMapSize),
 					int(miniMapSize),
@@ -698,7 +710,7 @@ void Map::Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene) {
 								Novice::DrawSpriteRect(
 									int(pos_[row][col].x) - globalV.GetCameraPosX(),
 									int((pos_[row][col].y * -1.0f))
-									+ globalV.GetGroundPos() + globalV.GetCameraPosY() 
+									+ globalV.GetGroundPos() + globalV.GetCameraPosY()
 									+ int(sinf((globalV.grandTimeCount_ / 64.0f) * float(M_PI)) * 6.0f),
 									0 + (64 * (globalV.grandTimeCount_ / 16 % 3)),
 									0,
@@ -833,19 +845,19 @@ void Map::Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene) {
 					if (int(birdPos_[i].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY() >= 0 - size_.y &&
 						int(birdPos_[i].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY() <= 720) {
 
-							
-							Novice::DrawSpriteRect(
-								int(birdPos_[i].x) - globalV.GetCameraPosX(),
-								int(birdPos_[i].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
-								0 + (64 * (timeCount_ / 4 % 4)),
-								(64 * (birdDirection_[i]%2)) + (128 * isTimeStop_),
-								64,
-								64,
-								gameImgs_[4],
-								64.0f / 320.0f, 64.0f / 256.0f,
-								0.0f,
-								0xffffffff
-							);
+
+						Novice::DrawSpriteRect(
+							int(birdPos_[i].x) - globalV.GetCameraPosX(),
+							int(birdPos_[i].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
+							0 + (64 * (timeCount_ / 4 % 4)),
+							(64 * (birdDirection_[i] % 2)) + (128 * isTimeStop_),
+							64,
+							64,
+							gameImgs_[4],
+							64.0f / 320.0f, 64.0f / 256.0f,
+							0.0f,
+							0xffffffff
+						);
 
 					}
 				}
@@ -930,8 +942,8 @@ void Map::Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene) {
 	case clear:
 
 		switch (changeScene.clearSceneRole_) {
-			
-		case 0://"space balloonが中央からうっすら現れる"============================
+
+		case 0:/*----------------------------"space balloonが中央からうっすら現れる"----------------------------*/
 			Novice::DrawSpriteRect(
 				int(clearResultPos_[0].x),
 				int(clearResultPos_[0].y),
@@ -945,11 +957,11 @@ void Map::Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene) {
 				0.0f,
 				0xffffff00 + int(EaseInExpo(changeScene.easeT_) * 0xFF)
 			);
-		
+
 			break;
 
 		case 1:
-			/*"space balloon"が上に避けて、下に達成率が現れる*/
+			/*-----------------------"space balloon"が上に避けて、下に達成率が現れる--------------------*/
 
 			Novice::DrawSpriteRect(
 				int(clearResultPos_[0].x),
@@ -1011,9 +1023,86 @@ void Map::Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene) {
 
 			break;
 
-		case 2:
+		case 2:/*---------------------------------スコアが確定する-------------------------------------*/
+
+			//space balloon 
+			Novice::DrawSpriteRect(
+				int(clearResultPos_[0].x),
+				int(clearResultPos_[0].y - 60),
+				0,
+				0,
+				774,
+				112,
+				clearImgs_[0],
+				1,
+				112.0f / 234.0f,
+				0.0f,
+				0xffffffff
+			);
+
+			//〇〇% completed
+			Novice::DrawSpriteRect(
+				int(clearResultPos_[1].x),
+				int(clearResultPos_[1].y),
+				0,
+				124,
+				774,
+				107,
+				clearImgs_[0],
+				1,
+				107.0f / 234.0f,
+				0.0f,
+				0xffffffff
+			);
+
+			//スコア
+			for (int i = 0; i < 3; i++) {
+				Novice::DrawSpriteRect(
+					int(clearResultPos_[1].x + (i * 57)),
+					int(clearResultPos_[1].y),
+					57 * scoreDigit[i],
+					0,
+					57,
+					81,
+					clearImgs_[1],
+					57.0f/774.0f,
+					81.0f / 163.0f,
+					0.0f,
+					0xffffffff
+				);
+			}
+
+			//左右にスコアアイテムの星を出す
+			Novice::DrawSpriteRect(
+				int(1039),
+				int(clearResultPos_[1].y)
+				+ int(sinf((globalV.grandTimeCount_ / 64.0f) * float(M_PI)) * 6.0f),
+				0 + (64 * (globalV.grandTimeCount_ / 16 % 3)),
+				0,
+				64,
+				64,
+				gameImgs_[6],
+				64.0f / 256.0f, 64.0f / 128.0f,
+				0.0f,
+				0xffffffff
+			);
+
+			Novice::DrawSpriteRect(
+				int(clearResultPos_[1].x - 74),
+				int(clearResultPos_[1].y)
+				+ int(sinf((globalV.grandTimeCount_ / 64.0f) * float(M_PI)) * 6.0f),
+				0 + (64 * (globalV.grandTimeCount_ / 16 % 3)),
+				0,
+				64,
+				64,
+				gameImgs_[6],
+				64.0f / 256.0f, 64.0f / 128.0f,
+				0.0f,
+				0xffffffff
+			);
+
 			break;
-		
+
 		case 3:
 			break;
 

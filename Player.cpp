@@ -387,6 +387,7 @@ void Player::Update(
 
 			if (pos_.y > 64 * 244) {
 				changeScene.SetIsFinish(true);
+				map.SetScore(score);
 			}
 
 

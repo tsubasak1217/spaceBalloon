@@ -116,7 +116,7 @@ void ChangeScene::Update(Scene& scene,char*keys) {
 					easeT_ = 0.0f;
 				}
 
-				if (clearSceneRole_ >= 2) {
+				if (clearSceneRole_ >= 3) {
 					isStartScene_ = false;
 					isFinishScene_ = true;
 					clearSceneRole_ = 0;
