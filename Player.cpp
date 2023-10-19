@@ -111,6 +111,7 @@ void Player::Update(
 				isAlive_ = false;
 			}
 
+			//死んだときの処理==============================================
 			if (!isAlive_) {
 				map.SetResetBlockOrder(true);
 				pos_ = respawnPos_;

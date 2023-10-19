@@ -2,6 +2,7 @@
 #include "Scene.h"
 #include <Novice.h>
 #include "Easing.h"
+#include "MyFunc.h"
 
 class ChangeScene{
 private:
@@ -11,8 +12,19 @@ private:
 	int finishTimer_;
 	int startTimer_;
 	
-
 	bool initOrder_;
+
+	//星の表示に関するもの
+	bool isMoveStar_;
+	float starT_;
+	float starRadius_;
+	float starTheta_;
+	unsigned int starColor_[3] = {
+		0xffa500ff,
+		0xffff00ff,
+		0xffffffff
+	};
+
 
 public:
 
@@ -31,10 +43,15 @@ public:
 		finishTimer_ = 120;
 		clearSceneRole_ = 0;
 		easeT_ = 0.0f;
+		isMoveStar_ = false;
+		starT_ = 0.0f;
+		starRadius_ = 0.0f;
+		starTheta_ = 0.0f;
 	}
 
 	void Update(Scene& scene, char* keys);
 
+	void DrawChangeStar();
 	void Draw(Scene scene);
 
 	//アクセッサ
@@ -52,5 +69,7 @@ public:
 
 	bool GetInitOrder() { return initOrder_; }
 	void SetInitOrder(bool flag) { initOrder_ = flag; }
+
+	void SetIsMoveStar(bool flag) { isMoveStar_ = flag; }
 };
 

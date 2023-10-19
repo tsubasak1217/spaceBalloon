@@ -3,7 +3,7 @@
 
 void Emitter::Update(Player player, Map map) {
 	pos_ = player.GetPos();
-	size_ = player.GetSize() / 4;
+	size_ = {player.GetSize().x / 4,player.GetSize().y / 4 };
 	
 
 	if (++frameCount >= DeterminedFrame) {

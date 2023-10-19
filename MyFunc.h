@@ -59,3 +59,9 @@ int Alpha(int color);
 
 int ChangeColor(int startColor, int aimColor, float divideNum, float rate);
 int GrayScale(int color);
+
+//星を描く関数
+void DrawStar(Vector2 center, float radius, float theta, int color);
+
+//中心点基準に三角形を描く関数
+void DrawTriangle(Vector2 center, float radius, float theta, int color);

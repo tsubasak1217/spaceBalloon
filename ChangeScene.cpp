@@ -1,6 +1,25 @@
 #include "ChangeScene.h"
 
 
+void ChangeScene::DrawChangeStar() {
+
+	starT_ += 0.01f;
+	if (starT_ > 1.0f) {
+		starT_ = 1.0f;
+	}
+
+	starTheta_ += (1.0f / 48.0f) * float(M_PI);
+
+	for (int i = 0; i < 3; i++) {
+		DrawStar(
+			{ 640.0f,360.0f },
+			EaseInOutExpo(starT_) * (2000 * powf(float(i),float(i))),
+			starTheta_,
+			starColor_[i]
+		);
+	}
+};
+
 void ChangeScene::Update(Scene& scene,char*keys) {
 
 	if (isStartScene_) {

@@ -388,3 +388,100 @@ int GrayScale(int color) {
 
 	return 0xFF + (gray << 24) + (gray << 16) + (gray << 8);
 }
+
+//================================================================--
+//                            星を描く
+//================================================================--
+
+void DrawStar(Vector2 center, float radius, float theta, int color) {
+
+	Vector2 vertex[5];
+	Vector2 preVertex[5];
+	Vector2 crossPos[3];
+
+	//初期座標
+	for (int i = 0; i < 5; i++) {
+
+		vertex[i].x = center.x + radius * cosf(((((2.0f / 5.0f) * i) - (1.0f / 2.0f)) * float(M_PI)));
+		vertex[i].y = center.y + radius * sinf(((((2.0f / 5.0f) * i) - (1.0f / 2.0f)) * float(M_PI)));
+	}
+
+	crossPos[0] = CrossPos(vertex[2], vertex[4], vertex[3], vertex[0]);
+	crossPos[1] = CrossPos(vertex[3], vertex[0], vertex[4], vertex[1]);
+	crossPos[2] = CrossPos(vertex[4], vertex[1], vertex[0], vertex[2]);
+
+	//回転
+	for (int i = 0; i < 5; i++) {
+
+		preVertex[i] = vertex[i];
+
+		preVertex[i].x -= center.x;
+		preVertex[i].y -= center.y;
+
+		vertex[i].x = preVertex[i].x * cosf(theta) - preVertex[i].y * sinf(theta);
+		vertex[i].y = preVertex[i].x * sinf(theta) + preVertex[i].y * cosf(theta);
+
+		vertex[i].x += center.x;
+		vertex[i].y += center.y;
+	}
+
+	crossPos[0] = CrossPos(vertex[2], vertex[4], vertex[3], vertex[0]);
+	crossPos[1] = CrossPos(vertex[3], vertex[0], vertex[4], vertex[1]);
+	crossPos[2] = CrossPos(vertex[4], vertex[1], vertex[0], vertex[2]);
+
+	//描画
+	for (int i = 0; i < 3; i++) {
+		Novice::DrawTriangle(
+			int(vertex[i].x),
+			int(vertex[i].y),
+			int(vertex[i + 2].x),
+			int(vertex[i + 2].y),
+			int(crossPos[i].x),
+			int(crossPos[i].y),
+			color,
+			kFillModeSolid
+		);
+	}
+
+};
+
+//中心点を基準に三角形を描く関数
+void DrawTriangle(Vector2 center, float radius, float theta, int color) {
+
+	Vector2 vertex[3];
+	Vector2 preVertex[3];
+
+	//初期座標
+	for (int i = 0; i < 3; i++) {
+		vertex[i].x = center.x + cosf((-(1.0f / 2.0f) + (i * (2.0f / 3.0f))) * float(M_PI)) * radius;
+		vertex[i].y = center.y + sinf((-(1.0f / 2.0f) + (i * (2.0f / 3.0f))) * float(M_PI)) * radius;
+	}
+
+	//回転
+	for (int i = 0; i < 3; i++) {
+
+		preVertex[i] = vertex[i];
+
+		preVertex[i].x -= center.x;
+		preVertex[i].y -= center.y;
+
+		vertex[i].x = preVertex[i].x * cosf(theta) - preVertex[i].y * sinf(theta);
+		vertex[i].y = preVertex[i].x * sinf(theta) + preVertex[i].y * cosf(theta);
+
+		vertex[i].x += center.x;
+		vertex[i].y += center.y;
+	}
+
+	//描画
+	Novice::DrawTriangle(
+		int(vertex[0].x),
+		int(vertex[0].y),
+		int(vertex[1].x),
+		int(vertex[1].y),
+		int(vertex[2].x),
+		int(vertex[2].y),
+		color,
+		kFillModeSolid
+	);
+
+};
