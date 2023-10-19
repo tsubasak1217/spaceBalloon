@@ -59,7 +59,7 @@ private:
 	//プレイヤーから送られてきたスコアを格納する変数
 	int score_;
 	int scoreDigit[3] = { 0 };
-	int achievement;
+	float achievement;
 
 
 public:
@@ -97,6 +97,7 @@ public:
 
 	void SetScore(int value) { score_ = value; }
 
+	float GetAchievement() { return achievement; }
 
 	//アップデート
 	void Update(Scene scene, ChangeScene changeScene);

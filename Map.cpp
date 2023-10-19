@@ -143,10 +143,14 @@ void Map::Update(Scene scene, ChangeScene changeScene) {
 		}
 
 		//スコアの更新
-		achievement = int((score_ / allScoreItem_) * 100);
-		scoreDigit[0] = achievement / 100;
-		scoreDigit[1] = achievement / 100 % 10;
-		scoreDigit[2] = achievement / 10 % 1;
+		achievement = (float(score_) / float(allScoreItem_)) * 100;
+		scoreDigit[0] = int(achievement) / 100;
+		scoreDigit[1] = int(achievement) % 100 / 10;
+		scoreDigit[2] = int(achievement) % 10 / 1;
+
+		Novice::ScreenPrintf(100, 20, "%d", achievement);
+		Novice::ScreenPrintf(100, 40, "%d", allScoreItem_);
+		Novice::ScreenPrintf(100, 60, "%d", score_);
 
 		//====================外部からの命令=====================
 
@@ -941,6 +945,9 @@ void Map::Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene) {
 		//=====================================================================================
 	case clear:
 
+		Novice::ScreenPrintf(100, 40, "%d", allScoreItem_);
+		Novice::ScreenPrintf(100, 60, "%d", score_);
+
 		switch (changeScene.clearSceneRole_) {
 
 		case 0:/*----------------------------"space balloonが中央からうっすら現れる"----------------------------*/
@@ -991,6 +998,88 @@ void Map::Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene) {
 				0xffffffff
 			);
 
+
+			//スコア
+			if (changeScene.GetStartTimer() > 80) {
+				//1桁目
+				Novice::DrawSpriteRect(
+					int(clearResultPos_[1].x + (2 * 57)),
+					int(clearResultPos_[1].y + 20),
+					57 * ((globalV.grandTimeCount_ / 3) % 9),
+					0,
+					57,
+					81,
+					clearImgs_[1],
+					57.0f / 774.0f,
+					81.0f / 163.0f,
+					0.0f,
+					0xffffffff
+				);
+			} else {//確定したスコア
+				//1桁目
+				Novice::DrawSpriteRect(
+					int(clearResultPos_[1].x + (2 * 57)),
+					int(clearResultPos_[1].y + 20),
+					57 * scoreDigit[2],
+					0,
+					57,
+					81,
+					clearImgs_[1],
+					57.0f / 774.0f,
+					81.0f / 163.0f,
+					0.0f,
+					0xffffffff
+				);
+			}
+
+			//2桁目
+			if (changeScene.GetStartTimer() > 40) {
+				Novice::DrawSpriteRect(
+					int(clearResultPos_[1].x + (1 * 57)),
+					int(clearResultPos_[1].y + 20),
+					57 * (((globalV.grandTimeCount_ + 3) / 3) % 9),
+					0,
+					57,
+					81,
+					clearImgs_[1],
+					57.0f / 774.0f,
+					81.0f / 163.0f,
+					0.0f,
+					0xffffffff
+				);
+			} else {//確定したスコア
+				//2桁目
+				if (achievement >= 10) {
+					Novice::DrawSpriteRect(
+						int(clearResultPos_[1].x + (1 * 57)),
+						int(clearResultPos_[1].y + 20),
+						57 * scoreDigit[1],
+						0,
+						57,
+						81,
+						clearImgs_[1],
+						57.0f / 774.0f,
+						81.0f / 163.0f,
+						0.0f,
+						0xffffffff
+					);
+				}
+			}
+
+			//3桁目
+			Novice::DrawSpriteRect(
+				int(clearResultPos_[1].x),
+				int(clearResultPos_[1].y + 20),
+				57 * (((globalV.grandTimeCount_ + 6) / 3) % 9),
+				0,
+				57,
+				81,
+				clearImgs_[1],
+				57.0f / 774.0f,
+				81.0f / 163.0f,
+				0.0f,
+				0xffffffff
+			);
 
 			//左右にスコアアイテムの星を出す
 			Novice::DrawSpriteRect(
@@ -1056,16 +1145,50 @@ void Map::Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene) {
 			);
 
 			//スコア
-			for (int i = 0; i < 3; i++) {
+
+			//1桁目
+			Novice::DrawSpriteRect(
+				int(clearResultPos_[1].x + (2 * 57)),
+				int(clearResultPos_[1].y + 20),
+				57 * scoreDigit[2],
+				0,
+				57,
+				81,
+				clearImgs_[1],
+				57.0f / 774.0f,
+				81.0f / 163.0f,
+				0.0f,
+				0xffffffff
+			);
+
+			//2桁目
+			if (achievement >= 10) {
 				Novice::DrawSpriteRect(
-					int(clearResultPos_[1].x + (i * 57)),
-					int(clearResultPos_[1].y),
-					57 * scoreDigit[i],
+					int(clearResultPos_[1].x + (1 * 57)),
+					int(clearResultPos_[1].y + 20),
+					57 * scoreDigit[1],
 					0,
 					57,
 					81,
 					clearImgs_[1],
-					57.0f/774.0f,
+					57.0f / 774.0f,
+					81.0f / 163.0f,
+					0.0f,
+					0xffffffff
+				);
+			}
+
+			//3桁目
+			if (achievement >= 100) {
+				Novice::DrawSpriteRect(
+					int(clearResultPos_[1].x),
+					int(clearResultPos_[1].y + 20),
+					57 * scoreDigit[0],
+					0,
+					57,
+					81,
+					clearImgs_[1],
+					57.0f / 774.0f,
 					81.0f / 163.0f,
 					0.0f,
 					0xffffffff

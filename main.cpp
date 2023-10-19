@@ -89,7 +89,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		}
 		changeScene.Draw(scene);
 
-		//Novice::ScreenPrintf(100, 20, "%d", changeScene.GetFinishTimer());
+		Novice::ScreenPrintf(100, 20, "%d", changeScene.GetStartTimer());
 		//Novice::ScreenPrintf(100, 40, "%d,%d", map.GetPlayerRespawnAddress().y, map.GetPlayerRespawnAddress().x);
 		//Novice::ScreenPrintf(100, 60, "%d", changeScene.GetIsFinish());
 

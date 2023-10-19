@@ -387,7 +387,7 @@ void Player::Update(
 
 			if (pos_.y > 64 * 244) {
 				changeScene.SetIsFinish(true);
-				map.SetScore(score);
+				map.SetScore(scoreCount_);
 			}
 
 
@@ -628,6 +628,8 @@ void Player::Update(
 
 									//スコア加算
 									scoreCount_++;
+									map.SetScore(scoreCount_);
+
 									//取得済み(ブロックタイプを何もない0に変更)
 									map.SetBlockType(address_.y + i, address_.x + j, 0);
 								}

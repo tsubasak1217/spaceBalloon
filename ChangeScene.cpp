@@ -4,20 +4,17 @@
 void ChangeScene::Update(Scene& scene,char*keys) {
 
 	if (isStartScene_) {
-		startTimer_--;
+		if (startTimer_ > 0) {
+			startTimer_--;
+		}
 	}
 
 	if (isFinishScene_) {
-		finishTimer_--;
+		if (finishTimer_ > 0) {
+			finishTimer_--;
+		}
 	}
 
-	/*if (initOrder_) {
-		initOrder_ = false;
-	}
-
-	if (finishTimer_ <= 0) {
-		initOrder_ = true;
-	}*/
 
 	switch (scene.GetSceneNum()) {
 
@@ -110,11 +107,21 @@ void ChangeScene::Update(Scene& scene,char*keys) {
 
 			if (startTimer_ <= 0) {
 
+				if (clearSceneRole_ == 1) {
+					clearSceneRole_++;
+				}
+
 				if (keys[DIK_SPACE]) {
 					clearSceneRole_++;
-					startTimer_ = 120;
 					easeT_ = 0.0f;
+					
+					if (clearSceneRole_ == 1) {
+						startTimer_ = 240;
+					} else {
+						startTimer_ = 120;
+					}
 				}
+
 
 				if (clearSceneRole_ >= 3) {
 					isStartScene_ = false;

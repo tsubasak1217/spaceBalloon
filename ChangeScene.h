@@ -41,6 +41,9 @@ public:
 	int GetFinishTimer() { return finishTimer_; }
 	void SetFinishTimer(int value) { finishTimer_ = value; }
 
+	int GetStartTimer() { return startTimer_; }
+	void SetStartTimer(int value) { startTimer_ = value; }
+
 	bool GetIsFinish() { return isFinishScene_; }
 	void SetIsFinish(bool flag) { isFinishScene_ = flag; }
 
