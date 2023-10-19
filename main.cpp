@@ -79,12 +79,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓描画処理ここから
 		///
 
-
+	
 		map.Draw(globalV, scene,changeScene);
 		effect->Draw(globalV);
 		player.Draw(globalV,scene);
 		changeScene.Draw(scene);
-
+		title.Draw();
 		Novice::ScreenPrintf(100, 20, "%d", map.GetSavedBlockType(0, 0));
 		Novice::ScreenPrintf(100, 40, "%d", map.GetBlockType(0, 0));
 		Novice::ScreenPrintf(100, 60, "%d", changeScene.GetIsFinish());

@@ -2,7 +2,6 @@
 #include "Title.h"
 
 void Map::Init() {
-
 	cloudPos_[0] = { 0.0f,0.0f };
 	cloudPos_[1] = { 0.0f,0.0f };
 
@@ -297,7 +296,7 @@ void Map::Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene) {
 			WHITE
 		);
 
-
+		//title.Draw();
 
 		break;
 

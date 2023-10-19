@@ -2,13 +2,13 @@
 #include <Novice.h>
 
 void Title::Update() {
-	if (time > 230) {
+	if (time > 250) {
 		time = 0;
 	}
 	time++;
 	if (time == 1) {
 		for (int i = 0; i < 2; i++) {
-			velocity[i].y = -10.0;
+			velocity[i].y = -13.0;
 		}
 	}
 
@@ -26,8 +26,8 @@ void Title::Update() {
 		//落下を止める処理
 
 		if (i < 2) {
-			if (titlePos[i].y > 300.0) {
-				titlePos[i].y = 300.0;
+			if (titlePos[i].y > 250.0) {
+				titlePos[i].y = 250.0;
 				timecount[i] = 0;
 				velocity[i].y = 0.0f;
 			}

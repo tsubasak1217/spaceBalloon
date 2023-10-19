@@ -25,18 +25,19 @@ public:
 	void Init() {
 		time = 0;
 		Pos[0].x = 0.0f;
-		Pos[0].y = 300.0f;
-		Pos[1].x = 0.0f;
-		Pos[1].y = 300.0f;
+		Pos[0].y = 250.0f;
+		Pos[1].x = 50.0f;
+		Pos[1].y = 250.0f;
 
 		for (int i = 1; i < 3; i++) {
-			jumpcount[i - 1] = 10 * i;//跳ねる時間設定
+			jumpcount[i - 1] = 5 * i;//跳ねる時間設定
 		}
 
 		for (int i = 0; i < 2; i++) {//位置
 			if (i < 2) {
-				titlePos[i].x = Pos[0].x;
-				titlePos[i].y = Pos[0].y;
+				titlePos[i].x = Pos[i].x;
+				titlePos[i].y = Pos[i].y;
+
 			}
 
 			acceleration[i].y = 0.2f;//下へ加速
