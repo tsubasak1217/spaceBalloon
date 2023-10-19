@@ -14,7 +14,7 @@ void Player::Update(
 		//=====================================================================================
 		//                                      タイトル
 		//=====================================================================================
-	case title:
+	case titleScene:
 
 		// 風船が膨らんだりしぼんだりする処理
 		if (keys[DIK_SPACE]) {
@@ -908,7 +908,7 @@ void Player::Update(
 		}
 
 		if (changeScene.GetInitOrder()) {
-			Init(title);
+			Init(titleScene);
 		}
 		break;
 
@@ -927,7 +927,7 @@ void Player::Draw(GlobalVariable globalV, Scene scene) {
 		//=====================================================================================
 		//                                      タイトル
 		//=====================================================================================
-	case title:
+	case titleScene:
 
 		Novice::DrawEllipse(
 			int(pos_.x),

@@ -1,6 +1,6 @@
 #include "Player.h"
 #include "Emitter.h"
-
+#include "Title.h"
 //======================================================
 //					グローバル変数/定数
 //======================================================
@@ -37,7 +37,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	changeScene.Init();
 
 	Player player;
-	player.Init(title);
+	player.Init(titleScene);
 
 	Emitter* effect = new Emitter();
 
@@ -46,6 +46,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	GlobalVariable globalV;
 	globalV.Init();
+	
+	Title title;
+	title.Init();
 
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
@@ -59,6 +62,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 		/// ↓更新処理ここから
 		///
+		
+		title.Update();
 
 		map.Update(scene);
 		player.Update(keys,preKeys,&globalV.cameraPosX_, &globalV.cameraPosY_, &globalV.miniCameraPos_, map, scene,changeScene);

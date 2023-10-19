@@ -1,6 +1,5 @@
 #include "ChangeScene.h"
 
-
 void ChangeScene::Update(Scene& scene) {
 
 	if (isStartScene_) {
@@ -22,7 +21,7 @@ void ChangeScene::Update(Scene& scene) {
 	switch (scene.GetSceneNum()) {
 
 
-	case title://========================================================
+	case titleScene://========================================================
 
 
 		//シーン遷移
@@ -109,7 +108,7 @@ void ChangeScene::Update(Scene& scene) {
 				isStartScene_ = true;
 				finishTimer_ = 120;
 				easeT_ = 0;
-				scene.SetSceneNum(title);
+				scene.SetSceneNum(titleScene);
 			}
 		}
 		break;
@@ -125,7 +124,7 @@ void ChangeScene::Draw(Scene scene) {
 
 	switch (scene.GetSceneNum()) {
 
-	case title://========================================================
+	case titleScene://========================================================
 
 		if (isStartScene_) {
 

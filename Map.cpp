@@ -1,5 +1,5 @@
 #include "Map.h"
-
+#include "Title.h"
 
 void Map::Init() {
 
@@ -85,7 +85,7 @@ void Map::Update(Scene scene) {
 		//=====================================================================================
 		//                                      タイトル
 		//=====================================================================================
-	case title:
+	case titleScene:
 
 		//タイトルロゴをふわふわさせる
 		titleTimeCount_++;
@@ -244,7 +244,7 @@ void Map::Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene) {
 		//=====================================================================================
 		//                                      タイトル
 		//=====================================================================================
-	case title:
+	case titleScene:
 
 		//背景の空
 		Novice::DrawSprite(
@@ -296,6 +296,8 @@ void Map::Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene) {
 			0.0f,
 			WHITE
 		);
+
+
 
 		break;
 
