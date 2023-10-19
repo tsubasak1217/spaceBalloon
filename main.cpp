@@ -42,7 +42,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	map.Init();
 
 	Player player;
-	player.Init(title, map);
+	player.Init(titleScene, map);
 
 	GlobalVariable globalV;
 	globalV.Init();
@@ -64,8 +64,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 		
 		title.Update();
-
-		map.Update(scene);
+		globalV.Update();
+		map.Update(scene,changeScene);
 		player.Update(keys,preKeys,&globalV.cameraPosX_, &globalV.cameraPosY_, &globalV.miniCameraPos_, map, scene,changeScene);
 		effect->Update(player,map);
 
@@ -79,13 +79,19 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓描画処理ここから
 		///
 
-	
+		map.DrawBG();
 		effect->Draw(globalV);
-		player.Draw(globalV, scene,changeScene);
 
-		if (scene.GetSceneNum() > title) {
+		if (scene.GetSceneNum() == titleScene) {
 			map.Draw(globalV, scene, changeScene);
 		}
+
+		player.Draw(globalV, scene,changeScene);
+
+		if (scene.GetSceneNum() > titleScene) {
+			map.Draw(globalV, scene, changeScene);
+		}
+
 		changeScene.Draw(scene);
 	
 		Novice::ScreenPrintf(100, 20, "%d", map.GetSavedBlockType(0, 0));

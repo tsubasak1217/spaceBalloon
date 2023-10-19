@@ -910,7 +910,7 @@ void Player::Update(
 
 		//シーン以降終了時に初期化命令を出す
 		if (changeScene.GetFinishTimer() <= 1) {
-			Init(title,map);
+			Init(titleScene,map);
 		}
 
 		
