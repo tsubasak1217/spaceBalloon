@@ -405,8 +405,8 @@ void Player::Update(
 			int roopCount = 0;
 
 			//座標を求めるための変数
-			float difX;
-			float difY;
+			float difX = 0;
+			float difY = 0;
 			float normalizeX;
 			float normalizeY;
 			float leng;

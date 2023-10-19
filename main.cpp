@@ -92,6 +92,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		Novice::ScreenPrintf(100, 20, "%d", globalV.grandTimeCount_);
 		Novice::ScreenPrintf(100, 40, "%d", map.GetBlockType(0, 0));
 		Novice::ScreenPrintf(100, 60, "%d", changeScene.GetIsFinish());
+
 		///
 		/// ↑描画処理ここまで
 		///
