@@ -72,7 +72,7 @@ void Title::Draw() {
 				int(Box[i].y),
 				100,100,
 				0.0f,
-				GREEN,
+				0x008000FF,
 				kFillModeSolid);
 		}
 		else if (timecount[i] == 1) {
