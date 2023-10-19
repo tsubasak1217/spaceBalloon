@@ -68,7 +68,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		globalV.Update();
 		map.Update(scene,changeScene);
 		player.Update(keys,preKeys,&globalV.cameraPosX_, &globalV.cameraPosY_, &globalV.miniCameraPos_, map, scene,changeScene);
-		effect->Update(player,map);
+		effect->Update(player,map,color);
 
 		changeScene.Update(scene,keys);
 

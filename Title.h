@@ -9,7 +9,7 @@ private:
 	Vector2 titlePos[2];//タイトルのx,y
 	Vector2 velocity[2];//速度
 	Vector2 acceleration[2];//加速度
-	Vector2 Pos[2] = { 0,0 };//タイトルの座標取得
+	Vector2 Pos[2];//タイトルの座標取得
 
 	int time;//タイマー
 	int timecount[2] = { 0 };//飛ばすフラグ
