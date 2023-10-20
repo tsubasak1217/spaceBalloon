@@ -120,7 +120,7 @@ void Player::Update(
 				//死亡エフェクトに関する処理--------------
 				if (retryTimeCount_ == 100) {
 
-					for (int i = 0; i < 12; i++) {
+					for (int i = 0; i < 24; i++) {
 						triangleTheta_[i] = float(rand());
 					}
 
@@ -133,9 +133,9 @@ void Player::Update(
 					triangleEaseT_ = 1.0f;
 				}
 
-				for (int i = 0; i < 12; i++) {
-					triangleCenter_[i].x = savePos_.x + cosf((triangleTheta_[i]/256)*float(M_PI)) * (EaseOutExpo(triangleEaseT_) * efectRadius_);
-					triangleCenter_[i].y = savePos_.y + sinf((triangleTheta_[i]/256)*float(M_PI)) * (EaseOutExpo(triangleEaseT_) * efectRadius_);
+				for (int i = 0; i < 24; i++) {
+					triangleCenter_[i].x = savePos_.x + cosf((triangleTheta_[i] / 256) * float(M_PI)) * (EaseOutExpo(triangleEaseT_) * float(int(triangleTheta_[i]) % int(efectRadius_)));
+					triangleCenter_[i].y = savePos_.y + sinf((triangleTheta_[i] / 256) * float(M_PI)) * (EaseOutExpo(triangleEaseT_) * float(int(triangleTheta_[i]) % int(efectRadius_)));
 				}
 
 
@@ -156,12 +156,11 @@ void Player::Update(
 						retryTimeCount_ = 100;
 						triangleEaseT_ = 0.0f;
 						isAlive_ = true;
+						for (int i = 0; i < 24; i++) {
+							triangleCenter_[i] = { -100.0f,0.0f };
+						}
 					}
 				}
-			}
-
-			for (int i = 0; i < 12; i++) {
-				Novice::ScreenPrintf(400, 20 + 20 * i, "%f", savePos_.y + sinf(triangleTheta_[i]) * (EaseOutExpo(triangleEaseT_) * efectRadius_));
 			}
 
 			//加速のフラグに関する処理==========================================
@@ -383,23 +382,12 @@ void Player::Update(
 				}
 			}
 
+
 			//移動
 			pos_.y += (velocity_.y + windSpeed_.y) - (airResistance_ * velocity_.y);
 			pos_.x += (velocity_.x + windSpeed_.x);
 
 			//==================================移動制限の壁====================================
-
-			//下
-			if (pos_.y < 0.0f + size_.y) {
-				pos_.y = 0.0f + size_.y;
-				//
-				velocity_.y *= -1.0f * 0.6f;
-				hitDirection_ = 1;
-				isDash_ = false;
-				if (CheckBalloonLimit(hitDirection_, preHitDirection_)) {
-					balloonLevel_ -= 0.4f;
-				}
-			}
 
 			//左
 			if (pos_.x < 0.0f + size_.y) {
@@ -434,6 +422,9 @@ void Player::Update(
 				map.SetScore(scoreCount_);
 			}
 
+			if (pos_.y < -64.0f) {
+				changeScene.SetIsReturnTitle(true);
+			}
 
 			//============================風船の紐===================================
 
@@ -883,7 +874,11 @@ void Player::Update(
 						switch (map.GetBlockType(address_.y, address_.x)) {
 
 						case wind_up:
-							windSpeed_.y = EaseInSine(windT_) * (speed_ * 2.0f);
+							if (velocity_.y < 0.0f) {
+								velocity_.y += EaseInSine(windT_) * (sqrtf(powf(velocity_.y / 2, 2)));
+							} else {
+								windSpeed_.y = EaseInSine(windT_) * (speed_ + 2.0f);
+							}
 							break;
 
 						case wind_right:
@@ -891,7 +886,11 @@ void Player::Update(
 							break;
 
 						case wind_down:
-							windSpeed_.y = -EaseInSine(windT_) * (speed_ * 2.0f);
+							if (velocity_.y > 0.0f) {
+								velocity_.y += -EaseInSine(windT_) * (sqrtf(powf(velocity_.y / 2, 2)));
+							} else {
+								windSpeed_.y = -EaseInSine(windT_) * (speed_ + 2.0f);
+							}
 							break;
 
 						case wind_left:
@@ -901,6 +900,7 @@ void Player::Update(
 
 					} else {
 						windT_ = 0.0f;
+
 					}
 				} else {
 					windT_ = 0.0f;
@@ -1197,12 +1197,12 @@ void Player::Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene) 
 
 		//死亡エフェクト
 		if (!isAlive_) {
-			for (int i = 0; i < 12; i++) {
+			for (int i = 0; i < 24; i++) {
 
 				DrawTriangle(
 					triangleCenter_[i],
-					32.0f,
-					((float(globalV.grandTimeCount_) / 32.0f)) * float(M_PI),
+					2.0f * i,
+					((float(globalV.grandTimeCount_) / (8.0f * i))) * float(M_PI),
 					color_
 				);
 			}

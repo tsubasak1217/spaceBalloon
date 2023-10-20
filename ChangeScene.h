@@ -8,10 +8,12 @@ class ChangeScene{
 private:
 	bool isStartScene_;
 	bool isFinishScene_;
+	bool isReturnTitle_;
 
 	int finishTimer_;
 	int startTimer_;
-	
+	int returnTitleTimer_;
+
 	bool initOrder_;
 
 	//星の表示に関するもの
@@ -30,6 +32,7 @@ private:
 public:
 
 	float easeT_;
+	float returnEaseT_;
 	int clearSceneRole_;
 
 	int gameImgs_[1] = {
@@ -41,13 +44,16 @@ public:
 	void Init() {
 		isFinishScene_ = false;
 		isStartScene_ = true;
+		isReturnTitle_ = false;
 		finishTimer_ = 120;
+		returnTitleTimer_ = 60;
 		clearSceneRole_ = 0;
 		easeT_ = 0.0f;
 		isMoveStar_ = false;
 		starT_ = 0.0f;
 		starRadius_ = 0.0f;
 		moveMode_ = 1;
+		returnEaseT_ = 0.0f;
 	}
 
 	void Update(Scene& scene, char* keys);
@@ -62,11 +68,16 @@ public:
 	int GetStartTimer() { return startTimer_; }
 	void SetStartTimer(int value) { startTimer_ = value; }
 
+	int GetReturnTimer() { return returnTitleTimer_; }
+	void SetReturnTimer(int value) { returnTitleTimer_ = value; }
+
 	bool GetIsFinish() { return isFinishScene_; }
 	void SetIsFinish(bool flag) { isFinishScene_ = flag; }
 
 	bool GetIsStart() { return isStartScene_; }
 	void SetIsStart(bool flag) { isStartScene_ = flag; }
+
+	void SetIsReturnTitle(bool flag) { isReturnTitle_ = flag; }
 
 	bool GetInitOrder() { return initOrder_; }
 	void SetInitOrder(bool flag) { initOrder_ = flag; }

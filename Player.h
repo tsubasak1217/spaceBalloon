@@ -73,9 +73,9 @@ private:
 
 	//===================死亡エフェクト=======================
 	Vector2 savePos_;
-	Vector2 triangleCenter_[12];
+	Vector2 triangleCenter_[24];
 	float efectRadius_;
-	float triangleTheta_[12];
+	float triangleTheta_[24];
 	float triangleEaseT_;
 
 public:
@@ -125,7 +125,7 @@ public:
 		efectRadius_ = 240.0f;
 		triangleEaseT_ = 0.0f;
 
-		for (int i = 0; i < 12; i++) {
+		for (int i = 0; i < 24; i++) {
 			triangleTheta_[i] = 0.0f;
 			triangleCenter_[i] = {0.0f,0.0f};
 		}

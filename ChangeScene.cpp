@@ -58,6 +58,12 @@ void ChangeScene::Update(Scene& scene, char* keys) {
 		}
 	}
 
+	if (isReturnTitle_) {
+		if (returnTitleTimer_ > 0) {
+			returnTitleTimer_--;
+		}
+	}
+
 
 	switch (scene.GetSceneNum()) {
 
@@ -118,6 +124,7 @@ void ChangeScene::Update(Scene& scene, char* keys) {
 
 		}
 
+		//クリア
 		if (isFinishScene_) {
 
 			if (finishTimer_ <= 120) {
@@ -135,6 +142,24 @@ void ChangeScene::Update(Scene& scene, char* keys) {
 				scene.SetSceneNum(clear);
 			}
 		}
+
+		//タイトルに戻る
+		if (isReturnTitle_) {
+
+			returnEaseT_ += 0.01f;
+			if (returnEaseT_ > 1.0f) {
+				returnEaseT_ = 1.0f;
+			}
+
+			if (returnTitleTimer_ <= 0) {
+				returnEaseT_ = 0;
+				returnTitleTimer_ = 60;
+				scene.SetSceneNum(titleScene);
+				isReturnTitle_ = false;
+				isStartScene_ = true;
+			}
+		}
+
 		break;
 
 	case clear://========================================================
@@ -201,7 +226,15 @@ void ChangeScene::Draw(Scene scene) {
 	case titleScene://========================================================
 
 		if (isStartScene_) {
-
+			Novice::DrawBox(
+				0,
+				int((EaseOutQuint(easeT_)) * -720),
+				1280,
+				720,
+				0.0f,
+				WHITE,
+				kFillModeSolid
+			);
 		}
 
 		//雲が上から来る
@@ -233,13 +266,35 @@ void ChangeScene::Draw(Scene scene) {
 			);
 		}
 
-		//雲が上から来る
-		if (isFinishScene_) {
+		//雲を降りる
+		if (isReturnTitle_) {
+		
+			Novice::DrawSprite(
+				0,
+				int(720 + (EaseInQuint(returnEaseT_)) * -820),
+				gameImgs_[0],
+				1, 1,
+				0.0f,
+				WHITE
+			);
+
+			Novice::DrawBox(
+				0,
+				int(900 + (EaseInQuint(returnEaseT_)) * 720),
+				1280,
+				720,
+				0.0f,
+				WHITE,
+				kFillModeSolid
+			);
 		}
 
 		if (isMoveStar_) {
 			DrawChangeStar();
 		}
+
+
+
 
 		break;
 
