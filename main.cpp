@@ -37,7 +37,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	changeScene.Init();
 
 	Emitter* effect = new Emitter();
-	Color color = Color();
 
 	Map map;
 	map.Init();
@@ -68,7 +67,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		globalV.Update();
 		map.Update(scene,changeScene);
 		player.Update(keys,preKeys,&globalV.cameraPosX_, &globalV.cameraPosY_, &globalV.miniCameraPos_, map, scene,changeScene);
-		effect->Update(player,map,color);
+		effect->Update(player);
 
 		changeScene.Update(scene,keys);
 
@@ -81,17 +80,19 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 
 		map.DrawBG();
-		effect->Draw(globalV);
+		
 
 		if (scene.GetSceneNum() == titleScene) {
 			map.Draw(globalV, scene, changeScene);
 		}
 
+		effect->Draw(globalV);
 		player.Draw(globalV, scene,changeScene);
 
 		if (scene.GetSceneNum() > titleScene) {
 			map.Draw(globalV, scene, changeScene);
 		}
+		
 
 		changeScene.Draw(scene);
 	
