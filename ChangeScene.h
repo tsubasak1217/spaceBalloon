@@ -1,8 +1,5 @@
 #pragma once
 #include "Scene.h"
-#include <Novice.h>
-#include "Easing.h"
-#include "MyFunc.h"
 
 class ChangeScene{
 private:
@@ -40,12 +37,15 @@ public:
 	};
 
 	//音声の変数
-	int BGM_[2] = {
+	int BGM_[3] = {
 		Novice::LoadAudio("./Resources/Sounds/wind_BG.mp3"),
 		Novice::LoadAudio("./Resources/Sounds/spaceBalloon_theme.wav"),
+		Novice::LoadAudio("./Resources/Sounds/spaceBalloon_themeFX.wav"),
 	};
 
-	int BGMHandle[2] = {false};
+	int BGMHandle[3] = {false};
+
+	float volume[3] = { 0.0f };
 
 	//イニシャライズ
 	void Init() {

@@ -225,15 +225,15 @@ void ChangeScene::Draw(Scene scene) {
 	case titleScene://========================================================
 
 		if (isStartScene_) {
-		/*	Novice::DrawBox(
-				0,
-				int((EaseOutQuint(easeT_)) * -720),
-				1280,
-				720,
-				0.0f,
-				WHITE,
-				kFillModeSolid
-			);*/
+			/*	Novice::DrawBox(
+					0,
+					int((EaseOutQuint(easeT_)) * -720),
+					1280,
+					720,
+					0.0f,
+					WHITE,
+					kFillModeSolid
+				);*/
 		}
 
 		//雲が上から来る
@@ -267,7 +267,7 @@ void ChangeScene::Draw(Scene scene) {
 
 		//雲を降りる
 		if (isReturnTitle_) {
-		
+
 			Novice::DrawSprite(
 				0,
 				int(720 + (EaseOutQuint(returnEaseT_)) * -820),
@@ -305,29 +305,40 @@ void ChangeScene::Draw(Scene scene) {
 	}
 }
 
-void ChangeScene::Sound(Scene scene){
+void ChangeScene::Sound(Scene scene) {
 
 	if (scene.GetSceneNum() != clear) {
-		if (Novice::IsPlayingAudio(BGM_[0]) == false) {
+		if (!Novice::IsPlayingAudio(BGMHandle[0]) or BGMHandle[0] == 0) {
 			BGMHandle[0] = Novice::PlayAudio(BGM_[0], true, 0.3f);
-			BGM_[0] = BGMHandle[0];
 		}
-	
+
 	} else {
-		Novice::StopAudio(BGM_[0]);
+		Novice::StopAudio(BGMHandle[0]);
 	}
 
 	switch (scene.GetSceneNum()) {
 
 	case titleScene:
+
+		//開始時BGMを止める
+		Novice::StopAudio(BGMHandle[1]);
+		Novice::StopAudio(BGMHandle[2]);
+
 		break;
 
 	case game:
 
-		if (Novice::IsPlayingAudio(BGM_[1]) == false) {
-			BGMHandle[1] = Novice::PlayAudio(BGM_[1], true, 0.2f);
-			BGM_[1] = BGMHandle[1];
+		Novice::SetAudioVolume(BGMHandle[1], volume[1]);
+		Novice::SetAudioVolume(BGMHandle[2], volume[2]);
+
+		if (!Novice::IsPlayingAudio(BGMHandle[1]) or BGMHandle[1] == 0) {
+			BGMHandle[1] = Novice::PlayAudio(BGM_[1], true, volume[1]);
 		}
+
+		if (!Novice::IsPlayingAudio(BGMHandle[2]) or BGMHandle[2] == 0) {
+			BGMHandle[2] = Novice::PlayAudio(BGM_[2], true, volume[2]);
+		}
+
 		break;
 
 	case clear:

@@ -103,7 +103,7 @@ void Map::Init() {
 }
 
 //==================================================================================
-void Map::Update(Scene scene, ChangeScene changeScene) {
+void Map::Update(Scene scene, ChangeScene& changeScene) {
 
 	switch (scene.GetSceneNum()) {
 		//=====================================================================================
@@ -139,7 +139,11 @@ void Map::Update(Scene scene, ChangeScene changeScene) {
 		//時間が停止してないときにタイマーを増やす
 		if (!isTimeStop_) {
 			timeCount_++;
-		}
+
+			//BGMの音量を通常にする
+			changeScene.volume[1] = 0.2f;
+			changeScene.volume[0] = 0.0f;
+		} 
 
 		//スコアの更新
 		achievement = (float(score_) / float(allScoreItem_)) * 100;
@@ -170,6 +174,15 @@ void Map::Update(Scene scene, ChangeScene changeScene) {
 		//時間停止カウントの更新
 		if (stopLimit_ > 0) {
 			stopLimit_--;
+
+			if (stopLimit_ < 30) {
+				changeScene.volume[1] < 0.2f ? changeScene.volume[1] += 0.006f : false;
+				changeScene.volume[2] > 0.0f ? changeScene.volume[2] -= 0.01f : false;
+
+			} else {
+				changeScene.volume[1] > 0.0f ? changeScene.volume[1] -= 0.006f : false;
+				changeScene.volume[2] < 0.3f ? changeScene.volume[2] += 0.01f : false;
+			}
 
 		} else {
 			isTimeStop_ = false;

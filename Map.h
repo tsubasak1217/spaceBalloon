@@ -1,8 +1,5 @@
 #pragma once
-#include <Vector2.h>
-#include <Novice.h>
 #include "ChangeScene.h"
-#include "MyFunc.h"
 
 class Map {
 
@@ -100,7 +97,7 @@ public:
 	float GetAchievement() { return achievement; }
 
 	//アップデート
-	void Update(Scene scene, ChangeScene changeScene);
+	void Update(Scene scene, ChangeScene& changeScene);
 
 	//ドロー
 	void Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene);

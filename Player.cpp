@@ -1288,9 +1288,6 @@ void Player::DrawTutorial(GlobalVariable globalV) {
 };
 
 void Player::Sound(char* keys, char* preKeys, Scene scene, Map map) {
-	Novice::ScreenPrintf(200, 200, "%d", Novice::IsPlayingAudio(playerSE[4]));
-	Novice::ScreenPrintf(200, 220, "%f", volume[4]);
-	Novice::ScreenPrintf(200, 240, "%f", volume[5]);
 
 	bool isClose2Wind = false;
 	bool isClose2Thunder = false;
@@ -1308,7 +1305,15 @@ void Player::Sound(char* keys, char* preKeys, Scene scene, Map map) {
 
 		//浮上音
 		if (keys[DIK_SPACE] && !preKeys[DIK_SPACE]) {
-			Novice::PlayAudio(playerSE[0], false, 0.2f);
+			Novice::PlayAudio(playerSE[0], false, 0.15f);
+		}
+
+		if (map.GetIsTimeStop()) {
+			if (!Novice::IsPlayingAudio(SEHandle[9]) or SEHandle == 0) {
+				SEHandle[9] = Novice::PlayAudio(playerSE[9], false, 0.2f);
+			}
+		} else {
+			Novice::StopAudio(SEHandle[9]);
 		}
 
 		//雷雲の音

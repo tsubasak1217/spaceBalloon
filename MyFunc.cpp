@@ -32,7 +32,8 @@ std::vector<std::vector<int>>LoadFile(const std::string& csvFilePath) {
 	return intArray;
 }
 
-
+//何もしない関数
+void Void() { ; }
 
 float CheckLength(Vector2 pos1, Vector2 pos2) {
 	float xLength = (pos1.x - pos2.x);
