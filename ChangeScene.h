@@ -39,6 +39,13 @@ public:
 		Novice::LoadTexture("./Resources./Images./title./cloud3.png")
 	};
 
+	//音声の変数
+	int BGM_[2] = {
+		Novice::LoadAudio("./Resources/Sounds/wind_BG.mp3"),
+		Novice::LoadAudio("./Resources/Sounds/spaceBalloon_theme.wav"),
+	};
+
+	int BGMHandle[2] = {false};
 
 	//イニシャライズ
 	void Init() {
@@ -46,7 +53,7 @@ public:
 		isStartScene_ = true;
 		isReturnTitle_ = false;
 		finishTimer_ = 120;
-		returnTitleTimer_ = 60;
+		returnTitleTimer_ = 80;
 		clearSceneRole_ = 0;
 		easeT_ = 0.0f;
 		isMoveStar_ = false;
@@ -60,6 +67,7 @@ public:
 
 	void DrawChangeStar();
 	void Draw(Scene scene);
+	void Sound(Scene scene);
 
 	//アクセッサ
 	int GetFinishTimer() { return finishTimer_; }

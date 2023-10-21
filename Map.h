@@ -104,7 +104,7 @@ public:
 
 	//ドロー
 	void Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene);
-	void DrawBG();
+	void DrawBG(GlobalVariable globalV);
 
 	enum Direction {
 		Up,
@@ -122,7 +122,7 @@ public:
 	Novice::LoadTexture("./Resources./Images./title./rope.png"),
 	};
 
-	int gameImgs_[7] = {
+	int gameImgs_[11] = {
 	Novice::LoadTexture("./Resources./Images./game./cloud_normal.png"),
 	Novice::LoadTexture("./Resources./Images./game./cloud_thunder.png"),
 	Novice::LoadTexture("./Resources./Images./game./wind.png"),
@@ -130,6 +130,10 @@ public:
 	Novice::LoadTexture("./Resources./Images./game./bird.png"),
 	Novice::LoadTexture("./Resources./Images./game./life.png"),
 	Novice::LoadTexture("./Resources./Images./game./score.png"),
+	Novice::LoadTexture("./Resources./Images./game./clock.png"),
+	Novice::LoadTexture("./Resources./Images./game./accel.png"),
+	Novice::LoadTexture("./Resources./Images./game./scrollBG.png"),
+	Novice::LoadTexture("./Resources./Images./game./thunder_effect.png"),
 	};
 
 	int clearImgs_[2] = {

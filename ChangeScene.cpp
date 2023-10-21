@@ -153,7 +153,7 @@ void ChangeScene::Update(Scene& scene, char* keys) {
 
 			if (returnTitleTimer_ <= 0) {
 				returnEaseT_ = 0;
-				returnTitleTimer_ = 60;
+				returnTitleTimer_ = 80;
 				scene.SetSceneNum(titleScene);
 				isReturnTitle_ = false;
 				isStartScene_ = true;
@@ -197,7 +197,6 @@ void ChangeScene::Update(Scene& scene, char* keys) {
 					clearSceneRole_ = 0;
 				}
 			}
-
 		}
 
 		if (isFinishScene_) {
@@ -226,7 +225,7 @@ void ChangeScene::Draw(Scene scene) {
 	case titleScene://========================================================
 
 		if (isStartScene_) {
-			Novice::DrawBox(
+		/*	Novice::DrawBox(
 				0,
 				int((EaseOutQuint(easeT_)) * -720),
 				1280,
@@ -234,7 +233,7 @@ void ChangeScene::Draw(Scene scene) {
 				0.0f,
 				WHITE,
 				kFillModeSolid
-			);
+			);*/
 		}
 
 		//雲が上から来る
@@ -271,7 +270,7 @@ void ChangeScene::Draw(Scene scene) {
 		
 			Novice::DrawSprite(
 				0,
-				int(720 + (EaseInQuint(returnEaseT_)) * -820),
+				int(720 + (EaseOutQuint(returnEaseT_)) * -820),
 				gameImgs_[0],
 				1, 1,
 				0.0f,
@@ -280,7 +279,7 @@ void ChangeScene::Draw(Scene scene) {
 
 			Novice::DrawBox(
 				0,
-				int(900 + (EaseInQuint(returnEaseT_)) * 720),
+				int(900 + ((EaseOutQuint(returnEaseT_)) * -720)),
 				1280,
 				720,
 				0.0f,
@@ -304,4 +303,38 @@ void ChangeScene::Draw(Scene scene) {
 	default:
 		break;
 	}
+}
+
+void ChangeScene::Sound(Scene scene){
+
+	if (scene.GetSceneNum() != clear) {
+		if (Novice::IsPlayingAudio(BGM_[0]) == false) {
+			BGMHandle[0] = Novice::PlayAudio(BGM_[0], true, 0.3f);
+			BGM_[0] = BGMHandle[0];
+		}
+	
+	} else {
+		Novice::StopAudio(BGM_[0]);
+	}
+
+	switch (scene.GetSceneNum()) {
+
+	case titleScene:
+		break;
+
+	case game:
+
+		if (Novice::IsPlayingAudio(BGM_[1]) == false) {
+			BGMHandle[1] = Novice::PlayAudio(BGM_[1], true, 0.2f);
+			BGM_[1] = BGMHandle[1];
+		}
+		break;
+
+	case clear:
+		break;
+
+	default:
+		break;
+	}
+
 }

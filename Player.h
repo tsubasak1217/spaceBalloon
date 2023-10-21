@@ -221,4 +221,28 @@ public:
 
 	//ドロー
 	void Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene);
+	void DrawTutorial(GlobalVariable globalV);
+	void Sound(char* keys, char* preKeys, Scene scene, Map map);
+
+	//画像
+	int playerImg[1] = {
+		Novice::LoadTexture("./Resources./Images./game./tutorial.png")
+	};
+
+	//音
+	int playerSE[9] = {
+		Novice::LoadAudio("./Resources./Sounds./up.mp3"),
+		Novice::LoadAudio("./Resources./Sounds./bound.mp3"),
+		Novice::LoadAudio("./Resources./Sounds./1up.mp3"),
+		Novice::LoadAudio("./Resources./Sounds./star_get.mp3"),
+		Novice::LoadAudio("./Resources./Sounds./brow.mp3"),
+		Novice::LoadAudio("./Resources./Sounds./thunder1.mp3"),
+		Novice::LoadAudio("./Resources./Sounds./accelCharge.mp3"),
+		Novice::LoadAudio("./Resources./Sounds./thunder2.mp3"),
+		Novice::LoadAudio("./Resources./Sounds./pan!.mp3"),
+	};
+
+	int SEHandle[9] = {0};
+
+	float volume[9] = { 0.0f };
 };
