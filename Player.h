@@ -63,16 +63,27 @@ private:
 	int scoreCount_;
 	int savedScoreCount_;
 
+	//リトライの待ち時間
+	int retryTimeCount_;
+
 	//===================ロープ=======================
 	Vector2 ropePos_[32];
 	float ropeLength_;
+
+
+	//===================死亡エフェクト=======================
+	Vector2 savePos_;
+	Vector2 triangleCenter_[24];
+	float efectRadius_;
+	float triangleTheta_[24];
+	float triangleEaseT_;
 
 public:
 
 	//イニシャライズ(初期化関数)
 	void Init(int sceneNum,Map map) {
 
-		life_ = 3;
+		life_ = 1;
 		isAlive_ = true;
 		isUnrivaled_ = false;
 		unrivaledLimit_ = 0;
@@ -106,7 +117,18 @@ public:
 		dashDirection_ = 0;
 		dashLimit_ = 300;
 
+		retryTimeCount_ = 100;
+
 		color_ = 0xff5181ff;
+
+		savePos_ = { 0.0f,0.0f };
+		efectRadius_ = 240.0f;
+		triangleEaseT_ = 0.0f;
+
+		for (int i = 0; i < 24; i++) {
+			triangleTheta_[i] = 0.0f;
+			triangleCenter_[i] = {0.0f,0.0f};
+		}
 
 		switch (sceneNum) {
 			//=====================================================================================
@@ -193,9 +215,35 @@ public:
 	void Update(
 		char* keys, char* preKeys,
 		int* cameraPosX, int* cameraPosY, int* miniCameraPos,
-		Map& map, Scene scene, ChangeScene& changeScene
+		Map& map, Scene scene, ChangeScene& changeScene,
+		GlobalVariable globalV
 	);
 
 	//ドロー
 	void Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene);
+	void DrawTutorial(GlobalVariable globalV);
+	void Sound(char* keys, char* preKeys, Scene scene, Map map);
+
+	//画像
+	int playerImg[1] = {
+		Novice::LoadTexture("./Resources./Images./game./tutorial.png")
+	};
+
+	//音
+	int playerSE[10] = {
+		Novice::LoadAudio("./Resources./Sounds./up.mp3"),
+		Novice::LoadAudio("./Resources./Sounds./bound.mp3"),
+		Novice::LoadAudio("./Resources./Sounds./1up.mp3"),
+		Novice::LoadAudio("./Resources./Sounds./star_get.mp3"),
+		Novice::LoadAudio("./Resources./Sounds./brow.mp3"),
+		Novice::LoadAudio("./Resources./Sounds./thunder1.mp3"),
+		Novice::LoadAudio("./Resources./Sounds./accelCharge.mp3"),
+		Novice::LoadAudio("./Resources./Sounds./thunder2.mp3"),
+		Novice::LoadAudio("./Resources./Sounds./pan!.mp3"),
+		Novice::LoadAudio("./Resources./Sounds./clock.mp3"),
+	};
+
+	int SEHandle[10] = {0};
+
+	float volume[10] = { 0.0f };
 };

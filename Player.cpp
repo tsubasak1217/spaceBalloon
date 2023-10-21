@@ -5,8 +5,11 @@ void Player::Update(
 	char* keys, char* preKeys,
 	int* cameraPosX,
 	int* cameraPosY, int* miniCameraPos,
-	Map& map, Scene scene, ChangeScene& changeScene
+	Map& map, Scene scene, ChangeScene& changeScene,
+	GlobalVariable globalV
 ) {
+	//unsigned int currentTime = unsigned int(time(nullptr));
+	//srand(currentTime);
 
 	switch (scene.GetSceneNum()) {
 		//=====================================================================================
@@ -84,7 +87,7 @@ void Player::Update(
 
 		//シーン以降終了時に初期化命令を出す
 		if (changeScene.GetFinishTimer() <= 1) {
-			Init(game,map);
+			Init(game, map);
 		}
 
 		break;
@@ -113,12 +116,55 @@ void Player::Update(
 
 			//死んだときの処理==============================================
 			if (!isAlive_) {
-				map.SetResetBlockOrder(true);
-				pos_ = respawnPos_;
-				velocity_ = { 0.0f,0.0f };
-				life_ = 1;
-				scoreCount_ = savedScoreCount_;
-				isAlive_ = true;
+
+				//死亡エフェクトに関する処理--------------
+				if (retryTimeCount_ == 100) {
+
+					for (int i = 0; i < 24; i++) {
+						triangleTheta_[i] = float(rand());
+					}
+
+					savePos_.x = pos_.x - globalV.GetCameraPosX();
+					savePos_.y = pos_.y - globalV.GetCameraPosY();
+
+					//破裂音出す
+					Novice::PlayAudio(playerSE[8], false, 0.3f);
+				}
+
+				triangleEaseT_ += 0.025f;
+				if (triangleEaseT_ > 1.0f) {
+					triangleEaseT_ = 1.0f;
+				}
+
+				for (int i = 0; i < 24; i++) {
+					triangleCenter_[i].x = savePos_.x + cosf((triangleTheta_[i] / 256) * float(M_PI)) * (EaseOutExpo(triangleEaseT_) * float(int(triangleTheta_[i]) % int(efectRadius_)));
+					triangleCenter_[i].y = savePos_.y + sinf((triangleTheta_[i] / 256) * float(M_PI)) * (EaseOutExpo(triangleEaseT_) * float(int(triangleTheta_[i]) % int(efectRadius_)));
+				}
+
+
+				//リトライ処理-------------------------
+				retryTimeCount_--;
+				changeScene.SetMoveMode(1);
+
+				if (retryTimeCount_ <= 80) {
+					changeScene.SetIsMoveStar(true);
+
+					if (retryTimeCount_ <= 0) {
+						changeScene.SetMoveMode(0);
+						map.SetResetBlockOrder(true);
+						pos_ = respawnPos_;
+						velocity_ = { 0.0f,0.0f };
+						isAccelable_ = false;
+						life_ = 1;
+						scoreCount_ = savedScoreCount_;
+						retryTimeCount_ = 100;
+						triangleEaseT_ = 0.0f;
+						isAlive_ = true;
+						for (int i = 0; i < 24; i++) {
+							triangleCenter_[i] = { -100.0f,0.0f };
+						}
+					}
+				}
 			}
 
 			//加速のフラグに関する処理==========================================
@@ -340,23 +386,12 @@ void Player::Update(
 				}
 			}
 
+
 			//移動
 			pos_.y += (velocity_.y + windSpeed_.y) - (airResistance_ * velocity_.y);
 			pos_.x += (velocity_.x + windSpeed_.x);
 
 			//==================================移動制限の壁====================================
-
-			//下
-			if (pos_.y < 0.0f + size_.y) {
-				pos_.y = 0.0f + size_.y;
-				//
-				velocity_.y *= -1.0f * 0.6f;
-				hitDirection_ = 1;
-				isDash_ = false;
-				if (CheckBalloonLimit(hitDirection_, preHitDirection_)) {
-					balloonLevel_ -= 0.4f;
-				}
-			}
 
 			//左
 			if (pos_.x < 0.0f + size_.y) {
@@ -391,6 +426,9 @@ void Player::Update(
 				map.SetScore(scoreCount_);
 			}
 
+			if (pos_.y < -64.0f) {
+				changeScene.SetIsReturnTitle(true);
+			}
 
 			//============================風船の紐===================================
 
@@ -514,6 +552,11 @@ void Player::Update(
 								)) {
 
 									isDash_ = false;
+
+									if (sqrtf(powf(velocity_.x, 2)) + sqrtf(powf(velocity_.y, 2)) > 5.0f) {
+										//ブロックに当たった時の音
+										Novice::PlayAudio(playerSE[1], false, 0.2f);
+									}
 								}
 
 								switch (
@@ -610,6 +653,9 @@ void Player::Update(
 											unrivaledLimit_ = 160;
 											life_--;
 
+											//感電音
+											Novice::PlayAudio(playerSE[7], false, 0.3f);
+
 											if (life_ <= 0) {
 												isAlive_ = false;
 											}
@@ -631,6 +677,9 @@ void Player::Update(
 									scoreCount_++;
 									map.SetScore(scoreCount_);
 
+									//取得音出す
+									Novice::PlayAudio(playerSE[3], false, 0.3f);
+
 									//取得済み(ブロックタイプを何もない0に変更)
 									map.SetBlockType(address_.y + i, address_.x + j, 0);
 								}
@@ -648,6 +697,10 @@ void Player::Update(
 
 									//スコア加算
 									life_++;
+
+									//取得音出す
+									Novice::PlayAudio(playerSE[2], false, 0.3f);
+
 									//取得済み(ブロックタイプを何もない0に変更)
 									map.SetBlockType(address_.y + i, address_.x + j, 0);
 
@@ -663,9 +716,12 @@ void Player::Update(
 									size_.x
 								)) {
 
-									//時間停止
-									map.SetIsTimeStop(true);
-									map.SetStopLimit(300);
+									//まだ時間が止まっていないときのみ
+									if (!map.GetIsTimeStop()) {
+										//時間停止
+										map.SetIsTimeStop(true);
+										map.SetStopLimit(300);
+									}
 
 									//取得済み(ブロックタイプを何もない0に変更)
 									//map.SetBlockType(address_.y + i, address_.x + j, 0);
@@ -682,6 +738,9 @@ void Player::Update(
 
 									//加速可能にする							
 									isAccelable_ = true;
+
+									//取得音出す
+									Novice::PlayAudio(playerSE[6], false, 0.3f);
 
 									//取得済み(ブロックタイプを何もない0に変更)
 									map.SetBlockType(address_.y + i, address_.x + j, 0);
@@ -827,41 +886,50 @@ void Player::Update(
 
 			//風を受ける処理
 
-			if(address_.y >= 0 && address_.y < 240)
-			if (!map.GetIsTimeStop()) {
-				if (
-					map.GetBlockType(int(address_.y), address_.x) >= 2 &&
-					map.GetBlockType(address_.y, address_.x) <= 5) {//プレイヤーが風域にいるとき
+			if (address_.y >= 0 && address_.y < 240)
+				if (!map.GetIsTimeStop()) {
+					if (
+						map.GetBlockType(int(address_.y), address_.x) >= 2 &&
+						map.GetBlockType(address_.y, address_.x) <= 5) {//プレイヤーが風域にいるとき
 
-					if (windT_ < 1.0f) {
-						windT_ += 0.03125f;
+						if (windT_ < 1.0f) {
+							windT_ += 0.03125f;
+						}
+
+						switch (map.GetBlockType(address_.y, address_.x)) {
+
+						case wind_up:
+							if (velocity_.y < 0.0f) {
+								velocity_.y += EaseInSine(windT_) * (sqrtf(powf(velocity_.y / 2, 2)));
+							} else {
+								windSpeed_.y = EaseInSine(windT_) * (speed_ + 2.0f);
+							}
+							break;
+
+						case wind_right:
+							windSpeed_.x = EaseInSine(windT_) * (speed_ + 2.0f);
+							break;
+
+						case wind_down:
+							if (velocity_.y > 0.0f) {
+								velocity_.y += -EaseInSine(windT_) * (sqrtf(powf(velocity_.y / 2, 2)));
+							} else {
+								windSpeed_.y = -EaseInSine(windT_) * (speed_ + 2.0f);
+							}
+							break;
+
+						case wind_left:
+							windSpeed_.x = -EaseInSine(windT_) * (speed_ + 2.0f);
+							break;
+						}
+
+					} else {
+						windT_ = 0.0f;
+
 					}
-
-					switch (map.GetBlockType(address_.y, address_.x)) {
-
-					case wind_up:
-						windSpeed_.y = EaseInSine(windT_) * (speed_ * 2.0f);
-						break;
-
-					case wind_right:
-						windSpeed_.x = EaseInSine(windT_) * (speed_ + 2.0f);
-						break;
-
-					case wind_down:
-						windSpeed_.y = -EaseInSine(windT_) * (speed_ * 2.0f);
-						break;
-
-					case wind_left:
-						windSpeed_.x = -EaseInSine(windT_) * (speed_ + 2.0f);
-						break;
-					}
-
 				} else {
 					windT_ = 0.0f;
 				}
-			} else {
-				windT_ = 0.0f;
-			}
 
 
 			//カメラ座標の計算
@@ -895,13 +963,13 @@ void Player::Update(
 		} else {//=======================================クリア後のシーン遷移===========================================-
 			//シーン以降終了時に初期化命令を出す
 			if (changeScene.GetFinishTimer() <= 1) {
-				Init(clear,map);
+				Init(clear, map);
 			}
 
-			
+
 
 		}
-			break;
+		break;
 
 		//=====================================================================================
 		//                                     クリア画面
@@ -910,10 +978,10 @@ void Player::Update(
 
 		//シーン以降終了時に初期化命令を出す
 		if (changeScene.GetFinishTimer() <= 1) {
-			Init(titleScene,map);
+			Init(titleScene, map);
 		}
 
-		
+
 		break;
 
 	default:
@@ -925,7 +993,7 @@ void Player::Update(
 
 
 //ドロー
-void Player::Draw(GlobalVariable globalV, Scene scene,ChangeScene changeScene) {
+void Player::Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene) {
 
 	switch (scene.GetSceneNum()) {
 		//=====================================================================================
@@ -942,6 +1010,7 @@ void Player::Draw(GlobalVariable globalV, Scene scene,ChangeScene changeScene) {
 			color_,
 			kFillModeSolid
 		);
+
 
 		break;
 
@@ -969,125 +1038,128 @@ void Player::Draw(GlobalVariable globalV, Scene scene,ChangeScene changeScene) {
 			}
 
 
-			
-			if (changeScene.GetIsStart()) {
+			if (isAlive_) {
+				if (changeScene.GetIsStart()) {
 
-				//風船の紐
-				for (int i = 0; i < 32 - 1; i++) {
-					Novice::DrawLine(
-						int(ropePos_[i].x) - globalV.GetCameraPosX(),
-						int(ropePos_[i].y * -1.0f) 
+					//風船の紐
+					for (int i = 0; i < 32 - 1; i++) {
+						Novice::DrawLine(
+							int(ropePos_[i].x) - globalV.GetCameraPosX(),
+							int(ropePos_[i].y * -1.0f)
+							+ globalV.GetGroundPos() + globalV.GetCameraPosY()
+							+ int((EaseInQuint(1.0f - changeScene.easeT_) * -720)),
+							int(ropePos_[i + 1].x) - globalV.GetCameraPosX(),
+							int(ropePos_[i + 1].y * -1.0f)
+							+ globalV.GetGroundPos() + globalV.GetCameraPosY()
+							+ int((EaseInQuint(1.0f - changeScene.easeT_) * -720)),
+							0xffffffff
+						);
+					}
+
+					//プレイヤー
+					Novice::DrawEllipse(
+						int(pos_.x) - globalV.GetCameraPosX(),
+						int(pos_.y * -1.0f)
 						+ globalV.GetGroundPos() + globalV.GetCameraPosY()
 						+ int((EaseInQuint(1.0f - changeScene.easeT_) * -720)),
-						int(ropePos_[i + 1].x) - globalV.GetCameraPosX(),
-						int(ropePos_[i + 1].y * -1.0f)
+						int(size_.x),
+						int(size_.y),
+						0.0f,
+						color_,
+						kFillModeSolid
+					);
+
+					//プレイヤーの風船の光
+					Novice::DrawEllipse(
+						int(pos_.x - size_.x * 0.4f) - globalV.GetCameraPosX(),
+						int((pos_.y + size_.y * 0.4f) * -1.0f)
 						+ globalV.GetGroundPos() + globalV.GetCameraPosY()
 						+ int((EaseInQuint(1.0f - changeScene.easeT_) * -720)),
-						0xffffffff
+						int(size_.x * 0.3f),
+						int(size_.y * 0.3f),
+						0.1f,
+						0xffffff1f,
+						kFillModeSolid
 					);
-				}
+				} else {
 
-				//プレイヤー
-				Novice::DrawEllipse(
-					int(pos_.x) - globalV.GetCameraPosX(),
-					int(pos_.y * -1.0f)
-					+ globalV.GetGroundPos() + globalV.GetCameraPosY()
-					+ int((EaseInQuint(1.0f - changeScene.easeT_) * -720)),
-					int(size_.x),
-					int(size_.y),
-					0.0f,
-					color_,
-					kFillModeSolid
-				);
+					//風船の紐
+					for (int i = 0; i < 32 - 1; i++) {
+						Novice::DrawLine(
+							int(ropePos_[i].x) - globalV.GetCameraPosX(),
+							int(ropePos_[i].y * -1.0f)
+							+ globalV.GetGroundPos() + globalV.GetCameraPosY(),
+							int(ropePos_[i + 1].x) - globalV.GetCameraPosX(),
+							int(ropePos_[i + 1].y * -1.0f)
+							+ globalV.GetGroundPos() + globalV.GetCameraPosY(),
+							0xffffffff
+						);
+					}
 
-				//プレイヤーの風船の光
-				Novice::DrawEllipse(
-					int(pos_.x - size_.x * 0.4f) - globalV.GetCameraPosX(),
-					int((pos_.y + size_.y * 0.4f) * -1.0f)
-					+ globalV.GetGroundPos() + globalV.GetCameraPosY()
-					+ int((EaseInQuint(1.0f - changeScene.easeT_) * -720)),
-					int(size_.x * 0.3f),
-					int(size_.y * 0.3f),
-					0.1f,
-					0xffffff1f,
-					kFillModeSolid
-				);
-			} else {
-
-				//風船の紐
-				for (int i = 0; i < 32 - 1; i++) {
-					Novice::DrawLine(
-						int(ropePos_[i].x) - globalV.GetCameraPosX(),
-						int(ropePos_[i].y * -1.0f)
+					//プレイヤー
+					Novice::DrawEllipse(
+						int(pos_.x) - globalV.GetCameraPosX(),
+						int(pos_.y * -1.0f)
 						+ globalV.GetGroundPos() + globalV.GetCameraPosY(),
-						int(ropePos_[i + 1].x) - globalV.GetCameraPosX(),
-						int(ropePos_[i + 1].y * -1.0f)
-						+ globalV.GetGroundPos() + globalV.GetCameraPosY(),
-						0xffffffff
+						int(size_.x),
+						int(size_.y),
+						0.0f,
+						color_,
+						kFillModeSolid
 					);
+
+					//プレイヤーの風船の光
+					Novice::DrawEllipse(
+						int(pos_.x - size_.x * 0.4f) - globalV.GetCameraPosX(),
+						int((pos_.y + size_.y * 0.4f) * -1.0f)
+						+ globalV.GetGroundPos() + globalV.GetCameraPosY(),
+						int(size_.x * 0.3f),
+						int(size_.y * 0.3f),
+						0.1f,
+						0xffffff1f,
+						kFillModeSolid
+					);
+
 				}
-
-				//プレイヤー
-				Novice::DrawEllipse(
-					int(pos_.x) - globalV.GetCameraPosX(),
-					int(pos_.y * -1.0f)
-					+ globalV.GetGroundPos() + globalV.GetCameraPosY(),
-					int(size_.x),
-					int(size_.y),
-					0.0f,
-					color_,
-					kFillModeSolid
-				);
-
-				//プレイヤーの風船の光
-				Novice::DrawEllipse(
-					int(pos_.x - size_.x * 0.4f) - globalV.GetCameraPosX(),
-					int((pos_.y + size_.y * 0.4f) * -1.0f)
-					+ globalV.GetGroundPos() + globalV.GetCameraPosY(),
-					int(size_.x * 0.3f),
-					int(size_.y * 0.3f),
-					0.1f,
-					0xffffff1f,
-					kFillModeSolid
-				);
-			
 			}
-
 
 		} else {//ダメージ受けた時の無敵時間===============================
 
-			for (int i = 0; i < 32 - 1; i++) {
-				Novice::DrawLine(
-					int(ropePos_[i].x) - globalV.GetCameraPosX(),
-					int(ropePos_[i].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
-					int(ropePos_[i + 1].x) - globalV.GetCameraPosX(),
-					int(ropePos_[i + 1].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
-					0xffffffff
-				);
-			}
+			if (isAlive_) {
 
-			if (unrivaledLimit_ / 5 % 2 == 0) {
-				Novice::DrawEllipse(
-					int(pos_.x) - globalV.GetCameraPosX(),
-					int(pos_.y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
-					int(size_.x),
-					int(size_.y),
-					0.0f,
-					color_,
-					kFillModeSolid
-				);
+				for (int i = 0; i < 32 - 1; i++) {
+					Novice::DrawLine(
+						int(ropePos_[i].x) - globalV.GetCameraPosX(),
+						int(ropePos_[i].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
+						int(ropePos_[i + 1].x) - globalV.GetCameraPosX(),
+						int(ropePos_[i + 1].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
+						0xffffffff
+					);
+				}
 
-				//プレイヤーの風船の光
-				Novice::DrawEllipse(
-					int(pos_.x - size_.x * 0.4f) - globalV.GetCameraPosX(),
-					int((pos_.y + size_.y * 0.4f) * -1.0f)
-					+ globalV.GetGroundPos() + globalV.GetCameraPosY(),
-					int(size_.x * 0.3f),
-					int(size_.y * 0.3f),
-					0.1f,
-					0xffffff1f,
-					kFillModeSolid
-				);
+				if (unrivaledLimit_ / 5 % 2 == 0) {
+					Novice::DrawEllipse(
+						int(pos_.x) - globalV.GetCameraPosX(),
+						int(pos_.y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
+						int(size_.x),
+						int(size_.y),
+						0.0f,
+						color_,
+						kFillModeSolid
+					);
+
+					//プレイヤーの風船の光
+					Novice::DrawEllipse(
+						int(pos_.x - size_.x * 0.4f) - globalV.GetCameraPosX(),
+						int((pos_.y + size_.y * 0.4f) * -1.0f)
+						+ globalV.GetGroundPos() + globalV.GetCameraPosY(),
+						int(size_.x * 0.3f),
+						int(size_.y * 0.3f),
+						0.1f,
+						0xffffff1f,
+						kFillModeSolid
+					);
+				}
 			}
 		}
 
@@ -1149,6 +1221,27 @@ void Player::Draw(GlobalVariable globalV, Scene scene,ChangeScene changeScene) {
 			);
 		}
 
+		//割れるまでのリミット表示
+		if (holdLimit_ < 180) {
+			if (isAlive_) {
+
+
+			}
+		}
+
+
+		//死亡エフェクト
+		if (!isAlive_) {
+			for (int i = 0; i < 24; i++) {
+
+				DrawTriangle(
+					triangleCenter_[i],
+					2.0f * i,
+					((float(globalV.grandTimeCount_) / (8.0f * i))) * float(M_PI),
+					color_
+				);
+			}
+		}
 
 		break;
 
@@ -1162,3 +1255,228 @@ void Player::Draw(GlobalVariable globalV, Scene scene,ChangeScene changeScene) {
 		break;
 	}
 }
+
+void Player::DrawTutorial(GlobalVariable globalV) {
+
+	if (isAccelable_) {
+
+		//スペース二回押しの説明
+
+		Novice::DrawBox(
+			int(pos_.x - globalV.GetCameraPosX() - 122),
+			int(pos_.y * -1.0f)
+			+ globalV.GetGroundPos() + globalV.GetCameraPosY()
+			+ int((size_.y * 0.5f) + 54),
+			223 + 20,
+			33 + 20,
+			0.0f,
+			0x0000005f + int(sinf((globalV.grandTimeCount_ / 64.0f) * float(M_PI)) * 0x3f),
+			kFillModeSolid
+		);
+
+		Novice::DrawSprite(
+			int(pos_.x - globalV.GetCameraPosX() - 112),
+			int(pos_.y * -1.0f)
+			+ globalV.GetGroundPos() + globalV.GetCameraPosY()
+			+ int((size_.y * 0.5f) + 64),
+			playerImg[0],
+			1, 1,
+			0.0f,
+			0xffffffff
+		);
+	}
+};
+
+void Player::Sound(char* keys, char* preKeys, Scene scene, Map map) {
+
+	bool isClose2Wind = false;
+	bool isClose2Thunder = false;
+
+	switch (scene.GetSceneNum()) {
+
+	case titleScene:
+
+		if (keys[DIK_SPACE] && !preKeys[DIK_SPACE]) {
+			Novice::PlayAudio(playerSE[0], false, 0.2f);
+		}
+		break;
+
+	case game:
+
+		//浮上音
+		if (keys[DIK_SPACE] && !preKeys[DIK_SPACE]) {
+			Novice::PlayAudio(playerSE[0], false, 0.15f);
+		}
+
+		if (map.GetIsTimeStop()) {
+			if (!Novice::IsPlayingAudio(SEHandle[9]) or SEHandle == 0) {
+				SEHandle[9] = Novice::PlayAudio(playerSE[9], false, 0.2f);
+			}
+		} else {
+			Novice::StopAudio(SEHandle[9]);
+		}
+
+		//雷雲の音
+		if (!Novice::IsPlayingAudio(playerSE[5])) {
+			SEHandle[5] = Novice::PlayAudio(playerSE[5], true, volume[5]);
+			playerSE[5] = SEHandle[5];
+		}
+
+		//風音
+		if (!Novice::IsPlayingAudio(playerSE[4])) {
+			SEHandle[4] = Novice::PlayAudio(playerSE[4], true, volume[4]);
+			playerSE[4] = SEHandle[4];
+		}
+
+
+
+		for (int i = -4; i < 5; i++) {
+			for (int j = -4; j < 5; j++) {
+
+				if (address_.x + j >= 0 && address_.x + j <= 39) {
+					if (address_.y + i >= 0 && address_.y + i <= 239) {
+
+						//通常ブロックとの当たり判定
+						if (map.GetBlockType(address_.y + i, address_.x + j) == 1) {
+
+							if (IsHitBox_BallDirection(
+								{ map.GetPos(address_.y + i, address_.x + j).x + 32, map.GetPos(address_.y + i, address_.x + j).y - 32 },
+								pos_,
+								map.GetSize(),
+								size_.x
+							)) {
+
+							}
+
+						} 
+						
+						if (map.GetBlockType(address_.y + i, address_.x + j) >= 2 &&
+							map.GetBlockType(address_.y + i, address_.x + j) <= 5) {
+
+							isClose2Wind = true;
+							
+							//雷雲=============================================================-
+						} else if (map.GetBlockType(address_.y + i, address_.x + j) == 7) {
+
+							//雷に接近した時
+							isClose2Thunder = true;
+
+
+							if (!map.GetIsTimeStop()) {
+
+								if (IsHitBox_BallDirection(
+									{ map.GetPos(address_.y + i, address_.x + j).x + 32, map.GetPos(address_.y + i, address_.x + j).y - 32 },
+									pos_,
+									{ map.GetSize().x * 2, map.GetSize().y * 2 },
+									size_.x
+								)) {
+									//雷に当たった時の音
+
+								}
+							}
+
+							//スコアアイテム===================================================
+						} else if (map.GetBlockType(address_.y + i, address_.x + j) == 8) {
+
+							if (IsHitBox_BallDirection(
+								{ map.GetPos(address_.y + i, address_.x + j).x + 32, map.GetPos(address_.y + i, address_.x + j).y - 32 },
+								pos_,
+								map.GetSize(),
+								size_.x
+							)) {
+
+								//スコア加算音
+							}
+
+
+							//残機アイテム====================================================
+						} else if (map.GetBlockType(address_.y + i, address_.x + j) == 9) {
+
+							if (IsHitBox_BallDirection(
+								{ map.GetPos(address_.y + i, address_.x + j).x + 32, map.GetPos(address_.y + i, address_.x + j).y - 32 },
+								pos_,
+								map.GetSize(),
+								size_.x
+							)) {
+
+								//1up音
+
+							}
+
+							//加速アイテム===============================================
+						} else if (map.GetBlockType(address_.y + i, address_.x + j) == 11) {
+
+							if (IsHitBox_BallDirection(
+								{ map.GetPos(address_.y + i, address_.x + j).x + 32, map.GetPos(address_.y + i, address_.x + j).y - 32 },
+								pos_,
+								map.GetSize(),
+								size_.x
+							)) {
+
+								//取得音
+							}
+
+							//中継地点
+						} else if (map.GetBlockType(address_.y + i, address_.x + j) == 98) {
+
+							if (IsHitBox_BallDirection(
+								{ map.GetPos(address_.y + i, address_.x + j).x + 32, map.GetPos(address_.y + i, address_.x + j).y - 32 },
+								pos_,
+								map.GetSize(),
+								size_.x
+							)) {
+
+								//セーブ音
+							}
+						}
+					}
+				}
+			}
+		}
+
+		//風の音量更新
+		if (isClose2Wind) {
+			volume[4] += 0.004f;
+			if (volume[4] > 0.2f) {
+				volume[4] = 0.2f;
+			}
+		} else {
+			volume[4] > 0.0f ? volume[4] -= 0.004f:false;
+		}
+
+		Novice::SetAudioVolume(playerSE[4], volume[4]);
+
+		//雷の音量更新
+		if (isClose2Thunder) {
+			volume[5] += 0.008f;
+			if (volume[5] > 0.4f) {
+				volume[5] = 0.4f;
+			}
+		} else {
+			volume[5] > 0.0f ? volume[5] -= 0.008f : false;
+		}
+
+		Novice::SetAudioVolume(playerSE[5], volume[5]);
+
+		//時間が停止した場合
+		if (map.GetIsTimeStop()) {
+
+			Novice::PauseAudio(playerSE[4]);
+			Novice::PauseAudio(playerSE[5]);
+		
+		} else {
+			Novice::ResumeAudio(playerSE[4]);
+			Novice::ResumeAudio(playerSE[5]);
+		}
+
+
+		break;
+
+	case clear:
+		break;
+
+	default:
+		break;
+
+	}
+};

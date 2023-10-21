@@ -1,5 +1,9 @@
 #pragma once
+#include <Novice.h>
+#include "Easing.h"
+#include "MyFunc.h"
 #include "GlobalVariable.h"
+
 
 class Scene{
 
@@ -9,7 +13,7 @@ private:
 public:
 	//イニシャライズ
 	void Init(){
-		sceneNum_ = titleScene;
+		sceneNum_ = clear;
 	}
 
 	//アクセッサ

@@ -1,5 +1,7 @@
 #pragma once
 #include <math.h>
+#include <stdio.h>
+#include <time.h>
 #include <Vector2.h>
 #include <Novice.h>
 #define _USE_MATH_DEFINES
@@ -14,35 +16,47 @@
 //================================================================
 #include "Easing.h"
 
+//何もしない関数
+void Void();
+
 std::vector<std::vector<int>>LoadFile(const std::string& csvFilePath);
+
+
 
 float CheckLength(Vector2 pos1, Vector2 pos2);
 float CheckLength(float pos1x, float pos1y, float pos2x, float pos2y);
-
 float Cross(
 	float line1StartX, float line1StartY,
 	float line1EndX, float line1EndY,
 	float targetX, float targetY
 );
-
 float CrossV(Vector2 pos1, Vector2 pos2, Vector2 targetPos);
-
 Vector2 CrossPos(
 	Vector2 line1Pos1, Vector2 line1Pos2,
 	Vector2 line2Pos1, Vector2 line2Pos2
 );
 
+
+
 Vector2 ShiftLine(Vector2 pos1, Vector2 pos2, float distance);
+
+
 
 Matrix2x2 Add(Matrix2x2 matrix1, Matrix2x2 matrix2);
 Matrix2x2 Subtract(Matrix2x2 matrix1, Matrix2x2 matrix2);
 Matrix2x2 Multiply(Matrix2x2 matrix1, Matrix2x2 matrix2);
 Vector2 Multiply(Vector2 vector, Matrix2x2 matrix);
 
+
+
 void MatrixScreenPrintf(int posX, int posY, Matrix2x2 matrix);
 void Vector2ScreenPrintf(int posX, int posY, Vector2 vector);
 
+
+
 float CalcSinkSpeed(float objectWeight, float spaceWeight, float gravity);
+
+
 
 bool IsHitBox_Ball(Vector2 boxCenter, Vector2 ballPos, Vector2 boxSize, float ballRasius);
 int IsHitBox_BallDirection(Vector2 boxCenter, Vector2 ballPos, Vector2 boxSize, float ballRasius);
