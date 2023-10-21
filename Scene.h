@@ -13,7 +13,7 @@ private:
 public:
 	//イニシャライズ
 	void Init(){
-		sceneNum_ = clear;
+		sceneNum_ = titleScene;
 	}
 
 	//アクセッサ
