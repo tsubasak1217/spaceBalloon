@@ -864,6 +864,9 @@ void Player::Update(
 									//マップファイルにブロックタイプの保存を命令する
 									if ((int(respawnPos_.y) / 64 != address_.y + i) or (int(respawnPos_.x) / 64 != address_.x + j)) {
 										map.SetSaveBlockOrder(true);
+
+										//中継地点のセーブ音
+										Novice::PlayAudio(playerSE[12], false, 0.3f);
 									}
 
 									//リスポーン地点の更新
@@ -1328,51 +1331,7 @@ void Player::Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene) 
 				}
 			}
 		}
-
-		//ミニマップ用
-		Novice::DrawEllipse(
-			int(pos_.x / 17) + 1120,
-			int((pos_.y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17),
-			4,
-			4,
-			0.0f,
-			color_ + int(EaseInQuint(changeScene.easeT_) * -0xff),
-			kFillModeSolid
-		);
-
-		Novice::DrawLine(//左上→右上
-			int(pos_.x / 17) + 1120 - 38,
-			int((pos_.y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17) - 21,
-			int(pos_.x / 17) + 1120 + 38,
-			int((pos_.y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17) - 21,
-			RED + int(EaseInQuint(changeScene.easeT_) * -0xff)
-		);
-
-		Novice::DrawLine(//左上→右上
-			int(pos_.x / 17) + 1120 - 38,
-			int((pos_.y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17) + 21,
-			int(pos_.x / 17) + 1120 + 38,
-			int((pos_.y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17) + 21,
-			RED + int(EaseInQuint(changeScene.easeT_) * -0xff)
-		);
-
-		Novice::DrawLine(//左上→右上
-			int(pos_.x / 17) + 1120 - 38,
-			int((pos_.y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17) + 21,
-			int(pos_.x / 17) + 1120 - 38,
-			int((pos_.y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17) - 21,
-			RED + int(EaseInQuint(changeScene.easeT_) * -0xff)
-		);
-
-		Novice::DrawLine(//左上→右上
-			int(pos_.x / 17) + 1120 + 38,
-			int((pos_.y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17) + 21,
-			int(pos_.x / 17) + 1120 + 38,
-			int((pos_.y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17) - 21,
-			RED + int(EaseInQuint(changeScene.easeT_) * -0xff)
-		);
-
-
+		
 
 		//残機
 		for (int i = 0; i < GetLife(); i++) {
@@ -1649,13 +1608,13 @@ void Player::Sound(char* keys, char* preKeys, Scene scene, Map map) {
 		Novice::SetAudioVolume(playerSE[5], volume[5]);
 
 		//鳥の音量更新
-		if (isClose2Thunder) {
-			volume[10] += 0.004f;
-			if (volume[10] > 0.2f) {
-				volume[10] = 0.2f;
+		if (isClose2Bird) {
+			volume[10] += 0.016f;
+			if (volume[10] > 0.8f) {
+				volume[10] = 0.8f;
 			}
 		} else {
-			volume[10] > 0.0f ? volume[10] -= 0.004f : false;
+			volume[10] > 0.0f ? volume[10] -= 0.016f : false;
 		}
 
 		Novice::SetAudioVolume(playerSE[10], volume[10]);

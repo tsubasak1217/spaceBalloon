@@ -115,6 +115,7 @@
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir);C:\KamataEngine\DirectXGame\math;C:\KamataEngine\DirectXGame\2d;C:\KamataEngine\DirectXGame\3d;C:\KamataEngine\DirectXGame\audio;C:\KamataEngine\DirectXGame\base;C:\KamataEngine\DirectXGame\input;C:\KamataEngine\DirectXGame\scene;C:\KamataEngine\External\DirectXTex\include;C:\KamataEngine\External\imgui;C:\KamataEngine\Adapter;C:\KamataEngine\myFunction;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <ClCompile Include="Map.cpp" />
+    <ClCompile Include="MiniMap.cpp" />
     <ClCompile Include="MyFunc.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Scene.cpp" />
@@ -154,6 +155,7 @@
     <ClInclude Include="Easing.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="Matrix2x2.h" />
+    <ClInclude Include="MiniMap.h" />
     <ClInclude Include="MyFunc.h" />
     <ClInclude Include="Particle.h" />
     <ClInclude Include="Player.h" />

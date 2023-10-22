@@ -146,7 +146,7 @@ void Map::Update(Scene scene, ChangeScene& changeScene) {
 				changeScene.volume[1] = 0.2f;
 				changeScene.volume[2] = 0.0f;
 			}
-		} 
+		}
 
 		//スコアの更新
 		achievement = (float(score_) / float(allScoreItem_)) * 100;
@@ -386,7 +386,7 @@ void Map::Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene) {
 
 			//タイトルロゴ================================
 			Novice::DrawSprite(
-				int(titleLogoPos_[0].x -4),
+				int(titleLogoPos_[0].x - 4),
 				int(titleLogoPos_[0].y + 720 + (24.0f * sinf(theta_ * float(M_PI))) + (EaseOutQuint(changeScene.startEaseT_) * -720)),
 				titleImgs_[3],
 				1, 1,
@@ -402,7 +402,7 @@ void Map::Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene) {
 				0.0f,
 				WHITE
 			);
-		
+
 			Novice::DrawEllipse(
 				int(640),
 				int(368 + 720 + (EaseOutQuint(changeScene.startEaseT_) * -720)),
@@ -942,6 +942,8 @@ void Map::Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene) {
 
 								//描画
 								if (col != playerRespawnAddress_.x or row != playerRespawnAddress_.y) {
+
+									//普通の旗表示
 									Novice::DrawSpriteRect(
 										int(pos_[row][col].x) - globalV.GetCameraPosX(),
 										int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
@@ -954,11 +956,14 @@ void Map::Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene) {
 										0.0f,
 										0xffffffff
 									);
-								} else {
+
+								} else if (col == playerRespawnAddress_.x && row == playerRespawnAddress_.y) {
+
+									//セーブしてる場所は赤い旗
 									Novice::DrawSpriteRect(
 										int(pos_[row][col].x) - globalV.GetCameraPosX(),
 										int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
-										64 + (64 * (timeCount_ / 4 % 3)),
+										0 + (64 * (timeCount_ / 4 % 3)),
 										64 + (128 * isTimeStop_),
 										64,
 										64,
@@ -1025,21 +1030,6 @@ void Map::Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene) {
 
 					}
 				}
-
-				if (((birdPos_[i].y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17) >= 24 &&
-					((birdPos_[i].y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17) <= 340) {
-
-					//ミニマップ用
-					Novice::DrawBox(
-						int((birdPos_[i].x / 17) + 1120),
-						int((birdPos_[i].y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17),
-						int(miniMapSize),
-						int(miniMapSize),
-						0.0f,
-						0xff0000ff + int(EaseInQuint(changeScene.easeT_) * -0xff),
-						kFillModeSolid
-					);
-				}
 			}
 
 
@@ -1052,93 +1042,6 @@ void Map::Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene) {
 				0x00000088 + int(EaseInQuint(changeScene.easeT_) * -0x88),
 				kFillModeSolid
 			);
-
-			//ミニマップの表示
-			for (int row = 0; row < mapRow; row++) {
-				for (int col = 0; col < mapCol; col++) {
-
-					if (((pos_[row][col].y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17) >= 24 &&
-						((pos_[row][col].y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17) <= 340) {
-						switch (blockType_[row][col]) {
-
-						case normal:
-							//描画
-							Novice::DrawBox(
-								int((pos_[row][col].x / 17) + 1120),
-								int((pos_[row][col].y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17),
-								int(miniMapSize),
-								int(miniMapSize),
-								0.0f,
-								0xf7efdfff + int(EaseInQuint(changeScene.easeT_) * -0xff),
-								kFillModeSolid
-							);
-
-							break;
-
-						case thunder:
-
-							//描画
-							Novice::DrawBox(
-								int((pos_[row][col].x / 17) + 1120),
-								int((pos_[row][col].y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17),
-								int(miniMapSize),
-								int(miniMapSize),
-								0.0f,
-								0x666666ff + int(EaseInQuint(changeScene.easeT_) * -0xff),
-								kFillModeSolid
-							);
-
-							break;
-
-						case score:
-
-							//描画
-							DrawStar(
-								{ (pos_[row][col].x / 17) + 1120 + (miniMapSize * 0.5f),
-								((pos_[row][col].y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17) + (miniMapSize * 0.5f) },
-								miniMapSize,
-								0.0f,
-								0xffff00ff + int(EaseInQuint(changeScene.easeT_) * -0xff)
-							);
-
-							break;
-
-						case life:
-
-							//描画
-							Novice::DrawBox(
-								int((pos_[row][col].x / 17) + 1120),
-								int((pos_[row][col].y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17),
-								int(miniMapSize),
-								int(miniMapSize),
-								0.0f,
-								0xff5181ff + int(EaseInQuint(changeScene.easeT_) * -0xff),
-								kFillModeSolid
-							);
-							break;
-
-						case accel:
-
-							//描画
-							Novice::DrawBox(
-								int((pos_[row][col].x / 17) + 1120),
-								int((pos_[row][col].y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17),
-								int(miniMapSize),
-								int(miniMapSize),
-								0.0f,
-								0xff8c00ff + int(EaseInQuint(changeScene.easeT_) * -0xff),
-								kFillModeSolid
-							);
-
-							break;
-
-
-						default:
-							break;
-						}
-					}
-				}
-			}
 		}
 
 		break;

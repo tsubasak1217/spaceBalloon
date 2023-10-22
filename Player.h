@@ -230,7 +230,7 @@ public:
 	};
 
 	//音
-	int playerSE[12] = {
+	int playerSE[13] = {
 		Novice::LoadAudio("./Resources./Sounds./up.mp3"),
 		Novice::LoadAudio("./Resources./Sounds./bound.mp3"),
 		Novice::LoadAudio("./Resources./Sounds./1up.mp3"),
@@ -241,11 +241,12 @@ public:
 		Novice::LoadAudio("./Resources./Sounds./thunder2.mp3"),
 		Novice::LoadAudio("./Resources./Sounds./pan!.mp3"),
 		Novice::LoadAudio("./Resources./Sounds./clock.mp3"),
-		Novice::LoadAudio("./Resources./Sounds./wing.wav"),
-		Novice::LoadAudio("./Resources./Sounds./birdVoice.mp3")
+		Novice::LoadAudio("./Resources./Sounds./wing.mp3"),
+		Novice::LoadAudio("./Resources./Sounds./birdVoice.mp3"),
+		Novice::LoadAudio("./Resources./Sounds./savePoint.mp3"),
 	};
 
-	int SEHandle[12] = {0};
+	int SEHandle[13] = {0};
 
-	float volume[12] = { 0.0f };
+	float volume[13] = { 0.0f };
 };

@@ -1,4 +1,4 @@
-#include "Player.h"
+#include "MiniMap.h"
 #include "Emitter.h"
 #include "Title.h"
 //======================================================
@@ -51,6 +51,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Title title;
 	title.Init();
 
+	MiniMap miniMap;
+
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
 		// フレームの開始
@@ -96,6 +98,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		}
 
 		player.DrawTutorial(globalV);
+		miniMap.Draw(globalV,scene,changeScene,map,player);
 		changeScene.Draw(scene);
 	
 
