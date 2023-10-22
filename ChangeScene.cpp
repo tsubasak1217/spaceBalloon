@@ -311,9 +311,6 @@ void ChangeScene::Draw(Scene scene) {
 
 void ChangeScene::Sound(Scene scene) {
 
-
-	Novice::ScreenPrintf(200, 300, "%f", volume[0]);
-
 	switch (scene.GetSceneNum()) {
 
 	case titleScene:
