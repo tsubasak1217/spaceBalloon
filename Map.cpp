@@ -350,57 +350,131 @@ void Map::Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene) {
 		//=====================================================================================
 	case titleScene:
 
-		//背景の空
-		Novice::DrawSprite(
-			0, int(0 + (EaseInQuint(changeScene.easeT_) * 720)),
-			titleImgs_[0],
-			1, 1,
-			0.0f,
-			WHITE
-		);
+		if (changeScene.GetIsStart()) {//スタート遷移
 
-		//スクロールする雲
-		for (int i = 0; i < 2; i++) {
-
+			//背景の空
 			Novice::DrawSprite(
-				int(cloudPos_[i].x),
-				int(cloudPos_[i].y + (EaseInQuint(changeScene.easeT_) * 720)),
-				titleImgs_[i + 1],
+				0, int(720 + (EaseOutQuint(changeScene.startEaseT_) * -720)),
+				titleImgs_[0],
+				1, 1,
+				0.0f,
+				WHITE
+			);
+
+			//スクロールする雲
+			for (int i = 0; i < 2; i++) {
+
+				Novice::DrawSprite(
+					int(cloudPos_[i].x),
+					int(cloudPos_[i].y + 720 + (EaseOutQuint(changeScene.startEaseT_) * -720)),
+					titleImgs_[i + 1],
+					1, 1,
+					0.0f,
+					WHITE
+				);
+
+				Novice::DrawSprite(
+					int(cloudPos_[i].x - 1280),
+					int(cloudPos_[i].y + 720 + (EaseOutQuint(changeScene.startEaseT_) * -720)),
+					titleImgs_[i + 1],
+					1, 1,
+					0.0f,
+					WHITE
+				);
+
+			}
+
+			//タイトルロゴ================================
+			Novice::DrawSprite(
+				int(titleLogoPos_[0].x -4),
+				int(titleLogoPos_[0].y + 720 + (24.0f * sinf(theta_ * float(M_PI))) + (EaseOutQuint(changeScene.startEaseT_) * -720)),
+				titleImgs_[3],
 				1, 1,
 				0.0f,
 				WHITE
 			);
 
 			Novice::DrawSprite(
-				int(cloudPos_[i].x - 1280),
-				int(cloudPos_[i].y + (EaseInQuint(changeScene.easeT_) * 720)),
-				titleImgs_[i + 1],
+				int(titleLogoPos_[1].x + 64),
+				int(titleLogoPos_[1].y + 720 + (24.0f * sinf(-theta_ * float(M_PI))) + (EaseOutQuint(changeScene.startEaseT_) * -720)),
+				titleImgs_[4],
 				1, 1,
 				0.0f,
 				WHITE
+			);
+		
+			Novice::DrawEllipse(
+				int(640),
+				int(368 + 720 + (EaseOutQuint(changeScene.startEaseT_) * -720)),
+				28, 28,
+				0.0f,
+				0xffffffff,
+				kFillModeSolid
+			);
+
+		} else {//========================================================
+
+			//背景の空
+			Novice::DrawSprite(
+				0, int(0 + (EaseInQuint(changeScene.easeT_) * 720)),
+				titleImgs_[0],
+				1, 1,
+				0.0f,
+				WHITE
+			);
+
+			//スクロールする雲
+			for (int i = 0; i < 2; i++) {
+
+				Novice::DrawSprite(
+					int(cloudPos_[i].x),
+					int(cloudPos_[i].y + (EaseInQuint(changeScene.easeT_) * 720)),
+					titleImgs_[i + 1],
+					1, 1,
+					0.0f,
+					WHITE
+				);
+
+				Novice::DrawSprite(
+					int(cloudPos_[i].x - 1280),
+					int(cloudPos_[i].y + (EaseInQuint(changeScene.easeT_) * 720)),
+					titleImgs_[i + 1],
+					1, 1,
+					0.0f,
+					WHITE
+				);
+
+			}
+
+			//タイトルロゴ================================
+			Novice::DrawSprite(
+				int(titleLogoPos_[0].x - 4),
+				int(titleLogoPos_[0].y + (24.0f * sinf(theta_ * float(M_PI))) + (EaseInQuint(changeScene.easeT_) * 720)),
+				titleImgs_[3],
+				1, 1,
+				0.0f,
+				WHITE
+			);
+
+			Novice::DrawSprite(
+				int(titleLogoPos_[1].x + 64),
+				int(titleLogoPos_[1].y + (24.0f * sinf(-theta_ * float(M_PI))) + (EaseInQuint(changeScene.easeT_) * 720)),
+				titleImgs_[4],
+				1, 1,
+				0.0f,
+				WHITE
+			);
+
+			Novice::DrawEllipse(
+				int(640),
+				int(368 + (EaseInQuint(changeScene.easeT_) * 720)),
+				28, 28,
+				0.0f,
+				0xffffffff,
+				kFillModeSolid
 			);
 
 		}
-
-		//タイトルロゴ================================
-		Novice::DrawSprite(
-			int(titleLogoPos_[0].x + 28),
-			int(titleLogoPos_[0].y + (24.0f * sinf(theta_ * float(M_PI))) + (EaseInQuint(changeScene.easeT_) * 720)),
-			titleImgs_[3],
-			1, 1,
-			0.0f,
-			WHITE
-		);
-
-		Novice::DrawSprite(
-			int(titleLogoPos_[1].x + 32),
-			int(titleLogoPos_[1].y + (24.0f * sinf(-theta_ * float(M_PI))) + (EaseInQuint(changeScene.easeT_) * 720)),
-			titleImgs_[4],
-			1, 1,
-			0.0f,
-			WHITE
-		);
-
 
 
 		break;
@@ -1362,7 +1436,118 @@ void Map::Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene) {
 			break;
 		}
 
+		if (changeScene.GetIsFinish()) {
 
+			//space balloon 
+			Novice::DrawSpriteRect(
+				int(clearResultPos_[0].x),
+				int(clearResultPos_[0].y - 60),
+				0,
+				0,
+				774,
+				112,
+				clearImgs_[0],
+				1,
+				112.0f / 234.0f,
+				0.0f,
+				0xffffffff
+			);
+
+			//〇〇% completed
+			Novice::DrawSpriteRect(
+				int(clearResultPos_[1].x),
+				int(clearResultPos_[1].y),
+				0,
+				124,
+				774,
+				107,
+				clearImgs_[0],
+				1,
+				107.0f / 234.0f,
+				0.0f,
+				0xffffffff
+			);
+
+			//スコア
+
+			//1桁目
+			Novice::DrawSpriteRect(
+				int(clearResultPos_[1].x + (2 * 57)),
+				int(clearResultPos_[1].y + 20),
+				57 * scoreDigit[2],
+				0,
+				57,
+				81,
+				clearImgs_[1],
+				57.0f / 774.0f,
+				81.0f / 163.0f,
+				0.0f,
+				0xffffffff
+			);
+
+			//2桁目
+			if (achievement >= 10) {
+				Novice::DrawSpriteRect(
+					int(clearResultPos_[1].x + (1 * 57)),
+					int(clearResultPos_[1].y + 20),
+					57 * scoreDigit[1],
+					0,
+					57,
+					81,
+					clearImgs_[1],
+					57.0f / 774.0f,
+					81.0f / 163.0f,
+					0.0f,
+					0xffffffff
+				);
+			}
+
+			//3桁目
+			if (achievement >= 100) {
+				Novice::DrawSpriteRect(
+					int(clearResultPos_[1].x),
+					int(clearResultPos_[1].y + 20),
+					57 * scoreDigit[0],
+					0,
+					57,
+					81,
+					clearImgs_[1],
+					57.0f / 774.0f,
+					81.0f / 163.0f,
+					0.0f,
+					0xffffffff
+				);
+			}
+
+			//左右にスコアアイテムの星を出す
+			Novice::DrawSpriteRect(
+				int(1039),
+				int(clearResultPos_[1].y)
+				+ int(sinf((globalV.grandTimeCount_ / 64.0f) * float(M_PI)) * 6.0f),
+				0 + (64 * (globalV.grandTimeCount_ / 16 % 3)),
+				0,
+				64,
+				64,
+				gameImgs_[6],
+				64.0f / 256.0f, 64.0f / 128.0f,
+				0.0f,
+				0xffffffff
+			);
+
+			Novice::DrawSpriteRect(
+				int(clearResultPos_[1].x - 74),
+				int(clearResultPos_[1].y)
+				+ int(sinf((globalV.grandTimeCount_ / 64.0f) * float(M_PI)) * 6.0f),
+				0 + (64 * (globalV.grandTimeCount_ / 16 % 3)),
+				0,
+				64,
+				64,
+				gameImgs_[6],
+				64.0f / 256.0f, 64.0f / 128.0f,
+				0.0f,
+				0xffffffff
+			);
+		}
 
 
 		break;

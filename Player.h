@@ -136,7 +136,7 @@ public:
 			//=====================================================================================
 		case titleScene:
 
-			pos_ = { 640.0f,320.0f + size_.y };
+			pos_ = { 640.0f,340.0f + size_.y };
 			respawnPos_ = pos_;
 
 			ropePos_[0] = { pos_.x,pos_.y - size_.y };

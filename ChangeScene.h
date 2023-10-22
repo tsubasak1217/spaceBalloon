@@ -26,8 +26,8 @@ private:
 	};
 
 	//クリア時
-	Vector2 clearStarPos_[7];
-	float clearStarT_[7];
+	Vector2 clearStarPos_[32];
+	float clearStarT_[32];
 	float clearStarTheta_;
 	float clearStarRadius_;
 	int clearStarTimeCount_;
@@ -37,12 +37,15 @@ private:
 public:
 
 	float easeT_;
+	float startEaseT_;
 	float returnEaseT_;
 	int clearSceneRole_;
 
 	int gameImgs_[1] = {
 		Novice::LoadTexture("./Resources./Images./title./cloud3.png")
 	};
+
+	int whiteGH = Novice::LoadTexture("white1x1.png");
 
 	//音声の変数
 	int BGM_[4] = {
@@ -64,19 +67,22 @@ public:
 		finishTimer_ = 120;
 		returnTitleTimer_ = 80;
 		clearSceneRole_ = 0;
+		
 		easeT_ = 0.0f;
+		returnEaseT_ = 0.0f;
+		startEaseT_ = 0.0f;
+		
 		isMoveStar_ = false;
 		starT_ = 0.0f;
 		starRadius_ = 0.0f;
 		moveMode_ = 1;
-		returnEaseT_ = 0.0f;
 
 		clearStarTheta_ = 0.0f;
 		clearStarTimeCount_ = 0;
-		clearStarRadius_ = 1280 / 10;
-		for (int i = 0; i < 7; i++) {
-			clearStarPos_[i].x = clearStarRadius_ + (clearStarRadius_ * i);
-			clearStarPos_[i].y = -clearStarRadius_;
+		clearStarRadius_ = 48.0f;
+		for (int i = 0; i < 32; i++) {
+			clearStarPos_[i].x = clearStarRadius_ + ((2.0f * clearStarRadius_) * i);
+			clearStarPos_[i].y = -clearStarRadius_ * 2.0f;
 			clearStarT_[i] = 0.0f;
 		}
 	}
@@ -104,6 +110,7 @@ public:
 	bool GetIsStart() { return isStartScene_; }
 	void SetIsStart(bool flag) { isStartScene_ = flag; }
 
+	bool GetIsReturnTitle() { return isReturnTitle_; }
 	void SetIsReturnTitle(bool flag) { isReturnTitle_ = flag; }
 
 	bool GetInitOrder() { return initOrder_; }

@@ -46,6 +46,55 @@ void ChangeScene::DrawChangeStar() {
 
 void ChangeScene::DrawClearStar() {
 
+	clearStarTheta_ += (1.0f / 32.0f) * float(M_PI);
+
+	for (int i = 0; i < 32; i++) {
+
+		clearStarPos_[i].x =
+			(clearStarRadius_ + ((2.0f * clearStarRadius_) * i))
+			+ cosf((3.0f / 4.0f) * float(M_PI)) * EaseInExpo(clearStarT_[i]) * 1500;
+
+		clearStarPos_[i].y =
+			(-clearStarRadius_ * 2.0f) + sinf((3.0f / 4.0f) * float(M_PI)) * EaseInExpo(clearStarT_[i]) * 1500;
+
+		//描画
+		Novice::DrawQuad(
+			int((clearStarRadius_ + ((2.0f * clearStarRadius_) * i)) + cosf((5.0f / 4.0f) * float(M_PI)) * clearStarRadius_),
+			int((-clearStarRadius_ * 2.0f) + sinf((5.0f / 4.0f) * float(M_PI)) * clearStarRadius_),
+			int((clearStarRadius_ + ((2.0f * clearStarRadius_) * i)) + cosf((1.0f / 4.0f) * float(M_PI)) * clearStarRadius_),
+			int((-clearStarRadius_ * 2.0f) + sinf((1.0f / 4.0f) * float(M_PI)) * clearStarRadius_),
+			int(clearStarPos_[i].x + cosf((5.0f / 4.0f) * float(M_PI)) * clearStarRadius_),
+			int(clearStarPos_[i].y + sinf((5.0f / 4.0f) * float(M_PI)) * clearStarRadius_),
+			int(clearStarPos_[i].x + cosf((1.0f / 4.0f) * float(M_PI)) * clearStarRadius_),
+			int(clearStarPos_[i].y + sinf((1.0f / 4.0f) * float(M_PI)) * clearStarRadius_),
+			0, 0,
+			1, 1,
+			whiteGH,
+			0xffffffff
+		);
+
+		DrawStar(
+			clearStarPos_[i],
+			clearStarRadius_ * 2.0f,
+			clearStarTheta_,
+			starColor_[2]
+		);
+
+		DrawStar(
+			clearStarPos_[i],
+			clearStarRadius_,
+			clearStarTheta_,
+			starColor_[1]
+		);
+
+		DrawStar(
+			clearStarPos_[i],
+			clearStarRadius_ * 0.5f,
+			clearStarTheta_,
+			starColor_[1]
+		);
+	}
+
 }
 
 void ChangeScene::Update(Scene& scene, char* keys) {
@@ -79,15 +128,15 @@ void ChangeScene::Update(Scene& scene, char* keys) {
 
 		if (isStartScene_) {
 
-			//easeT_ += 0.01f;
-			if (easeT_ > 1.0f) {
-				easeT_ = 1.0f;
+			startEaseT_ += 0.01f;
+			if (startEaseT_ > 1.0f) {
+				startEaseT_ = 1.0f;
 			}
 
 			if (startTimer_ <= 0) {
 				isStartScene_ = false;
 				startTimer_ = 120;
-				easeT_ = 0.0f;
+				startEaseT_ = 0.0f;
 			}
 
 		}
@@ -158,6 +207,7 @@ void ChangeScene::Update(Scene& scene, char* keys) {
 			if (returnTitleTimer_ <= 0) {
 				returnEaseT_ = 0;
 				returnTitleTimer_ = 80;
+				finishTimer_ = 120;
 				scene.SetSceneNum(titleScene);
 				isReturnTitle_ = false;
 				isStartScene_ = true;
@@ -194,7 +244,6 @@ void ChangeScene::Update(Scene& scene, char* keys) {
 					}
 				}
 
-
 				if (clearSceneRole_ >= 3) {
 					isStartScene_ = false;
 					isFinishScene_ = true;
@@ -205,11 +254,27 @@ void ChangeScene::Update(Scene& scene, char* keys) {
 
 		if (isFinishScene_) {
 
-			if (finishTimer_ <= 0) {
+			//シーン遷移の流れ星の更新のための処理
+			clearStarTimeCount_++;
+			for (int i = 0; i < 32; i++) {
+				if (clearStarTimeCount_ > i * 4) {
+					clearStarT_[i] += 0.015f;
+				}
+
+				if (clearStarT_[i] > 1.0f) {
+					clearStarT_[i] = 1.0f;
+				}
+			}
+
+			//シーン終了
+			if (finishTimer_ <= 0 && clearStarTimeCount_ >= 240) {
 				isFinishScene_ = false;
 				isStartScene_ = true;
 				finishTimer_ = 120;
 				easeT_ = 0;
+
+				Init();
+
 				scene.SetSceneNum(titleScene);
 			}
 		}
@@ -229,15 +294,15 @@ void ChangeScene::Draw(Scene scene) {
 	case titleScene://========================================================
 
 		if (isStartScene_) {
-			/*	Novice::DrawBox(
-					0,
-					int((EaseOutQuint(easeT_)) * -720),
-					1280,
-					720,
-					0.0f,
-					WHITE,
-					kFillModeSolid
-				);*/
+			Novice::DrawBox(
+				0,
+				int((EaseOutQuint(startEaseT_)) * -720),
+				1280,
+				720,
+				0.0f,
+				WHITE,
+				kFillModeSolid
+			);
 		}
 
 		//雲が上から来る
@@ -302,6 +367,11 @@ void ChangeScene::Draw(Scene scene) {
 		break;
 
 	case clear:
+
+		if (isFinishScene_) {
+			DrawClearStar();
+		}
+
 		break;
 
 	default:
@@ -331,7 +401,7 @@ void ChangeScene::Sound(Scene scene) {
 		break;
 
 	case game:
-		
+
 		Novice::SetAudioVolume(BGMHandle[0], volume[0]);
 		Novice::SetAudioVolume(BGMHandle[1], volume[1]);
 		Novice::SetAudioVolume(BGMHandle[2], volume[2]);
@@ -356,7 +426,7 @@ void ChangeScene::Sound(Scene scene) {
 
 		//風の音を止める
 		Novice::StopAudio(BGMHandle[0]);
-		
+
 		//クリアミュージック
 		Novice::SetAudioVolume(BGMHandle[3], volume[3]);
 

@@ -83,12 +83,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		//描画
 		map.DrawBG( globalV);
-		effect->Draw(globalV);
 
 		if (scene.GetSceneNum() == titleScene) {
 			map.Draw(globalV, scene, changeScene);
 		}
 
+		effect->Draw(globalV);
 		player.Draw(globalV, scene,changeScene);
 
 		if (scene.GetSceneNum() > titleScene) {
