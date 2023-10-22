@@ -141,8 +141,11 @@ void Map::Update(Scene scene, ChangeScene& changeScene) {
 			timeCount_++;
 
 			//BGMの音量を通常にする
-			changeScene.volume[1] = 0.2f;
-			changeScene.volume[0] = 0.0f;
+			if (!changeScene.GetIsFinish()) {
+				changeScene.volume[0] = 0.3f;
+				changeScene.volume[1] = 0.2f;
+				changeScene.volume[2] = 0.0f;
+			}
 		} 
 
 		//スコアの更新
@@ -175,11 +178,13 @@ void Map::Update(Scene scene, ChangeScene& changeScene) {
 		if (stopLimit_ > 0) {
 			stopLimit_--;
 
-			if (stopLimit_ < 30) {
+			if (stopLimit_ < 30) {//時間停止から戻るときに音を戻す
+				changeScene.volume[0] < 0.3f ? changeScene.volume[0] += 0.01f : false;
 				changeScene.volume[1] < 0.2f ? changeScene.volume[1] += 0.006f : false;
 				changeScene.volume[2] > 0.0f ? changeScene.volume[2] -= 0.01f : false;
 
-			} else {
+			} else {//時間停止に入るときに音を切り変える
+				changeScene.volume[0] > 0.0f ? changeScene.volume[0] -= 0.01f : false;
 				changeScene.volume[1] > 0.0f ? changeScene.volume[1] -= 0.006f : false;
 				changeScene.volume[2] < 0.3f ? changeScene.volume[2] += 0.01f : false;
 			}

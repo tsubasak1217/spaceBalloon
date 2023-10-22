@@ -44,6 +44,10 @@ void ChangeScene::DrawChangeStar() {
 
 };
 
+void ChangeScene::DrawClearStar() {
+
+}
+
 void ChangeScene::Update(Scene& scene, char* keys) {
 
 	if (isStartScene_) {
@@ -98,7 +102,7 @@ void ChangeScene::Update(Scene& scene, char* keys) {
 			if (finishTimer_ <= 0) {
 				isFinishScene_ = false;
 				isStartScene_ = true;
-				finishTimer_ = 120;
+				finishTimer_ = 240;
 				easeT_ = 0;
 				scene.SetSceneNum(game);
 			}
@@ -137,7 +141,7 @@ void ChangeScene::Update(Scene& scene, char* keys) {
 			if (finishTimer_ <= 0) {
 				isFinishScene_ = false;
 				isStartScene_ = true;
-				finishTimer_ = 30;
+				finishTimer_ = 120;
 				easeT_ = 0;
 				scene.SetSceneNum(clear);
 			}
@@ -307,14 +311,8 @@ void ChangeScene::Draw(Scene scene) {
 
 void ChangeScene::Sound(Scene scene) {
 
-	if (scene.GetSceneNum() != clear) {
-		if (!Novice::IsPlayingAudio(BGMHandle[0]) or BGMHandle[0] == 0) {
-			BGMHandle[0] = Novice::PlayAudio(BGM_[0], true, 0.3f);
-		}
 
-	} else {
-		Novice::StopAudio(BGMHandle[0]);
-	}
+	Novice::ScreenPrintf(200, 300, "%f", volume[0]);
 
 	switch (scene.GetSceneNum()) {
 
@@ -323,11 +321,21 @@ void ChangeScene::Sound(Scene scene) {
 		//開始時BGMを止める
 		Novice::StopAudio(BGMHandle[1]);
 		Novice::StopAudio(BGMHandle[2]);
+		Novice::StopAudio(BGMHandle[3]);
+
+
+		//風の音
+		volume[0] = 0.3f;
+
+		if (!Novice::IsPlayingAudio(BGMHandle[0]) or BGMHandle[0] == 0) {
+			BGMHandle[0] = Novice::PlayAudio(BGM_[0], true, volume[0]);
+		}
 
 		break;
 
 	case game:
-
+		
+		Novice::SetAudioVolume(BGMHandle[0], volume[0]);
 		Novice::SetAudioVolume(BGMHandle[1], volume[1]);
 		Novice::SetAudioVolume(BGMHandle[2], volume[2]);
 
@@ -339,9 +347,33 @@ void ChangeScene::Sound(Scene scene) {
 			BGMHandle[2] = Novice::PlayAudio(BGM_[2], true, volume[2]);
 		}
 
+		if (isFinishScene_) {
+			volume[0] -= 0.001f;
+			volume[1] -= 0.001f;
+			volume[2] -= 0.001f;
+		}
+
 		break;
 
 	case clear:
+
+		//風の音を止める
+		Novice::StopAudio(BGMHandle[0]);
+		
+		//クリアミュージック
+		Novice::SetAudioVolume(BGMHandle[3], volume[3]);
+
+		if (!Novice::IsPlayingAudio(BGMHandle[3]) or BGMHandle[3] == 0) {
+			BGMHandle[3] = Novice::PlayAudio(BGM_[3], true, volume[3]);
+		}
+
+		//シーン開始時,終了時に音をフェードアウトする
+		if (isFinishScene_) {
+			volume[3] > 0.0f ? volume[3] -= 0.001f : false;
+		} else {
+			volume[3] = 0.1f;
+		}
+
 		break;
 
 	default:

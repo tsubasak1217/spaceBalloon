@@ -25,6 +25,14 @@ private:
 		0xff5181ff
 	};
 
+	//クリア時
+	Vector2 clearStarPos_[7];
+	float clearStarT_[7];
+	float clearStarTheta_;
+	float clearStarRadius_;
+	int clearStarTimeCount_;
+
+
 
 public:
 
@@ -37,15 +45,16 @@ public:
 	};
 
 	//音声の変数
-	int BGM_[3] = {
+	int BGM_[4] = {
 		Novice::LoadAudio("./Resources/Sounds/wind_BG.mp3"),
 		Novice::LoadAudio("./Resources/Sounds/spaceBalloon_theme.wav"),
 		Novice::LoadAudio("./Resources/Sounds/spaceBalloon_themeFX.wav"),
+		Novice::LoadAudio("./Resources/Sounds/spaceBalloon_clear.wav"),
 	};
 
-	int BGMHandle[3] = {false};
+	int BGMHandle[4] = {false};
 
-	float volume[3] = { 0.0f };
+	float volume[4] = { 0.0f };
 
 	//イニシャライズ
 	void Init() {
@@ -61,11 +70,21 @@ public:
 		starRadius_ = 0.0f;
 		moveMode_ = 1;
 		returnEaseT_ = 0.0f;
+
+		clearStarTheta_ = 0.0f;
+		clearStarTimeCount_ = 0;
+		clearStarRadius_ = 1280 / 10;
+		for (int i = 0; i < 7; i++) {
+			clearStarPos_[i].x = clearStarRadius_ + (clearStarRadius_ * i);
+			clearStarPos_[i].y = -clearStarRadius_;
+			clearStarT_[i] = 0.0f;
+		}
 	}
 
 	void Update(Scene& scene, char* keys);
 
 	void DrawChangeStar();
+	void DrawClearStar();
 	void Draw(Scene scene);
 	void Sound(Scene scene);
 

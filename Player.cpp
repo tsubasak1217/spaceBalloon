@@ -155,6 +155,7 @@ void Player::Update(
 						pos_ = respawnPos_;
 						velocity_ = { 0.0f,0.0f };
 						isAccelable_ = false;
+						isDash_ = false;
 						life_ = 1;
 						scoreCount_ = savedScoreCount_;
 						retryTimeCount_ = 100;
@@ -802,6 +803,9 @@ void Player::Update(
 									unrivaledLimit_ = 160;
 									life_--;
 
+									//鳥の鳴き声出す
+									Novice::PlayAudio(playerSE[11], false, 0.3f);
+
 									if (life_ <= 0) {
 										isAlive_ = false;
 									}
@@ -1291,6 +1295,7 @@ void Player::Sound(char* keys, char* preKeys, Scene scene, Map map) {
 
 	bool isClose2Wind = false;
 	bool isClose2Thunder = false;
+	bool isClose2Bird = false;
 
 	switch (scene.GetSceneNum()) {
 
@@ -1326,6 +1331,12 @@ void Player::Sound(char* keys, char* preKeys, Scene scene, Map map) {
 		if (!Novice::IsPlayingAudio(playerSE[4])) {
 			SEHandle[4] = Novice::PlayAudio(playerSE[4], true, volume[4]);
 			playerSE[4] = SEHandle[4];
+		}
+
+		//羽ばたく音
+		if (!Novice::IsPlayingAudio(playerSE[10])) {
+			SEHandle[10] = Novice::PlayAudio(playerSE[10], true, volume[10]);
+			playerSE[10] = SEHandle[10];
 		}
 
 
@@ -1433,6 +1444,23 @@ void Player::Sound(char* keys, char* preKeys, Scene scene, Map map) {
 				}
 			}
 		}
+		//鳥との距離で音を更新
+		//鳥の数だけループ
+		if (!map.GetIsTimeStop()) {
+			for (int i = 0; i < map.GetBirdAddress().size(); i++) {
+
+				//プレーヤーから半径4マス圏内にいるとき
+				if (map.GetBirdAddress()[i].x >= address_.x - 4 &&
+					map.GetBirdAddress()[i].x <= address_.x + 5) {
+					if (map.GetBirdAddress()[i].y >= address_.y - 4 &&
+						map.GetBirdAddress()[i].y <= address_.y + 5) {
+
+						
+						isClose2Bird = true;
+					}
+				}
+			}
+		}
 
 		//風の音量更新
 		if (isClose2Wind) {
@@ -1458,15 +1486,30 @@ void Player::Sound(char* keys, char* preKeys, Scene scene, Map map) {
 
 		Novice::SetAudioVolume(playerSE[5], volume[5]);
 
+		//鳥の音量更新
+		if (isClose2Thunder) {
+			volume[10] += 0.004f;
+			if (volume[10] > 0.2f) {
+				volume[10] = 0.2f;
+			}
+		} else {
+			volume[10] > 0.0f ? volume[10] -= 0.004f : false;
+		}
+
+		Novice::SetAudioVolume(playerSE[10], volume[10]);
+
+
 		//時間が停止した場合
 		if (map.GetIsTimeStop()) {
 
 			Novice::PauseAudio(playerSE[4]);
 			Novice::PauseAudio(playerSE[5]);
+			Novice::PauseAudio(playerSE[10]);
 		
 		} else {
 			Novice::ResumeAudio(playerSE[4]);
 			Novice::ResumeAudio(playerSE[5]);
+			Novice::ResumeAudio(playerSE[10]);
 		}
 
 
