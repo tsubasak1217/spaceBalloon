@@ -225,8 +225,9 @@ public:
 	void Sound(char* keys, char* preKeys, Scene scene, Map map);
 
 	//画像
-	int playerImg[1] = {
-		Novice::LoadTexture("./Resources./Images./game./tutorial.png")
+	int playerImg[2] = {
+		Novice::LoadTexture("./Resources./Images./game./tutorial.png"),
+		Novice::LoadTexture("./Resources./Images./game./tutorial2.png"),
 	};
 
 	//音

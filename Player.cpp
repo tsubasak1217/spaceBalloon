@@ -306,6 +306,12 @@ void Player::Update(
 					isCountStart_ = false;
 					doublePushLimit_ = 16;
 				}
+			} else if (isDash_) {
+				dashLimit_--;
+				if (dashLimit_ <= 0 or (keys[DIK_SPACE] && !preKeys[DIK_SPACE])) {
+					isDash_ = false;
+					dashLimit_ = 300;
+				}
 			}
 
 			if (keys[DIK_SPACE]) {
@@ -318,13 +324,6 @@ void Player::Update(
 				}
 			}
 
-			if (isDash_) {
-				dashLimit_--;
-				if (dashLimit_ <= 0) {
-					isDash_ = false;
-					dashLimit_ = 300;
-				}
-			}
 
 			// 風船が膨らんだりしぼんだりする処理=================================================
 
@@ -1423,7 +1422,7 @@ void Player::DrawTutorial(GlobalVariable globalV) {
 			223 + 20,
 			33 + 20,
 			0.0f,
-			0x0000005f + int(sinf((globalV.grandTimeCount_ / 64.0f) * float(M_PI)) * 0x3f),
+			0x084a795f + int(sinf((globalV.grandTimeCount_ / 64.0f) * float(M_PI)) * 0x3f),
 			kFillModeSolid
 		);
 
@@ -1433,6 +1432,31 @@ void Player::DrawTutorial(GlobalVariable globalV) {
 			+ globalV.GetGroundPos() + globalV.GetCameraPosY()
 			+ int((size_.y * 0.5f) + 64),
 			playerImg[0],
+			1, 1,
+			0.0f,
+			0xffffffff
+		);
+	}
+
+	if (isDash_) {//停止方法
+		Novice::DrawBox(
+			int(pos_.x - globalV.GetCameraPosX() - 65),
+			int(pos_.y * -1.0f)
+			+ globalV.GetGroundPos() + globalV.GetCameraPosY()
+			+ int((size_.y * 0.5f) + 54),
+			111 + 20,
+			48 + 20,
+			0.0f,
+			0x8b00015f + int(sinf((globalV.grandTimeCount_ / 64.0f) * float(M_PI)) * 0x3f),
+			kFillModeSolid
+		);
+
+		Novice::DrawSprite(
+			int(pos_.x - globalV.GetCameraPosX() - 55),
+			int(pos_.y * -1.0f)
+			+ globalV.GetGroundPos() + globalV.GetCameraPosY()
+			+ int((size_.y * 0.5f) + 64),
+			playerImg[1],
 			1, 1,
 			0.0f,
 			0xffffffff
