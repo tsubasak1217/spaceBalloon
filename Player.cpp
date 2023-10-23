@@ -1350,7 +1350,35 @@ void Player::Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene) 
 		if (holdLimit_ < 180) {
 			if (isAlive_) {
 
+				for (int i = 0; i < 7; i++) {
+					
+					if(i == 0 or i == 6){
+					
+						Novice::DrawEllipse(
+							int(pos_.x) - globalV.GetCameraPosX(),
+							int(pos_.y * -1.0f)
+							+ globalV.GetGroundPos() + globalV.GetCameraPosY(),
+							int((size_.x)* EaseOutQuint(1.0f - (holdLimit_ / 180.0f))) + i,
+							int((size_.y)* EaseOutQuint(1.0f - (holdLimit_ / 180.0f))) + i,
+							0.0f,
+							0xffffffff,
+							kFillModeWireFrame
+						);
 
+					} else {
+
+						Novice::DrawEllipse(
+							int(pos_.x) - globalV.GetCameraPosX(),
+							int(pos_.y * -1.0f)
+							+ globalV.GetGroundPos() + globalV.GetCameraPosY(),
+							int((size_.x) * EaseOutQuint(1.0f - (holdLimit_ / 180.0f))) + i,
+							int((size_.y) * EaseOutQuint(1.0f - (holdLimit_ / 180.0f))) + i,
+							0.0f,
+							ChangeColor(0x00ff7fff, 0xff0000ff, 180, float(180 - holdLimit_)),
+							kFillModeWireFrame
+						);
+					}
+				}
 			}
 		}
 

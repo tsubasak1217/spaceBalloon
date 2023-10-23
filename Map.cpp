@@ -11,6 +11,8 @@ void Map::Init() {
 	clearResultPos_[0] = { 255.0f,300.0f };
 	clearResultPos_[1] = { 255.0f,380.0f };
 
+	gameTimer_ = 0;
+
 	//スコアアイテムの総数をカウントするやつ
 	allScoreItem_ = 0;
 	achievement = 0;
@@ -136,6 +138,11 @@ void Map::Update(Scene scene, ChangeScene& changeScene) {
 		//=====================================================================================
 	case game:
 
+		//プレイ時間を計るタイマー
+		if (!changeScene.GetIsFinish()) {
+			gameTimer_++;
+		}
+
 		//時間が停止してないときにタイマーを増やす
 		if (!isTimeStop_) {
 			timeCount_++;
@@ -154,9 +161,6 @@ void Map::Update(Scene scene, ChangeScene& changeScene) {
 		scoreDigit[1] = int(achievement) % 100 / 10;
 		scoreDigit[2] = int(achievement) % 10 / 1;
 
-		Novice::ScreenPrintf(100, 20, "%d", achievement);
-		Novice::ScreenPrintf(100, 40, "%d", allScoreItem_);
-		Novice::ScreenPrintf(100, 60, "%d", score_);
 
 		//====================外部からの命令=====================
 
@@ -1044,6 +1048,80 @@ void Map::Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene) {
 			);
 		}
 
+
+		//タイマーの表示
+		Novice::DrawSpriteRect(
+			0, 0,
+			0, 0,
+			1280,
+			720,
+			gameImgs_[12],
+			1, 1,
+			0.0f,
+			0xffffff3f
+		);
+
+		//1分の桁
+		Novice::DrawSpriteRect(
+			630 - 30,
+			40,
+			30 * (FrameToClock(gameTimer_, 1) % 10),
+			0,
+			30,
+			34,
+			gameImgs_[11],
+			30.0f / 300.0f,
+			34.0f / 50.0f,
+			0.0f,
+			0xffffff3f
+		);
+
+		//10分の桁
+		Novice::DrawSpriteRect(
+			630 - 60,
+			40,
+			30 * ((FrameToClock(gameTimer_, 1) / 10) % 6),
+			0,
+			30,
+			34,
+			gameImgs_[11],
+			30.0f / 300.0f,
+			34.0f / 50.0f,
+			0.0f,
+			0xffffff3f
+		);
+
+		//1秒の桁
+		Novice::DrawSpriteRect(
+			650 + 30,
+			40,
+			30 * (FrameToClock(gameTimer_, 0) % 10),
+			0,
+			30,
+			34,
+			gameImgs_[11],
+			30.0f / 300.0f,
+			34.0f / 50.0f,
+			0.0f,
+			0xffffff3f
+		);
+
+		//10秒の桁
+		Novice::DrawSpriteRect(
+			650,
+			40,
+			30 * ((FrameToClock(gameTimer_, 0) / 10) % 6),
+			0,
+			30,
+			34,
+			gameImgs_[11],
+			30.0f / 300.0f,
+			34.0f / 50.0f,
+			0.0f,
+			0xffffff3f
+		);
+
+
 		break;
 
 		//=====================================================================================
@@ -1051,8 +1129,77 @@ void Map::Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene) {
 		//=====================================================================================
 	case clear:
 
-		Novice::ScreenPrintf(100, 40, "%d", allScoreItem_);
-		Novice::ScreenPrintf(100, 60, "%d", score_);
+		//タイマーの表示
+		Novice::DrawSpriteRect(
+			0, 0,
+			0, 0,
+			1280,
+			720,
+			gameImgs_[12],
+			1, 1,
+			0.0f,
+			0xffffff3f
+		);
+
+		//1分の桁
+		Novice::DrawSpriteRect(
+			630 - 30,
+			40,
+			30 * (FrameToClock(gameTimer_, 1) % 10),
+			0,
+			30,
+			34,
+			gameImgs_[11],
+			30.0f / 300.0f,
+			34.0f / 50.0f,
+			0.0f,
+			0xffffff3f
+		);
+
+		//10分の桁
+		Novice::DrawSpriteRect(
+			630 - 60,
+			40,
+			30 * ((FrameToClock(gameTimer_, 1) / 10) % 6),
+			0,
+			30,
+			34,
+			gameImgs_[11],
+			30.0f / 300.0f,
+			34.0f / 50.0f,
+			0.0f,
+			0xffffff3f
+		);
+
+		//1秒の桁
+		Novice::DrawSpriteRect(
+			650 + 30,
+			40,
+			30 * (FrameToClock(gameTimer_, 0) % 10),
+			0,
+			30,
+			34,
+			gameImgs_[11],
+			30.0f / 300.0f,
+			34.0f / 50.0f,
+			0.0f,
+			0xffffff3f
+		);
+
+		//10秒の桁
+		Novice::DrawSpriteRect(
+			650,
+			40,
+			30 * ((FrameToClock(gameTimer_, 0) / 10) % 6),
+			0,
+			30,
+			34,
+			gameImgs_[11],
+			30.0f / 300.0f,
+			34.0f / 50.0f,
+			0.0f,
+			0xffffff3f
+		);
 
 		switch (changeScene.clearSceneRole_) {
 
@@ -1104,7 +1251,6 @@ void Map::Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene) {
 				0xffffffff
 			);
 
-
 			//スコア
 			if (changeScene.GetStartTimer() > 80) {
 				//1桁目
@@ -1153,6 +1299,7 @@ void Map::Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene) {
 					0.0f,
 					0xffffffff
 				);
+
 			} else {//確定したスコア
 				//2桁目
 				if (achievement >= 10) {

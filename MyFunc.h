@@ -21,10 +21,18 @@ void Void();
 
 std::vector<std::vector<int>>LoadFile(const std::string& csvFilePath);
 
+/// <summary>
+/// フレーム数を時間に換算する関数
+/// </summary>
+/// <param name="count">:フレーム数</param>
+/// <param name="tranceMode">[0:秒][1:分][2:時間]</param>
+/// <returns></returns>
+int FrameToClock(int count, int tranceMode);
 
-
+//長さをはかる関数
 float CheckLength(Vector2 pos1, Vector2 pos2);
 float CheckLength(float pos1x, float pos1y, float pos2x, float pos2y);
+
 float Cross(
 	float line1StartX, float line1StartY,
 	float line1EndX, float line1EndY,

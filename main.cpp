@@ -106,10 +106,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		player.Sound(keys, preKeys, scene,map);
 		changeScene.Sound(scene);
 
-		//Novice::ScreenPrintf(100, 20, "%d", map.GetSavedBlockType(0, 0));
-		//Novice::ScreenPrintf(100, 40, "%d", map.GetBlockType(0, 0));
-		//Novice::ScreenPrintf(100, 60, "%d", changeScene.GetIsFinish());
-
 		///
 		/// ↑描画処理ここまで
 		///

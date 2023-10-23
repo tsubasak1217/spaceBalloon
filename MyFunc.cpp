@@ -35,6 +35,37 @@ std::vector<std::vector<int>>LoadFile(const std::string& csvFilePath) {
 //何もしない関数
 void Void() { ; }
 
+//フレーム数を時計に変換する関数
+int FrameToClock(int count, int tranceMode) {
+
+	int result = 0;
+	enum TranceMode {
+		Sec,
+		Min,
+		Hour
+	};
+
+	switch (tranceMode) {
+	case Sec:
+		result = count / 60;
+		break;
+
+	case Min:
+		result = (count / 60)/60;
+		break;
+
+	case Hour:
+		result = ((count / 60) / 60)/60;
+		break;
+
+	default:
+		break;
+	}
+
+	return result;
+
+};
+
 float CheckLength(Vector2 pos1, Vector2 pos2) {
 	float xLength = (pos1.x - pos2.x);
 	float yLength = (pos1.y - pos2.y);

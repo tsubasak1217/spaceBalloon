@@ -8,6 +8,7 @@ private:
 	//
 	float theta_;
 	int timeCount_;
+	int gameTimer_;
 
 	int allScoreItem_;
 
@@ -119,7 +120,7 @@ public:
 	Novice::LoadTexture("./Resources./Images./title./rope.png"),
 	};
 
-	int gameImgs_[11] = {
+	int gameImgs_[13] = {
 	Novice::LoadTexture("./Resources./Images./game./cloud_normal.png"),
 	Novice::LoadTexture("./Resources./Images./game./cloud_thunder.png"),
 	Novice::LoadTexture("./Resources./Images./game./wind.png"),
@@ -131,6 +132,8 @@ public:
 	Novice::LoadTexture("./Resources./Images./game./accel.png"),
 	Novice::LoadTexture("./Resources./Images./game./scrollBG.png"),
 	Novice::LoadTexture("./Resources./Images./game./thunder_effect.png"),
+	Novice::LoadTexture("./Resources./Images./game./timerFont.png"),
+	Novice::LoadTexture("./Resources./Images./game./colon.png"),
 	};
 
 	int clearImgs_[2] = {
