@@ -18,13 +18,14 @@ void Trajectory::Draw(GlobalVariable globalV,Scene scene)
 	case titleScene:
 		Novice::DrawEllipse(
 			int(location.x),
-			int(location.y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
+			int(location.y * -1.0f) + globalV.GetGroundPos(),
 			int(retainSize.x),
 			int(retainSize.y),
 			0.0f,
 			color.to_int(),
 			kFillModeSolid
 		);
+		Novice::ScreenPrintf(220, 200, "on");
 	
 		break;
 

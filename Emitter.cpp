@@ -5,13 +5,9 @@
 void Emitter::Update(Player &player) {
 	pos_ = player.GetPos();
 	Color color = Color();
-	/*color.setCode(0xb3fffaff);*/
 	if (++frameCount >= DeterminedFrame) {
 		//動いているときにエフェクトを表示
 		if (sqrtf(powf(pos_.x - previousFramePos_.x,2)) >= 2 || sqrtf(powf(pos_.y - previousFramePos_.y,2)) >= 2) {
-			if (player.GetIsUnrivaled()) {
-				color.setCode(0xff5181ff);
-			}
 			if (player.GetIsUnrivaled()) {
 				particles.push_back(new BloodTrajectory(player, 60));
 			}
