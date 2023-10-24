@@ -103,8 +103,6 @@ void Title::Update(char* keys, char* preKeys, ChangeScene changeScene) {
 
 void Title::Draw(ChangeScene changeScene ) {
 
-	Novice::ScreenPrintf(0,100," %d",time_[1]);
-
 	for (int i = 0; i < 2; i++) {
 		//----------------------タイトルロゴを表示------------------------//
 		if (timecount_[i] == 0) {
