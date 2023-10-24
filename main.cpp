@@ -37,7 +37,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	changeScene.Init();
 
 	Emitter* effect = new Emitter();
-	Color color = Color();
 
 	Map map;
 	map.Init();
@@ -66,11 +65,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓更新処理ここから
 		///
 		
-		title.Update();
+		title.Update(keys,preKeys,changeScene);
 		globalV.Update();
 		map.Update(scene,changeScene);
 		player.Update(keys,preKeys,&globalV.cameraPosX_, &globalV.cameraPosY_, &globalV.miniCameraPos_, map, scene,changeScene,globalV);
-		effect->Update(player,map,color);
+		effect->Update(player);
 
 		changeScene.Update(scene,keys);
 
@@ -87,20 +86,20 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		map.DrawBG( globalV);
 
 		if (scene.GetSceneNum() == titleScene) {
-			map.Draw(globalV, scene, changeScene);
+			map.Draw(globalV, scene, changeScene,title);
+			title.Draw(changeScene);
 		}
 
 		effect->Draw(globalV);
 		player.Draw(globalV, scene,changeScene);
 
 		if (scene.GetSceneNum() > titleScene) {
-			map.Draw(globalV, scene, changeScene);
+			map.Draw(globalV, scene, changeScene,title);
 		}
-
+	
 		player.DrawTutorial(globalV);
 		miniMap.Draw(globalV,scene,changeScene,map,player);
 		changeScene.Draw(scene);
-	
 
 		//音声
 		player.Sound(keys, preKeys, scene,map);

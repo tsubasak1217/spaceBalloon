@@ -346,7 +346,7 @@ void Map::DrawBG(GlobalVariable globalV) {
 	);
 }
 
-void Map::Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene) {
+void Map::Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene, Title title) {
 
 	switch (scene.GetSceneNum()) {
 		//=====================================================================================
@@ -389,23 +389,7 @@ void Map::Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene) {
 			}
 
 			//タイトルロゴ================================
-			Novice::DrawSprite(
-				int(titleLogoPos_[0].x - 4),
-				int(titleLogoPos_[0].y + 720 + (24.0f * sinf(theta_ * float(M_PI))) + (EaseOutQuint(changeScene.startEaseT_) * -720)),
-				titleImgs_[3],
-				1, 1,
-				0.0f,
-				WHITE
-			);
-
-			Novice::DrawSprite(
-				int(titleLogoPos_[1].x + 64),
-				int(titleLogoPos_[1].y + 720 + (24.0f * sinf(-theta_ * float(M_PI))) + (EaseOutQuint(changeScene.startEaseT_) * -720)),
-				titleImgs_[4],
-				1, 1,
-				0.0f,
-				WHITE
-			);
+		
 
 			Novice::DrawEllipse(
 				int(640),
@@ -451,24 +435,7 @@ void Map::Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene) {
 			}
 
 			//タイトルロゴ================================
-			Novice::DrawSprite(
-				int(titleLogoPos_[0].x - 4),
-				int(titleLogoPos_[0].y + (24.0f * sinf(theta_ * float(M_PI))) + (EaseInQuint(changeScene.easeT_) * 720)),
-				titleImgs_[3],
-				1, 1,
-				0.0f,
-				WHITE
-			);
-
-			Novice::DrawSprite(
-				int(titleLogoPos_[1].x + 64),
-				int(titleLogoPos_[1].y + (24.0f * sinf(-theta_ * float(M_PI))) + (EaseInQuint(changeScene.easeT_) * 720)),
-				titleImgs_[4],
-				1, 1,
-				0.0f,
-				WHITE
-			);
-
+		
 			Novice::DrawEllipse(
 				int(640),
 				int(368 + (EaseInQuint(changeScene.easeT_) * 720)),
@@ -478,6 +445,7 @@ void Map::Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene) {
 				kFillModeSolid
 			);
 
+			
 		}
 
 

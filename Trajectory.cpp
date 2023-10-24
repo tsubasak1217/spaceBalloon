@@ -3,7 +3,7 @@
 #include "Map.h"
 #include <math.h>
 
-void Trajectory::Update(Map map)
+void Trajectory::Update()
 {
 	lifespan--;
 	color.subAlpha(4);
@@ -21,12 +21,5 @@ void Trajectory::Draw(GlobalVariable globalV)
 		0.0f,
 		color.to_int(),
 		kFillModeSolid
-	);
-
-	/*DrawTriangle(
-		location,
-		retainSize.x,
-		((globalV.grandTimeCount_ / 64.0f) * float(M_PI)),
-		WHITE
-	);*/
+	);	
 }
