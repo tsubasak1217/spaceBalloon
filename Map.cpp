@@ -272,6 +272,7 @@ void Map::Update(Scene scene, ChangeScene& changeScene) {
 								birdDirection_[i] = Up;
 							}
 						}
+
 					} else {
 						birdDirection_[i] = Up;
 					}
