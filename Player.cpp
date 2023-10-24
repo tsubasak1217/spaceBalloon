@@ -257,6 +257,8 @@ void Player::Update(
 					if (retryTimeCount_ <= 0) {
 						changeScene.SetMoveMode(0);
 						map.SetResetBlockOrder(true);
+						map.SetIsTimeStop(false);
+						map.SetStopLimit(0);
 						pos_ = respawnPos_;
 						velocity_ = { 0.0f,0.0f };
 						isAccelable_ = false;
