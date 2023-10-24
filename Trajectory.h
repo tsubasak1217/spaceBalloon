@@ -6,9 +6,9 @@ class Trajectory :
     public Particle
 {
 public:
-    Trajectory(Vector2 pos_, int lifespan,Vector2 retainSize,Color color) :Particle(pos_, lifespan,retainSize,color) {}
+    Trajectory(Player player, int lifespan) :Particle(player.GetPos(), lifespan, { player.GetSize().x / 4,player.GetSize().y / 4 }, Color()) {}
 
-    void Update(Map map)override;
-    void Draw(GlobalVariable globalV)override;
+    void Update()override;
+    void Draw(GlobalVariable globalV)override ;
 
 };

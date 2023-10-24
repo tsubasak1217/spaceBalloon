@@ -37,7 +37,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	changeScene.Init();
 
 	Emitter* effect = new Emitter();
-	Color color = Color();
 
 	Map map;
 	map.Init();

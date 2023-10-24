@@ -1,27 +1,29 @@
 ﻿#include "Emitter.h"
 #include "Trajectory.h"
+#include "BloodTrajectory.h"
 
-void Emitter::Update(Player player, Map map, Color color) {
+void Emitter::Update(Player &player) {
 	pos_ = player.GetPos();
-	size_ = {player.GetSize().x / 4,player.GetSize().y / 4 };
-	
+	Color color = Color();
 	if (++frameCount >= DeterminedFrame) {
 		//動いているときにエフェクトを表示
 		if (sqrtf(powf(pos_.x - previousFramePos_.x,2)) >= 2 || sqrtf(powf(pos_.y - previousFramePos_.y,2)) >= 2) {
 			if (player.GetIsUnrivaled()) {
 				color.setCode(0xff5181ff);
 			}
-			else {
-				color.setCode(WHITE);
+			if (player.GetIsUnrivaled()) {
+				particles.push_back(new BloodTrajectory(player, 60));
 			}
-			particles.push_back(new Trajectory(pos_, 60, size_,color));
+			else {
+				particles.push_back(new Trajectory(player, 60));
+			}
 			frameCount = 0;
 		}
 	}
 
 	auto iterator = particles.begin();
 	while (iterator != particles.end()) {
-		(*iterator)->Update(map);
+		(*iterator)->Update();
 		if ((*iterator) -> isAlive()){
 			iterator++;
 		} else {

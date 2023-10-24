@@ -26,7 +26,7 @@ class Emitter{
 		};
 
 		//アップデート
-		void Update(Player player, Map map,Color color);
+		void Update(Player& player);
 
 		//ドロー
 		void Draw(GlobalVariable globalV);
