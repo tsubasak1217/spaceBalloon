@@ -62,11 +62,11 @@ void Title::Update(char* keys, char* preKeys, ChangeScene changeScene) {
 			velocity_[i].y += acceleration_[i].y;
 			titlePos_[i].y += velocity_[i].y;
 		}
-		if (titlePos_[1].y < 25.0) {
+		if (titlePos_[1].y < -15.0) {
 			passing = 1;
 		}
 		//落下を止める処理
-		if (titlePos_[i].y > 25.0 && passing == 1) {
+		if (titlePos_[i].y > -15.0 && passing == 1) {
 			velocity_[i].y = -1.8f;
 			acceleration_[i].y = 0.05f;
 		}
@@ -144,9 +144,51 @@ void Title::Draw(ChangeScene changeScene ) {
 	for (int i = 0; i < 7; i++) {
 		if (i >= 1 && i < 6) {
 			if (spacetimecount_[i-1] >= 0 ) {
+
+				if (!changeScene.GetIsStart()) {
+
+					Novice::DrawSpriteRect(
+						int(spacePos_[i].x),
+						int(spacePos_[i].y) + int(EaseInQuint(changeScene.easeT_) * 720),
+						i * 37, 0,
+						37, 46,
+						titleResources[2],
+						(37.0f / 257.0f), (47.0f / 64.0f),
+						0.0f,
+						0xFFFFFFFF
+					);
+				} else {
+
+					Novice::DrawSpriteRect(
+						int(spacePos_[i].x),
+						int(spacePos_[i].y + 720) + int(EaseOutQuint(changeScene.startEaseT_) * -720),
+						i * 37, 0,
+						37, 46,
+						titleResources[2],
+						(37.0f / 257.0f), (47.0f / 64.0f),
+						0.0f,
+						0xFFFFFFFF
+					);
+				}
+			}
+		}else {
+			if (!changeScene.GetIsStart()) {
+
 				Novice::DrawSpriteRect(
 					int(spacePos_[i].x),
-					int(spacePos_[i].y) + int(EaseInQuint(changeScene.easeT_) * 720), 
+					int(spacePos_[i].y) + int(EaseInQuint(changeScene.easeT_) * 720),
+					i * 37, 0,
+					37, 46,
+					titleResources[2],
+					(37.0f / 257.0f), (47.0f / 64.0f),
+					0.0f,
+					0xFFFFFFFF
+				);
+			} else {
+
+				Novice::DrawSpriteRect(
+					int(spacePos_[i].x),
+					int(spacePos_[i].y + 720) + int(EaseOutQuint(changeScene.startEaseT_) * -720),
 					i * 37, 0,
 					37, 46,
 					titleResources[2],
@@ -155,21 +197,11 @@ void Title::Draw(ChangeScene changeScene ) {
 					0xFFFFFFFF
 				);
 			}
-		}else {
-			Novice::DrawSpriteRect(
-				int(spacePos_[i].x),
-				int(spacePos_[i].y) + int(EaseInQuint(changeScene.easeT_) * 720),
-				i * 37, 0,
-				37, 46,
-				titleResources[2],
-				(37.0f / 257.0f), (47.0f / 64.0f),
-				0.0f,
-				0xFFFFFFFF
-			);
 		}
 		
 		if (i >= 1 && i < 6) {
 			if (spacetimecount_[i - 1] >= 0 && keysHit == 1) {
+
 				Novice::DrawSpriteRect(
 					int(spacePos_[i].x),
 					int(spacePos_[i].y) + int(EaseInQuint(changeScene.easeT_) * 720),

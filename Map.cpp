@@ -689,79 +689,8 @@ void Map::Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene, Tit
 
 					}
 				}
-
-				if (((birdPos_[i].y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17) >= 24 &&
-					((birdPos_[i].y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17) <= 340) {
-
-					//ミニマップ用
-					Novice::DrawBox(
-						int((birdPos_[i].x / 17) + 1120),
-						int((birdPos_[i].y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17),
-						int(miniMapSize),
-						int(miniMapSize),
-						0.0f,
-						0xff0000ff + int(EaseInQuint(changeScene.easeT_) * -0xff),
-						kFillModeSolid
-					);
-				}
 			}
 
-
-			Novice::DrawBox(
-				1120,
-				24,
-				150,
-				320,
-				0.0f,
-				0x00000088,
-				kFillModeSolid
-			);
-
-			//ミニマップの表示
-			for (int row = 0; row < mapRow; row++) {
-				for (int col = 0; col < mapCol; col++) {
-
-					if (((pos_[row][col].y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17) >= 24 &&
-						((pos_[row][col].y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17) <= 340) {
-						switch (blockType_[row][col]) {
-
-						case normal:
-							//描画
-							Novice::DrawBox(
-								int((pos_[row][col].x / 17) + 1120),
-								int((pos_[row][col].y / 17) * -1.0f) + 344
-								+ int(globalV.GetMiniCameraPos() / 17),
-								int(miniMapSize),
-								int(miniMapSize),
-								0.0f,
-								0xf7efdfff,
-								kFillModeSolid
-							);
-
-							break;
-
-						case thunder:
-
-							//描画
-							Novice::DrawBox(
-								int((pos_[row][col].x / 17) + 1120),
-								int((pos_[row][col].y / 17) * -1.0f) + 344
-								+ int(globalV.GetMiniCameraPos() / 17),
-								int(miniMapSize),
-								int(miniMapSize),
-								0.0f,
-								0x666666ff,
-								kFillModeSolid
-							);
-
-							break;
-
-						default:
-							break;
-						}
-					}
-				}
-			}
 
 		} else {
 			//通常時============================================================================
@@ -1004,17 +933,6 @@ void Map::Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene, Tit
 					}
 				}
 			}
-
-
-			Novice::DrawBox(
-				1120,
-				24,
-				150,
-				320,
-				0.0f,
-				0x00000088 + int(EaseInQuint(changeScene.easeT_) * -0x88),
-				kFillModeSolid
-			);
 		}
 
 

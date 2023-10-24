@@ -263,6 +263,7 @@ void Player::Update(
 						velocity_ = { 0.0f,0.0f };
 						isAccelable_ = false;
 						isDash_ = false;
+						holdLimit_ = 300;
 						life_ = 1;
 						scoreCount_ = savedScoreCount_;
 						retryTimeCount_ = 100;
