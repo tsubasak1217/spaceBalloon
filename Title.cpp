@@ -25,7 +25,7 @@ void Title::Update(char* keys, char* preKeys, ChangeScene changeScene) {
 	}
 
 	//速度Yに値を与える
-	if (time_[0] == 50) {
+	if (time_[0] == 1) {
 		for (int i = 0; i < 2; i++) {
 			velocity_[i].y = -12.0f;
 		}
