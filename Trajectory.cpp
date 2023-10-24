@@ -25,8 +25,6 @@ void Trajectory::Draw(GlobalVariable globalV,Scene scene)
 			color.to_int(),
 			kFillModeSolid
 		);
-		Novice::ScreenPrintf(220, 200, "on");
-	
 		break;
 
 	default:
