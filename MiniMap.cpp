@@ -5,6 +5,48 @@ void MiniMap::Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene,
 	if (scene.GetSceneNum() == game) {
 
 		//ミニマップの表示
+		Novice::DrawBox(
+			1120,
+			24,
+			150,
+			320,
+			0.0f,
+			0x05143688 + int(EaseInQuint(changeScene.easeT_) * -0x88),
+			kFillModeSolid
+		);
+
+		Novice::DrawBox(
+			1120,
+			24,
+			150,
+			320,
+			0.0f,
+			0xffffffff + int(EaseInQuint(changeScene.easeT_) * -0xff),
+			kFillModeWireFrame
+		);
+
+		//メーター表示
+		for (int i = 0; i <= 40; i ++) {
+			
+			if (i % 5 != 0 && i != 0) {
+				Novice::DrawLine(
+					1120,
+					24 + int(320 / 40) * i,
+					1110,
+					24 + int(320 / 40) * i,
+					0xffffffff + int(EaseInQuint(changeScene.easeT_) * -0xff)
+				);
+			} else {
+				Novice::DrawLine(
+					1120,
+					24 + int(320 / 40) * i,
+					1100,
+					24 + int(320 / 40) * i,
+					0xffffffff + int(EaseInQuint(changeScene.easeT_) * -0xff)
+				);
+			}
+		}
+
 		for (int row = 0; row < 240; row++) {
 			for (int col = 0; col < 40; col++) {
 
@@ -36,7 +78,7 @@ void MiniMap::Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene,
 							int(miniMapSize),
 							int(miniMapSize),
 							0.0f,
-							0x666666ff + int(EaseInQuint(changeScene.easeT_) * -0xff),
+							0x888888ff + int(EaseInQuint(changeScene.easeT_) * -0xff),
 							kFillModeSolid
 						);
 
