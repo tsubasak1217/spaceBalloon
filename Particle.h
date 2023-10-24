@@ -23,7 +23,7 @@ public:
 
 	}
 	virtual void Update() = 0;
-	virtual void Draw(GlobalVariable globalV) = 0;
+	virtual void Draw(GlobalVariable globalV,Scene scene) = 0;
 	bool isAlive() {		  
 		return lifespan >= 0;
 	}

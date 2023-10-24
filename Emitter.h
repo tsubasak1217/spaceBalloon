@@ -29,6 +29,6 @@ class Emitter{
 		void Update(Player& player);
 
 		//ドロー
-		void Draw(GlobalVariable globalV);
+		void Draw(GlobalVariable globalV,Scene scene);
 };
 

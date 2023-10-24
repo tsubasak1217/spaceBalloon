@@ -33,11 +33,11 @@ void Emitter::Update(Player &player) {
 	previousFramePos_ = pos_;
 }
 
-void Emitter::Draw(GlobalVariable globalV) {
+void Emitter::Draw(GlobalVariable globalV,Scene scene) {
 	auto iterator = particles.begin();
 	while (iterator != particles.end())
 	{
-		(*iterator)->Draw(globalV);
+		(*iterator)->Draw(globalV,scene);
 		iterator++;
 	}
 }

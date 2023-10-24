@@ -30,8 +30,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	char keys[256] = { 0 };
 	char preKeys[256] = { 0 };
 
-	Scene scene;
-	scene.Init();
 
 	ChangeScene changeScene;
 	changeScene.Init();
@@ -51,6 +49,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	title.Init();
 
 	MiniMap miniMap;
+
+	Scene scene;
+	scene.Init();
 
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
@@ -80,7 +81,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 		/// ↓描画処理ここから
 		///
-
+		
 
 		//描画
 		map.DrawBG( globalV);
@@ -89,7 +90,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			map.Draw(globalV, scene, changeScene);
 		}
 
-		effect->Draw(globalV);
+		effect->Draw(globalV,scene);
 		player.Draw(globalV, scene,changeScene);
 
 		if (scene.GetSceneNum() > titleScene) {

@@ -1,6 +1,6 @@
 #include "BloodTrajectory.h"
 
-void BloodTrajectory::Draw(GlobalVariable globalV)
+void BloodTrajectory::Draw(GlobalVariable globalV,Scene scene)
 {
 	theta += static_cast<float>(M_PI) / 60;
 	DrawTriangle({ location.x - globalV.GetCameraPosX(),

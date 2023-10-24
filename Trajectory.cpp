@@ -11,15 +11,35 @@ void Trajectory::Update()
 	location.y += vector.y;
 }
 
-void Trajectory::Draw(GlobalVariable globalV)
+void Trajectory::Draw(GlobalVariable globalV,Scene scene)
 {
-	Novice::DrawEllipse(
-		int(location.x) - globalV.GetCameraPosX(),
-		int(location.y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
-		int(retainSize.x),
-		int(retainSize.y),
-		0.0f,
-		color.to_int(),
-		kFillModeSolid
-	);	
+   	switch (scene.GetSceneNum()) {
+
+	case titleScene:
+		Novice::DrawEllipse(
+			int(location.x),
+			int(location.y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
+			int(retainSize.x),
+			int(retainSize.y),
+			0.0f,
+			color.to_int(),
+			kFillModeSolid
+		);
+	
+		break;
+
+	default:
+		
+   		Novice::DrawEllipse(
+			int(location.x) - globalV.GetCameraPosX(),
+			int(location.y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
+			int(retainSize.x),
+			int(retainSize.y),
+			0.0f,
+			color.to_int(),
+			kFillModeSolid
+		);
+		break;
+	}
+	
 }
