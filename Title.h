@@ -67,7 +67,7 @@ public:
 		for (int i = 1; i < 6; i++) {
 			//跳ねる時間設定
 			if (i <= 2) {
-				jumpcount_[i - 1] = 70 + (13 * i);
+				jumpcount_[i - 1] = 8 + (13 * i);
 			}
 			spacejumpcount_[i - 1] =  + (10 * i);
 		}
