@@ -81,7 +81,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 		/// ↓描画処理ここから
 		///
-		Novice::ScreenPrintf(200, 200, "%d", scene.GetSceneNum());
+		
 
 		//描画
 		map.DrawBG( globalV);
