@@ -66,7 +66,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓更新処理ここから
 		///
 		
-		title.Update();
+		title.Update(keys,preKeys,changeScene);
 		globalV.Update();
 		map.Update(scene,changeScene);
 		player.Update(keys,preKeys,&globalV.cameraPosX_, &globalV.cameraPosY_, &globalV.miniCameraPos_, map, scene,changeScene,globalV);
@@ -87,20 +87,20 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		map.DrawBG( globalV);
 
 		if (scene.GetSceneNum() == titleScene) {
-			map.Draw(globalV, scene, changeScene);
+			map.Draw(globalV, scene, changeScene,title);
+			title.Draw(changeScene);
 		}
 
 		effect->Draw(globalV,scene);
 		player.Draw(globalV, scene,changeScene);
 
 		if (scene.GetSceneNum() > titleScene) {
-			map.Draw(globalV, scene, changeScene);
+			map.Draw(globalV, scene, changeScene,title);
 		}
-
+	
 		player.DrawTutorial(globalV);
 		miniMap.Draw(globalV,scene,changeScene,map,player);
 		changeScene.Draw(scene);
-	
 
 		//音声
 		player.Sound(keys, preKeys, scene,map);

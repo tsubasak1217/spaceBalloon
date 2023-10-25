@@ -1,6 +1,5 @@
 #pragma once
-#include "ChangeScene.h"
-
+#include "Title.h"
 class Map {
 
 private:
@@ -101,7 +100,7 @@ public:
 	void Update(Scene scene, ChangeScene& changeScene);
 
 	//ドロー
-	void Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene);
+	void Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene,Title title);
 	void DrawBG(GlobalVariable globalV);
 
 	enum Direction {

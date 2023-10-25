@@ -169,10 +169,16 @@ void ChangeScene::Update(Scene& scene, char* keys) {
 				easeT_ = 1.0f;
 			}
 
+			startEaseT_ += 0.01f;
+			if (startEaseT_ > 1.0f) {
+				startEaseT_ = 1.0f;
+			}
+
 			if (startTimer_ <= 0) {
 				isStartScene_ = false;
 				startTimer_ = 120;
 				easeT_ = 0.0f;
+				startEaseT_ = 0.0f;
 			}
 
 		}

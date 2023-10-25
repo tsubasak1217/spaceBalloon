@@ -272,6 +272,7 @@ void Map::Update(Scene scene, ChangeScene& changeScene) {
 								birdDirection_[i] = Up;
 							}
 						}
+
 					} else {
 						birdDirection_[i] = Up;
 					}
@@ -346,7 +347,7 @@ void Map::DrawBG(GlobalVariable globalV) {
 	);
 }
 
-void Map::Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene) {
+void Map::Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene, Title title) {
 
 	switch (scene.GetSceneNum()) {
 		//=====================================================================================
@@ -389,23 +390,7 @@ void Map::Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene) {
 			}
 
 			//タイトルロゴ================================
-			Novice::DrawSprite(
-				int(titleLogoPos_[0].x - 4),
-				int(titleLogoPos_[0].y + 720 + (24.0f * sinf(theta_ * float(M_PI))) + (EaseOutQuint(changeScene.startEaseT_) * -720)),
-				titleImgs_[3],
-				1, 1,
-				0.0f,
-				WHITE
-			);
-
-			Novice::DrawSprite(
-				int(titleLogoPos_[1].x + 64),
-				int(titleLogoPos_[1].y + 720 + (24.0f * sinf(-theta_ * float(M_PI))) + (EaseOutQuint(changeScene.startEaseT_) * -720)),
-				titleImgs_[4],
-				1, 1,
-				0.0f,
-				WHITE
-			);
+		
 
 			Novice::DrawEllipse(
 				int(640),
@@ -451,24 +436,7 @@ void Map::Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene) {
 			}
 
 			//タイトルロゴ================================
-			Novice::DrawSprite(
-				int(titleLogoPos_[0].x - 4),
-				int(titleLogoPos_[0].y + (24.0f * sinf(theta_ * float(M_PI))) + (EaseInQuint(changeScene.easeT_) * 720)),
-				titleImgs_[3],
-				1, 1,
-				0.0f,
-				WHITE
-			);
-
-			Novice::DrawSprite(
-				int(titleLogoPos_[1].x + 64),
-				int(titleLogoPos_[1].y + (24.0f * sinf(-theta_ * float(M_PI))) + (EaseInQuint(changeScene.easeT_) * 720)),
-				titleImgs_[4],
-				1, 1,
-				0.0f,
-				WHITE
-			);
-
+		
 			Novice::DrawEllipse(
 				int(640),
 				int(368 + (EaseInQuint(changeScene.easeT_) * 720)),
@@ -478,6 +446,7 @@ void Map::Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene) {
 				kFillModeSolid
 			);
 
+			
 		}
 
 
@@ -720,79 +689,8 @@ void Map::Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene) {
 
 					}
 				}
-
-				if (((birdPos_[i].y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17) >= 24 &&
-					((birdPos_[i].y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17) <= 340) {
-
-					//ミニマップ用
-					Novice::DrawBox(
-						int((birdPos_[i].x / 17) + 1120),
-						int((birdPos_[i].y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17),
-						int(miniMapSize),
-						int(miniMapSize),
-						0.0f,
-						0xff0000ff + int(EaseInQuint(changeScene.easeT_) * -0xff),
-						kFillModeSolid
-					);
-				}
 			}
 
-
-			Novice::DrawBox(
-				1120,
-				24,
-				150,
-				320,
-				0.0f,
-				0x00000088,
-				kFillModeSolid
-			);
-
-			//ミニマップの表示
-			for (int row = 0; row < mapRow; row++) {
-				for (int col = 0; col < mapCol; col++) {
-
-					if (((pos_[row][col].y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17) >= 24 &&
-						((pos_[row][col].y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17) <= 340) {
-						switch (blockType_[row][col]) {
-
-						case normal:
-							//描画
-							Novice::DrawBox(
-								int((pos_[row][col].x / 17) + 1120),
-								int((pos_[row][col].y / 17) * -1.0f) + 344
-								+ int(globalV.GetMiniCameraPos() / 17),
-								int(miniMapSize),
-								int(miniMapSize),
-								0.0f,
-								0xf7efdfff,
-								kFillModeSolid
-							);
-
-							break;
-
-						case thunder:
-
-							//描画
-							Novice::DrawBox(
-								int((pos_[row][col].x / 17) + 1120),
-								int((pos_[row][col].y / 17) * -1.0f) + 344
-								+ int(globalV.GetMiniCameraPos() / 17),
-								int(miniMapSize),
-								int(miniMapSize),
-								0.0f,
-								0x666666ff,
-								kFillModeSolid
-							);
-
-							break;
-
-						default:
-							break;
-						}
-					}
-				}
-			}
 
 		} else {
 			//通常時============================================================================
@@ -1035,17 +933,6 @@ void Map::Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene) {
 					}
 				}
 			}
-
-
-			Novice::DrawBox(
-				1120,
-				24,
-				150,
-				320,
-				0.0f,
-				0x00000088 + int(EaseInQuint(changeScene.easeT_) * -0x88),
-				kFillModeSolid
-			);
 		}
 
 
