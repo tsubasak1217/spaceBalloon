@@ -205,35 +205,35 @@ void MiniMap::Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene,
 			);
 
 			Novice::DrawLine(//左上→右上
-				int(player.GetPos().x / 17) + 1120 - 38,
-				int((player.GetPos().y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17) - 21,
-				int(player.GetPos().x / 17) + 1120 + 38,
-				int((player.GetPos().y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17) - 21,
-				0xff000000 + int(EaseInQuint(changeScene.startEaseT_) * 0xff)
+				int(player.GetFramePos(0).x / 17) + 1120,
+				int((player.GetFramePos(0).y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17),
+				int(player.GetFramePos(1).x / 17) + 1120,
+				int((player.GetFramePos(1).y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17),
+				0xff000000 + int(EaseInQuint(changeScene.easeT_) * 0xff)
 			);
 
 			Novice::DrawLine(//左上→右上
-				int(player.GetPos().x / 17) + 1120 - 38,
-				int((player.GetPos().y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17) + 21,
-				int(player.GetPos().x / 17) + 1120 + 38,
-				int((player.GetPos().y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17) + 21,
-				0xff000000 + int(EaseInQuint(changeScene.startEaseT_) * 0xff)
+				int(player.GetFramePos(1).x / 17) + 1120,
+				int((player.GetFramePos(1).y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17),
+				int(player.GetFramePos(3).x / 17) + 1120,
+				int((player.GetFramePos(3).y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17),
+				0xff000000 + int(EaseInQuint(changeScene.easeT_) * 0xff)
 			);
 
 			Novice::DrawLine(//左上→右上
-				int(player.GetPos().x / 17) + 1120 - 38,
-				int((player.GetPos().y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17) + 21,
-				int(player.GetPos().x / 17) + 1120 - 38,
-				int((player.GetPos().y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17) - 21,
-				0xff000000 + int(EaseInQuint(changeScene.startEaseT_) * 0xff)
+				int(player.GetFramePos(2).x / 17) + 1120,
+				int((player.GetFramePos(2).y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17),
+				int(player.GetFramePos(3).x / 17) + 1120,
+				int((player.GetFramePos(3).y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17),
+				0xff000000 + int(EaseInQuint(changeScene.easeT_) * 0xff)
 			);
 
 			Novice::DrawLine(//左上→右上
-				int(player.GetPos().x / 17) + 1120 + 38,
-				int((player.GetPos().y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17) + 21,
-				int(player.GetPos().x / 17) + 1120 + 38,
-				int((player.GetPos().y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17) - 21,
-				0xff000000 + int(EaseInQuint(changeScene.startEaseT_) * 0xff)
+				int(player.GetFramePos(0).x / 17) + 1120,
+				int((player.GetFramePos(0).y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17),
+				int(player.GetFramePos(2).x / 17) + 1120,
+				int((player.GetFramePos(2).y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17),
+				0xff000000 + int(EaseInQuint(changeScene.easeT_) * 0xff)
 			);
 
 			//現在のプレイヤー高度描画
@@ -453,34 +453,34 @@ void MiniMap::Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene,
 				);
 
 				Novice::DrawLine(//左上→右上
-					int(player.GetPos().x / 17) + 1120 - 38,
-					int((player.GetPos().y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17) - 21,
-					int(player.GetPos().x / 17) + 1120 + 38,
-					int((player.GetPos().y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17) - 21,
+					int(player.GetFramePos(0).x / 17) + 1120,
+					int((player.GetFramePos(0).y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17),
+					int(player.GetFramePos(1).x / 17) + 1120,
+					int((player.GetFramePos(1).y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17),
 					RED + int(EaseInQuint(changeScene.easeT_) * -0xff)
 				);
 
 				Novice::DrawLine(//左上→右上
-					int(player.GetPos().x / 17) + 1120 - 38,
-					int((player.GetPos().y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17) + 21,
-					int(player.GetPos().x / 17) + 1120 + 38,
-					int((player.GetPos().y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17) + 21,
+					int(player.GetFramePos(1).x / 17) + 1120,
+					int((player.GetFramePos(1).y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17),
+					int(player.GetFramePos(3).x / 17) + 1120 ,
+					int((player.GetFramePos(3).y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17),
 					RED + int(EaseInQuint(changeScene.easeT_) * -0xff)
 				);
 
 				Novice::DrawLine(//左上→右上
-					int(player.GetPos().x / 17) + 1120 - 38,
-					int((player.GetPos().y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17) + 21,
-					int(player.GetPos().x / 17) + 1120 - 38,
-					int((player.GetPos().y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17) - 21,
+					int(player.GetFramePos(2).x / 17) + 1120,
+					int((player.GetFramePos(2).y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17),
+					int(player.GetFramePos(3).x / 17) + 1120,
+					int((player.GetFramePos(3).y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17),
 					RED + int(EaseInQuint(changeScene.easeT_) * -0xff)
 				);
 
 				Novice::DrawLine(//左上→右上
-					int(player.GetPos().x / 17) + 1120 + 38,
-					int((player.GetPos().y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17) + 21,
-					int(player.GetPos().x / 17) + 1120 + 38,
-					int((player.GetPos().y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17) - 21,
+					int(player.GetFramePos(0).x / 17) + 1120 ,
+					int((player.GetFramePos(0).y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17),
+					int(player.GetFramePos(2).x / 17) + 1120,
+					int((player.GetFramePos(2).y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17),
 					RED + int(EaseInQuint(changeScene.easeT_) * -0xff)
 				);
 				

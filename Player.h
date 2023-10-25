@@ -67,6 +67,9 @@ private:
 	//リトライの待ち時間
 	int retryTimeCount_;
 
+	//ミニマップの表示に使う座標
+	Vector2 framePos_[4];
+
 	//===================ロープ=======================
 	Vector2 ropePos_[32];
 	float ropeLength_;
@@ -126,6 +129,10 @@ public:
 		efectRadius_ = 240.0f;
 		triangleEaseT_ = 0.0f;
 
+		for (int i = 0; i < 4; i++) {
+			framePos_[i] = { 0,0 };
+		}
+
 		for (int i = 0; i < 24; i++) {
 			triangleTheta_[i] = 0.0f;
 			triangleCenter_[i] = {0.0f,0.0f};
@@ -141,6 +148,7 @@ public:
 			deadCount_ = 0;
 			pos_ = { 640.0f,340.0f + size_.y };
 			respawnPos_ = pos_;
+
 
 			ropePos_[0] = { pos_.x,pos_.y - size_.y };
 			for (int i = 1; i < 32; i++) {
@@ -213,7 +221,7 @@ public:
 	int GetUnrivaledLimit() { return unrivaledLimit_; }
 	void SetUnrivaledLimit(int value) { unrivaledLimit_ = value; }
 
-
+	Vector2 GetFramePos(int element) { return framePos_[element]; }
 
 	// アップデート
 	void Update(

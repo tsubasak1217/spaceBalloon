@@ -1052,19 +1052,61 @@ void Player::Update(
 				}
 
 
+			//ミニマップのフレームの座標四点計算
+			framePos_[0].x = pos_.x - 640.0f;
+			framePos_[1].x = pos_.x + 640.0f;
+			framePos_[2].x = pos_.x - 640.0f;
+			framePos_[3].x = pos_.x + 640.0f;
+
+			framePos_[0].y = pos_.y + 360.0f;
+			framePos_[1].y = pos_.y + 360.0f;
+			framePos_[2].y = pos_.y - 360.0f;
+			framePos_[3].y = pos_.y - 360.0f;
+
 			//カメラ座標の計算
 			*cameraPosX = int(pos_.x) - 640;
 			if (*cameraPosX < 0) {
 				*cameraPosX = 0;
+
+				//フレーム座標もついでに押し戻す
+				framePos_[0].x = 0.0f;
+				framePos_[2].x = 0.0f;
+
+				framePos_[1].x = 1280.0f;
+				framePos_[3].x = 1280.0f;
+
 			} else if (*cameraPosX > (64 * 40) - 1280) {
 				*cameraPosX = (64 * 40) - 1280;
+
+				//フレーム座標もついでに押し戻す
+				framePos_[1].x = (64 * 40);
+				framePos_[3].x = (64 * 40);
+
+				framePos_[0].x = (64 * 40) - 1280;
+				framePos_[2].x = (64 * 40) - 1280;
+
 			}
 
 			*cameraPosY = int(pos_.y) - 360;
 			if (*cameraPosY < 0) {
 				*cameraPosY = 0;
-			} else if (*cameraPosY > (64 * 240) - 640) {
+
+				//フレーム座標もついでに押し戻す
+				framePos_[2].y = 0.0f;
+				framePos_[3].y = 0.0f;
+
+				framePos_[0].y = 720.0f;
+				framePos_[1].y = 720.0f;
+
+			} else if (*cameraPosY > (64 * 240) - 720) {
 				*cameraPosY = (64 * 240) - 640;
+
+				//フレーム座標もついでに押し戻す
+				framePos_[0].y = (64 * 240);
+				framePos_[1].y = (64 * 240);
+
+				framePos_[2].y = (64 * 240) - 720.0f;
+				framePos_[3].y = (64 * 240) - 720.0f;
 			}
 
 			*miniCameraPos = int(pos_.y) - 2720;
