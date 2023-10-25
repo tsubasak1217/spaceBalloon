@@ -483,19 +483,21 @@ void MiniMap::Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene,
 					int((player.GetPos().y / 17) * -1.0f) + 344 + int(globalV.GetMiniCameraPos() / 17) - 21,
 					RED + int(EaseInQuint(changeScene.easeT_) * -0xff)
 				);
-
-				//現在のプレイヤー高度描画
-				Novice::DrawSprite(
-					int(1120 - 26),
-					int(344 - (320 * (player.GetPos().y / 15360))),
-					miniMapImgs[2],
-					0.7f,
-					0.7f,
-					0.0f,
-					0xffffffff + int(EaseInQuint(changeScene.easeT_) * -0xff)
-				);
+				
 			}
+
+			//現在のプレイヤー高度描画
+			Novice::DrawSprite(
+				int(1120 - 26),
+				int(344 - (320 * (player.GetPos().y / 15360))),
+				miniMapImgs[2],
+				0.7f,
+				0.7f,
+				0.0f,
+				0xffffffff + int(EaseInQuint(changeScene.easeT_) * -0xff)
+			);
 		}
+
 
 		//プレイヤーのライフ表示
 		for (int i = 0; i < player.GetLife(); i++) {

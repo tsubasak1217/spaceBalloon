@@ -1260,6 +1260,14 @@ void Map::Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene, Tit
 				0xffffff00 + int(EaseOutSine(changeScene.easeT_) * 0xFF)
 			);
 
+			//3桁目
+			if (achievement >= 100) {
+
+				if (changeScene.GetStartTimer() == 1) {
+					Novice::PlayAudio(scoreSE, false, 0.3f);
+				}
+			}
+
 			break;
 
 		case 2:/*---------------------------------スコアが確定する-------------------------------------*/

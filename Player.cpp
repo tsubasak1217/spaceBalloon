@@ -1482,8 +1482,10 @@ void Player::Sound(char* keys, char* preKeys,ChangeScene changeScene, Scene scen
 
 		//浮上音
 		if (!changeScene.GetIsFinish()) {
-			if (keys[DIK_SPACE] && !preKeys[DIK_SPACE]) {
-				Novice::PlayAudio(playerSE[0], false, 0.15f);
+			if (isAlive_) {
+				if (keys[DIK_SPACE] && !preKeys[DIK_SPACE]) {
+					Novice::PlayAudio(playerSE[0], false, 0.15f);
+				}
 			}
 		}
 
