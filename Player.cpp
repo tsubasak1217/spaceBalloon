@@ -1098,7 +1098,7 @@ void Player::Update(
 				framePos_[0].y = 720.0f;
 				framePos_[1].y = 720.0f;
 
-			} else if (*cameraPosY > (64 * 240) - 720) {
+			} else if (*cameraPosY > (64 * 240) - 640) {
 				*cameraPosY = (64 * 240) - 640;
 
 				//フレーム座標もついでに押し戻す
