@@ -200,18 +200,21 @@ void Title::Draw(ChangeScene changeScene ) {
 		}
 		
 		if (i >= 1 && i < 6) {
-			if (spacetimecount_[i - 1] >= 0 && keysHit == 1) {
 
-				Novice::DrawSpriteRect(
-					int(spacePos_[i].x),
-					int(spacePos_[i].y) + int(EaseInQuint(changeScene.easeT_) * 720),
-					i * 37, 0,
-					37, 46,
-					titleResources[2],
-					(37.0f / 257.0f), (47.0f / 64.0f),
-					0.0f,
-					0xFFFFFFFF
-				);
+			if (!changeScene.GetIsStart()) {
+				if (spacetimecount_[i - 1] >= 0 && keysHit == 1) {
+
+					Novice::DrawSpriteRect(
+						int(spacePos_[i].x),
+						int(spacePos_[i].y) + int(EaseInQuint(changeScene.easeT_) * 720),
+						i * 37, 0,
+						37, 46,
+						titleResources[2],
+						(37.0f / 257.0f), (47.0f / 64.0f),
+						0.0f,
+						0xFFFFFFFF
+					);
+				}
 			}
 		}
 

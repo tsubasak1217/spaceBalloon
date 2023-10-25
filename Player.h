@@ -40,6 +40,7 @@ private:
 
 	//プレイヤーの残機など
 	int life_;
+	int deadCount_;
 	bool isAlive_;
 	bool isUnrivaled_;//無敵状態かどうか
 	int unrivaledLimit_;
@@ -83,7 +84,7 @@ public:
 	//イニシャライズ(初期化関数)
 	void Init(int sceneNum,Map map) {
 
-		life_ = 1;
+		
 		isAlive_ = true;
 		isUnrivaled_ = false;
 		unrivaledLimit_ = 0;
@@ -136,6 +137,8 @@ public:
 			//=====================================================================================
 		case titleScene:
 
+			life_ = 1;
+			deadCount_ = 0;
 			pos_ = { 640.0f,340.0f + size_.y };
 			respawnPos_ = pos_;
 
@@ -199,6 +202,7 @@ public:
 
 	int GetLife() { return life_; }
 	void SetLife(int life) { life_ = life; }
+	int GetDeadCount() { return deadCount_; }
 
 	int GetAlive() { return isAlive_; }
 	void SetAlive(bool flag) { isAlive_ = flag; }
@@ -222,7 +226,7 @@ public:
 	//ドロー
 	void Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene);
 	void DrawTutorial(GlobalVariable globalV);
-	void Sound(char* keys, char* preKeys, Scene scene, Map map);
+	void Sound(char* keys, char* preKeys, ChangeScene changeScene, Scene scene, Map map);
 
 	//画像
 	int playerImg[2] = {

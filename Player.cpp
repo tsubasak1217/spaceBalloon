@@ -232,6 +232,8 @@ void Player::Update(
 					savePos_.x = pos_.x - globalV.GetCameraPosX();
 					savePos_.y = pos_.y - globalV.GetCameraPosY();
 
+					deadCount_++;
+
 					//破裂音出す
 					Novice::PlayAudio(playerSE[8], false, 0.3f);
 				}
@@ -894,104 +896,108 @@ void Player::Update(
 			if (!map.GetIsTimeStop()) {
 				for (int i = 0; i < map.GetBirdAddress().size(); i++) {
 
-					//プレーヤーから半径2マス圏内にいるとき
-					if (map.GetBirdAddress()[i].x >= address_.x - 2 &&
-						map.GetBirdAddress()[i].x <= address_.x + 2) {
-						if (map.GetBirdAddress()[i].y >= address_.y - 2 &&
-							map.GetBirdAddress()[i].y <= address_.y + 2) {
+					if (!isUnrivaled_) {
 
-							//当たり判定を行う
-							if (IsHitBox_BallDirection(
-								{ map.GetBirdPos()[i].x + 32, map.GetBirdPos()[i].y - 32 },
-								pos_,
-								map.GetSize(),
-								size_.x
-							)) {
+						//プレーヤーから半径2マス圏内にいるとき
+						if (map.GetBirdAddress()[i].x >= address_.x - 2 &&
+							map.GetBirdAddress()[i].x <= address_.x + 2) {
+							if (map.GetBirdAddress()[i].y >= address_.y - 2 &&
+								map.GetBirdAddress()[i].y <= address_.y + 2) {
 
-								if (unrivaledLimit_ <= 0) {
-									isUnrivaled_ = true;
-									unrivaledLimit_ = 160;
-									life_--;
-
-									//鳥の鳴き声出す
-									Novice::PlayAudio(playerSE[11], false, 0.2f);
-
-									if (life_ <= 0) {
-										isAlive_ = false;
-									}
-								}
-
-							}
-
-							switch (
-
-								IsHitBox_BallDirection(
+								//当たり判定を行う
+								if (IsHitBox_BallDirection(
 									{ map.GetBirdPos()[i].x + 32, map.GetBirdPos()[i].y - 32 },
 									pos_,
 									map.GetSize(),
 									size_.x
 								)) {
 
+									if (unrivaledLimit_ <= 0) {
+										isUnrivaled_ = true;
+										unrivaledLimit_ = 160;
+										life_--;
 
+										//鳥の鳴き声出す
+										Novice::PlayAudio(playerSE[11], false, 0.2f);
 
-							case 1://風船がブロックの上面に当たった時
+										if (life_ <= 0) {
+											isAlive_ = false;
+										}
+									}
 
-								//座標を押し戻して
-								pos_.y = map.GetBirdPos()[i].y + size_.y;
-								//ベロシティを反転、反射係数分を減衰
-								velocity_.y = 15.0f;
-								hitDirection_ = 1;
-								if (CheckBalloonLimit(hitDirection_, preHitDirection_)) {
-									balloonLevel_ -= 0.4f;
 								}
 
-								break;
+								switch (
 
-							case 2://風船がブロックの右面に当たった時
+									IsHitBox_BallDirection(
+										{ map.GetBirdPos()[i].x + 32, map.GetBirdPos()[i].y - 32 },
+										pos_,
+										map.GetSize(),
+										size_.x
+									)) {
 
-								//座標を押し戻して
-								pos_.x = map.GetBirdPos()[i].x + map.GetSize().x + size_.x;
-								//ベロシティを反転、反射係数分を減衰
-								velocity_.x = 10.0f;
-								knockBackCount_ = int(sqrtf(powf(velocity_.x, 2.0f))) * 8;
-								hitDirection_ = 2;
-								if (CheckBalloonLimit(hitDirection_, preHitDirection_)) {
-									balloonLevel_ -= 0.4f;
+
+
+								case 1://風船がブロックの上面に当たった時
+
+									//座標を押し戻して
+									pos_.y = map.GetBirdPos()[i].y + size_.y;
+									//ベロシティを反転、反射係数分を減衰
+									velocity_.y = 15.0f;
+									hitDirection_ = 1;
+									if (CheckBalloonLimit(hitDirection_, preHitDirection_)) {
+										balloonLevel_ -= 0.4f;
+									}
+
+									break;
+
+								case 2://風船がブロックの右面に当たった時
+
+									//座標を押し戻して
+									pos_.x = map.GetBirdPos()[i].x + map.GetSize().x + size_.x;
+									//ベロシティを反転、反射係数分を減衰
+									velocity_.x = 10.0f;
+									knockBackCount_ = int(sqrtf(powf(velocity_.x, 2.0f))) * 8;
+									hitDirection_ = 2;
+									if (CheckBalloonLimit(hitDirection_, preHitDirection_)) {
+										balloonLevel_ -= 0.4f;
+									}
+
+									break;
+
+								case 3://風船がブロックの下面に当たった時
+
+									//座標を押し戻して
+									pos_.y = map.GetBirdPos()[i].y - map.GetSize().y - size_.y;
+									//ベロシティを反転、反射係数分を減衰
+									velocity_.y = -10.0f;
+									hitDirection_ = 3;
+									if (CheckBalloonLimit(hitDirection_, preHitDirection_)) {
+										balloonLevel_ -= 0.4f;
+									}
+
+									break;
+
+								case 4://風船がブロックの左面に当たった時
+
+									//座標を押し戻して
+									pos_.x = map.GetBirdPos()[i].x - size_.x;
+									//ベロシティを反転、反射係数分を減衰
+									velocity_.x = -10.0f;
+									knockBackCount_ = int(sqrtf(powf(velocity_.x, 2.0f))) * 8;
+									hitDirection_ = 4;
+									if (CheckBalloonLimit(hitDirection_, preHitDirection_)) {
+										balloonLevel_ -= 0.4f;
+									}
+
+									break;
+
+								default://風船がブロックに当たっていない時
+									break;
 								}
 
-								break;
 
-							case 3://風船がブロックの下面に当たった時
-
-								//座標を押し戻して
-								pos_.y = map.GetBirdPos()[i].y - map.GetSize().y - size_.y;
-								//ベロシティを反転、反射係数分を減衰
-								velocity_.y = -10.0f;
-								hitDirection_ = 3;
-								if (CheckBalloonLimit(hitDirection_, preHitDirection_)) {
-									balloonLevel_ -= 0.4f;
-								}
-
-								break;
-
-							case 4://風船がブロックの左面に当たった時
-
-								//座標を押し戻して
-								pos_.x = map.GetBirdPos()[i].x - size_.x;
-								//ベロシティを反転、反射係数分を減衰
-								velocity_.x = -10.0f;
-								knockBackCount_ = int(sqrtf(powf(velocity_.x, 2.0f))) * 8;
-								hitDirection_ = 4;
-								if (CheckBalloonLimit(hitDirection_, preHitDirection_)) {
-									balloonLevel_ -= 0.4f;
-								}
-
-								break;
-
-							default://風船がブロックに当たっていない時
-								break;
 							}
-
 						}
 					}
 				}
@@ -1333,35 +1339,22 @@ void Player::Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene) 
 				}
 			}
 		}
-		
 
-		//残機
-		for (int i = 0; i < GetLife(); i++) {
-			Novice::DrawEllipse(
-				20 + i * 20,
-				20,
-				10,
-				10,
-				0.0f,
-				color_ + int(EaseInQuint(changeScene.easeT_) * -0xff),
-				kFillModeSolid
-			);
-		}
 
 		//割れるまでのリミット表示
 		if (holdLimit_ < 180) {
 			if (isAlive_) {
 
 				for (int i = 0; i < 7; i++) {
-					
-					if(i == 0 or i == 6){
-					
+
+					if (i == 0 or i == 6) {
+
 						Novice::DrawEllipse(
 							int(pos_.x) - globalV.GetCameraPosX(),
 							int(pos_.y * -1.0f)
 							+ globalV.GetGroundPos() + globalV.GetCameraPosY(),
-							int((size_.x)* EaseOutQuint(1.0f - (holdLimit_ / 180.0f))) + i,
-							int((size_.y)* EaseOutQuint(1.0f - (holdLimit_ / 180.0f))) + i,
+							int((size_.x) * EaseOutQuint(1.0f - (holdLimit_ / 180.0f))) + i,
+							int((size_.y) * EaseOutQuint(1.0f - (holdLimit_ / 180.0f))) + i,
 							0.0f,
 							0xffffffff,
 							kFillModeWireFrame
@@ -1467,7 +1460,7 @@ void Player::DrawTutorial(GlobalVariable globalV) {
 	}
 };
 
-void Player::Sound(char* keys, char* preKeys, Scene scene, Map map) {
+void Player::Sound(char* keys, char* preKeys,ChangeScene changeScene, Scene scene, Map map) {
 
 	bool isClose2Wind = false;
 	bool isClose2Thunder = false;
@@ -1477,16 +1470,21 @@ void Player::Sound(char* keys, char* preKeys, Scene scene, Map map) {
 
 	case titleScene:
 
-		if (keys[DIK_SPACE] && !preKeys[DIK_SPACE]) {
-			Novice::PlayAudio(playerSE[0], false, 0.2f);
+		if (!changeScene.GetIsFinish()) {
+			if (keys[DIK_SPACE] && !preKeys[DIK_SPACE]) {
+				Novice::PlayAudio(playerSE[0], false, 0.15f);
+			}
 		}
+
 		break;
 
 	case game:
 
 		//浮上音
-		if (keys[DIK_SPACE] && !preKeys[DIK_SPACE]) {
-			Novice::PlayAudio(playerSE[0], false, 0.15f);
+		if (!changeScene.GetIsFinish()) {
+			if (keys[DIK_SPACE] && !preKeys[DIK_SPACE]) {
+				Novice::PlayAudio(playerSE[0], false, 0.15f);
+			}
 		}
 
 		if (map.GetIsTimeStop()) {

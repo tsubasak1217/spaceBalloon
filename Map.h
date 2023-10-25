@@ -139,5 +139,7 @@ public:
 	Novice::LoadTexture("./Resources./Images./clear./result.png"),
 	Novice::LoadTexture("./Resources./Images./clear./numFonts.png"),
 	};
+
+	int scoreSE = Novice::LoadAudio("./Resources./Sounds./star_get.mp3");
 };
 

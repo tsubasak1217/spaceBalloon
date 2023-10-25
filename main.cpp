@@ -103,7 +103,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		changeScene.Draw(scene);
 
 		//音声
-		player.Sound(keys, preKeys, scene,map);
+		player.Sound(keys, preKeys,changeScene,scene,map);
 		changeScene.Sound(scene);
 
 		///

@@ -516,7 +516,8 @@ void Map::Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene, Tit
 									Novice::DrawSpriteRect(
 										int(pos_[row][col].x) - globalV.GetCameraPosX() - 16,
 										int(pos_[row][col].y * -1.0f)
-										+ globalV.GetGroundPos() + globalV.GetCameraPosY() - 16,
+										+ globalV.GetGroundPos() + globalV.GetCameraPosY()
+										+ int((EaseInQuint(1.0f - changeScene.easeT_) * -720)) - 16,
 										0 + (76 * (((timeCount_ / 8) + row + col) % 3)),
 										0 + (76 * isTimeStop_),
 										76,
@@ -621,7 +622,7 @@ void Map::Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene, Tit
 										+ globalV.GetGroundPos() + globalV.GetCameraPosY()
 										+ int((EaseInQuint(1.0f - changeScene.easeT_) * -720)),
 										0 + (64 * (timeCount_ / 4 % 3)),
-										0 + (128 * isTimeStop_),
+										0,
 										64,
 										64,
 										gameImgs_[3],
@@ -676,7 +677,8 @@ void Map::Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene, Tit
 
 						Novice::DrawSpriteRect(
 							int(birdPos_[i].x) - globalV.GetCameraPosX(),
-							int(birdPos_[i].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
+							int(birdPos_[i].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY()
+							+ int((EaseInQuint(1.0f - changeScene.easeT_) * -720)),
 							0 + (64 * (timeCount_ / 4 % 4)),
 							(64 * (birdDirection_[i] % 2)) + (128 * isTimeStop_),
 							64,
@@ -850,7 +852,7 @@ void Map::Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene, Tit
 										int(pos_[row][col].x) - globalV.GetCameraPosX(),
 										int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
 										0 + (64 * (timeCount_ / 4 % 3)),
-										0 + (128 * isTimeStop_),
+										0,
 										64,
 										64,
 										gameImgs_[3],
@@ -866,7 +868,7 @@ void Map::Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene, Tit
 										int(pos_[row][col].x) - globalV.GetCameraPosX(),
 										int(pos_[row][col].y * -1.0f) + globalV.GetGroundPos() + globalV.GetCameraPosY(),
 										0 + (64 * (timeCount_ / 4 % 3)),
-										64 + (128 * isTimeStop_),
+										64,
 										64,
 										64,
 										gameImgs_[3],
@@ -938,7 +940,7 @@ void Map::Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene, Tit
 
 		//タイマーの表示
 		Novice::DrawSpriteRect(
-			0, 0,
+			0, -10,
 			0, 0,
 			1280,
 			720,
@@ -951,7 +953,7 @@ void Map::Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene, Tit
 		//1分の桁
 		Novice::DrawSpriteRect(
 			630 - 30,
-			40,
+			30,
 			30 * (FrameToClock(gameTimer_, 1) % 10),
 			0,
 			30,
@@ -966,7 +968,7 @@ void Map::Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene, Tit
 		//10分の桁
 		Novice::DrawSpriteRect(
 			630 - 60,
-			40,
+			30,
 			30 * ((FrameToClock(gameTimer_, 1) / 10) % 6),
 			0,
 			30,
@@ -981,7 +983,7 @@ void Map::Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene, Tit
 		//1秒の桁
 		Novice::DrawSpriteRect(
 			650 + 30,
-			40,
+			30,
 			30 * (FrameToClock(gameTimer_, 0) % 10),
 			0,
 			30,
@@ -996,7 +998,7 @@ void Map::Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene, Tit
 		//10秒の桁
 		Novice::DrawSpriteRect(
 			650,
-			40,
+			30,
 			30 * ((FrameToClock(gameTimer_, 0) / 10) % 6),
 			0,
 			30,
@@ -1018,7 +1020,7 @@ void Map::Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene, Tit
 
 		//タイマーの表示
 		Novice::DrawSpriteRect(
-			0, 0,
+			0, -10,
 			0, 0,
 			1280,
 			720,
@@ -1031,7 +1033,7 @@ void Map::Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene, Tit
 		//1分の桁
 		Novice::DrawSpriteRect(
 			630 - 30,
-			40,
+			30,
 			30 * (FrameToClock(gameTimer_, 1) % 10),
 			0,
 			30,
@@ -1046,7 +1048,7 @@ void Map::Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene, Tit
 		//10分の桁
 		Novice::DrawSpriteRect(
 			630 - 60,
-			40,
+			30,
 			30 * ((FrameToClock(gameTimer_, 1) / 10) % 6),
 			0,
 			30,
@@ -1061,7 +1063,7 @@ void Map::Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene, Tit
 		//1秒の桁
 		Novice::DrawSpriteRect(
 			650 + 30,
-			40,
+			30,
 			30 * (FrameToClock(gameTimer_, 0) % 10),
 			0,
 			30,
@@ -1076,7 +1078,7 @@ void Map::Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene, Tit
 		//10秒の桁
 		Novice::DrawSpriteRect(
 			650,
-			40,
+			30,
 			30 * ((FrameToClock(gameTimer_, 0) / 10) % 6),
 			0,
 			30,
@@ -1169,6 +1171,10 @@ void Map::Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene, Tit
 					0.0f,
 					0xffffffff
 				);
+
+				if (changeScene.GetStartTimer() == 80) {
+					Novice::PlayAudio(scoreSE, false, 0.3f);
+				}
 			}
 
 			//2桁目
@@ -1203,6 +1209,10 @@ void Map::Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene, Tit
 						0.0f,
 						0xffffffff
 					);
+
+					if (changeScene.GetStartTimer() == 40) {
+						Novice::PlayAudio(scoreSE, false, 0.3f);
+					}
 				}
 			}
 
@@ -1333,6 +1343,10 @@ void Map::Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene, Tit
 					0.0f,
 					0xffffffff
 				);
+
+				if (changeScene.GetStartTimer() == 239) {
+					Novice::PlayAudio(scoreSE, false, 0.3f);
+				}
 			}
 
 			//左右にスコアアイテムの星を出す

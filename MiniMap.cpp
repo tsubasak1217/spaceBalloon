@@ -27,6 +27,17 @@ void MiniMap::Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene,
 				kFillModeWireFrame
 			);
 
+			//リトライ方法表示
+			Novice::DrawSprite(
+				1100,
+				360,
+				miniMapImgs[4],
+				1,
+				1,
+				0.0f,
+				0xffffff00 + int(EaseInQuint(changeScene.startEaseT_) * 0xff)
+			);
+
 			//メーター表示
 			for (int i = 0; i <= 40; i++) {
 
@@ -259,6 +270,18 @@ void MiniMap::Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene,
 				kFillModeWireFrame
 			);
 
+			//リトライ方法表示
+			Novice::DrawSprite(
+				1100,
+				360,
+				miniMapImgs[4],
+				1,
+				1,
+				0.0f,
+				0xffffffff + int(EaseInQuint(changeScene.easeT_) * -0xff)
+			);
+
+
 			//メーター表示
 			for (int i = 0; i <= 40; i++) {
 
@@ -472,6 +495,70 @@ void MiniMap::Draw(GlobalVariable globalV, Scene scene, ChangeScene changeScene,
 					0xffffffff + int(EaseInQuint(changeScene.easeT_) * -0xff)
 				);
 			}
+		}
+
+		//プレイヤーのライフ表示
+		for (int i = 0; i < player.GetLife(); i++) {
+
+			Novice::DrawSpriteRect(
+				720 + ((i % 10) * 36),
+				30 + (i / 10) * 36,
+				0, 0,
+				32, 32,
+				miniMapImgs[3],
+				32.0f / 64.0f, 1.0f,
+				0.0f,
+				0xffffffaf
+			);
+		}
+
+		//プレイヤーのゲームオーバー数表示
+		for (int i = 0; i < player.GetDeadCount(); i++) {
+
+			Novice::DrawSpriteRect(
+				530 + ((i%15) * -36),
+				30 + int(i/15) * 36,
+				32, 0,
+				32, 32,
+				miniMapImgs[3],
+				32.0f / 64.0f, 1.0f,
+				0.0f,
+				0xffffffaf
+			);
+		}
+	}
+
+	if (scene.GetSceneNum() == clear) {
+
+		//プレイヤーのライフ表示
+		for (int i = 0; i < player.GetLife(); i++) {
+
+			Novice::DrawSpriteRect(
+				720 + ((i % 10)* 36),
+				30 + (i / 10) * 36,
+				0, 0,
+				32, 32,
+				miniMapImgs[3],
+				32.0f / 64.0f, 1.0f,
+				0.0f,
+				0xffffffaf
+			);
+		}
+
+
+		//プレイヤーのゲームオーバー数表示
+		for (int i = 0; i < player.GetDeadCount(); i++) {
+
+			Novice::DrawSpriteRect(
+				530 + ((i % 15) * -36),
+				30 + int(i / 15) * 36,
+				32, 0,
+				32, 32,
+				miniMapImgs[3],
+				32.0f / 64.0f, 1.0f,
+				0.0f,
+				0xffffffaf
+			);
 		}
 	}
 }
