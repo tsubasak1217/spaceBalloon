@@ -284,6 +284,7 @@ void ChangeScene::Update(Scene& scene, char* keys) {
 				scene.SetSceneNum(titleScene);
 			}
 		}
+
 		break;
 
 	default:

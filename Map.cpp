@@ -42,7 +42,6 @@ void Map::Init() {
 	for (int row = 0; row < mapRow; row++) {
 		for (int col = 0; col < mapCol; col++) {
 
-
 			//ブロックの配置
 			pos_[row][col].y = size_.y * (row + 1);
 			pos_[row][col].x = size_.x * col;
